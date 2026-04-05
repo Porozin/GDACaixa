@@ -824,6 +824,193 @@
     }
 
     /* ═══════════════════════════════════════════════════════════
+   BARRAS DE PROGRESSO — METAS
+═══════════════════════════════════════════════════════════ */
+    .goal-hero {
+      background: linear-gradient(135deg, rgba(240,180,41,.08) 0%, rgba(74,222,128,.06) 100%);
+      border: 1px solid rgba(240,180,41,.25);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .goal-hero-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .goal-hero-title {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .goal-hero-value {
+      font-family: var(--font-mono);
+      font-size: .88rem;
+      color: var(--text2);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 14px;
+      background: var(--bg4);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent3), var(--accent));
+      width: 0%;
+      transition: width 1s cubic-bezier(.4,0,.2,1);
+    }
+
+    .progress-fill.over {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    .goal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .5rem;
+      font-size: .76rem;
+      color: var(--text3);
+      font-family: var(--font-mono);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+   UNIDADE CARDS
+═══════════════════════════════════════════════════════════ */
+    .unidade-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .unidade-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.35rem;
+      position: relative;
+      transition: transform var(--trans), box-shadow var(--trans);
+    }
+
+    .unidade-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow);
+    }
+
+    .unidade-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .85rem;
+    }
+
+    .unidade-name {
+      font-family: var(--font-head);
+      font-size: .97rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .unidade-conselheiro {
+      font-size: .74rem;
+      color: var(--text3);
+      margin-top: .15rem;
+      font-family: var(--font-mono);
+    }
+
+    /* badge pendente */
+    .badge-pending {
+      background: rgba(96,165,250,.15);
+      color: #60a5fa;
+      border: 1px solid rgba(96,165,250,.3);
+      font-size: .68rem;
+      padding: .15rem .5rem;
+      border-radius: 99px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+   @MEDIA PRINT — EXTRATO PDF
+═══════════════════════════════════════════════════════════ */
+    #print-zone { display: none; }
+
+    @media print {
+      body > * { display: none !important; }
+      #print-zone {
+        display: block !important;
+        font-family: 'DM Sans', sans-serif;
+        color: #111;
+        padding: 2rem;
+      }
+      .print-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 2px solid #111;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .print-header-icon {
+        width: 48px; height: 48px;
+        background: #f0b429;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+      }
+      .print-title { font-size: 1.4rem; font-weight: 800; }
+      .print-subtitle { font-size: .85rem; color: #555; }
+      .print-meta { margin-bottom: 1.5rem; font-size: .85rem; color: #333; }
+      .print-table { width: 100%; border-collapse: collapse; margin-bottom: 3rem; }
+      .print-table th {
+        background: #f4f5f8;
+        padding: .5rem .75rem;
+        text-align: left;
+        font-size: .78rem;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: #555;
+        border-bottom: 1px solid #ccc;
+      }
+      .print-table td {
+        padding: .5rem .75rem;
+        border-bottom: 1px solid #eee;
+        font-size: .85rem;
+      }
+      .print-signature {
+        display: flex;
+        gap: 4rem;
+        margin-top: 4rem;
+      }
+      .print-sig-line {
+        border-top: 1px solid #333;
+        width: 200px;
+        padding-top: .4rem;
+        font-size: .8rem;
+        color: #555;
+        text-align: center;
+      }
+      .print-positive { color: #16a34a; }
+      .print-negative { color: #dc2626; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
    MÓDULO VENDAS — ESPECÍFICO
 ═══════════════════════════════════════════════════════════ */
     .seller-card {
@@ -1128,6 +1315,10 @@
       <div class="section-tabs">
         <button class="section-tab active" onclick="showSecTab(this,'clube-dash')">Dashboard</button>
         <button class="section-tab edit-only" onclick="showSecTab(this,'clube-add')">Registrar</button>
+        <button class="section-tab admin-only" onclick="showSecTab(this,'clube-metas')">Metas
+          <span id="badge-metas" class="badge badge-pending"
+            style="padding:2px 6px;margin-left:4px;display:none">0</span></button>
+        <button class="section-tab admin-only" onclick="showSecTab(this,'clube-unidades')">Unidades</button>
         <button class="section-tab admin-only" onclick="showSecTab(this,'clube-apr')" id="tab-clube-apr">Aprovações
           <span id="badge-sug" class="badge badge-red"
             style="padding:2px 6px;margin-left:4px;display:none">0</span></button>
@@ -1139,7 +1330,10 @@
         <div class="filter-bar">
           <span style="font-size:.8rem;color:var(--text3);font-weight:600;">Período:</span>
           <select id="clube-filter-month" onchange="renderClube()"></select>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtrato()">📄 Extrato PDF</button>
         </div>
+        <!-- Meta geral do clube -->
+        <div id="clube-meta-hero"></div>
         <div class="metrics-grid" id="clube-metrics"></div>
         <div class="two-col">
           <div class="card">
@@ -1224,6 +1418,79 @@
                   <th>Descrição</th>
                   <th>Valor</th>
                   <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="clube-apr-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metas -->
+      <div class="section-panel admin-only" id="clube-metas">
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta do Clube</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Descrição da Meta</label>
+              <input type="text" id="meta-desc" placeholder="Ex: Arrecadação para o Campori 2025" />
+            </div>
+            <div class="form-group">
+              <label>Valor Alvo (R$)</label>
+              <input type="number" id="meta-valor" placeholder="0,00" min="0" step="0.01" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="addMetaClube()">🎯 Criar Meta</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot"></span>Metas do Clube</div>
+          </div>
+          <div id="metas-clube-list"><div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div></div>
+        </div>
+      </div>
+
+      <!-- Unidades -->
+      <div class="section-panel admin-only" id="clube-unidades">
+        <div class="card admin-only">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Nova Unidade</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nome da Unidade</label>
+              <input type="text" id="unidade-nome" placeholder="Ex: Unidade Leões" />
+            </div>
+            <div class="form-group">
+              <label>Conselheiro Responsável</label>
+              <input type="text" id="unidade-conselheiro" placeholder="Nome do conselheiro" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="addUnidade()">✚ Criar Unidade</button>
+          </div>
+        </div>
+        <div class="unidade-grid" id="unidades-grid">
+          <div class="empty-state"><div class="empty-icon">🏕️</div><p>Nenhuma unidade cadastrada</p></div>
+        </div>
+      </div>
+
+      <!-- Aprovações (Admin) -->
+      <div class="section-panel admin-only" id="clube-apr">
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Sugestões de Saída Pendentes
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th><th>Sugerido Por</th><th>Categoria</th><th>Descrição</th><th>Valor</th><th>Ação</th>
                 </tr>
               </thead>
               <tbody id="clube-apr-body"></tbody>
@@ -1756,6 +2023,9 @@
 
   </main>
 
+  <!-- ═══ ZONA DE IMPRESSÃO (só visível no Print/PDF) ════════════════ -->
+  <div id="print-zone"></div>
+
   <!-- ═══ MODAL EDIÇÃO ═══════════════════════════════════════════════ -->
   <div class="modal-overlay" id="editModal" onclick="closeModal(event)">
     <div class="modal">
@@ -1798,6 +2068,12 @@
       vendas: { vendas: [], produtos: [], vendedores: [], avarias: [], debitos: [] }
     };
 
+    // Coleções separadas do Firestore para Unidades e Metas
+    let _unidades = []; // { id, nome, conselheiro, criadoEm }
+    let _metasClube = []; // { id, descricao, valor_alvo, status, sugeridoPor, criadoEm }
+    let _metasUnidade = []; // { id, unidade_id, descricao, valor_alvo, criadoEm }
+    let _unsubUnidades = null, _unsubMetasClube = null, _unsubMetasUnidade = null;
+
     let userRole = null;
 
     function doLogin() {
@@ -1829,11 +2105,32 @@
           APP = deepMerge(APP, doc.data());
           if (!APP.clube.sugestoes) APP.clube.sugestoes = [];
         } else {
-          saveData(); // Cria o doc inicial
+          saveData();
         }
         if (userRole) {
           renderClube(); renderDoceria(); renderVendas();
         }
+      });
+
+      // Listener Unidades
+      if (_unsubUnidades) _unsubUnidades();
+      _unsubUnidades = db.collection('gda_unidades').orderBy('criadoEm').onSnapshot(snap => {
+        _unidades = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (userRole) { renderUnidades(); renderMetasClube(); }
+      });
+
+      // Listener Metas do Clube
+      if (_unsubMetasClube) _unsubMetasClube();
+      _unsubMetasClube = db.collection('gda_metas_clube').orderBy('criadoEm').onSnapshot(snap => {
+        _metasClube = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (userRole) { renderMetasClube(); updateMetasBadge(); }
+      });
+
+      // Listener Metas de Unidade
+      if (_unsubMetasUnidade) _unsubMetasUnidade();
+      _unsubMetasUnidade = db.collection('gda_metas_unidade').orderBy('criadoEm').onSnapshot(snap => {
+        _metasUnidade = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (userRole) { renderUnidades(); }
       });
     }
 
@@ -2122,6 +2419,8 @@
       renderClubeRecent();
       renderClubeHist();
       renderAprovacoes();
+      renderMetasClube();
+      renderUnidades();
 
       const addBtn = document.getElementById('btn-add-clube');
       const tipoSel = document.getElementById('clube-tipo');
@@ -2142,6 +2441,286 @@
         tipoSel.onchange = updateBtn;
         updateBtn();
       }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       METAS DO CLUBE
+    ═══════════════════════════════════════════════════════════ */
+    function addMetaClube() {
+      const desc = document.getElementById('meta-desc').value.trim();
+      const valor_alvo = parseFloat(document.getElementById('meta-valor').value);
+      if (!desc || !valor_alvo || valor_alvo <= 0) { toast('Preencha descrição e valor', 'error'); return; }
+
+      const isAdmin = (userRole === 'admin');
+      const status = isAdmin ? 'aprovada' : 'sugerida';
+
+      db.collection('gda_metas_clube').add({
+        descricao: desc, valor_alvo, status,
+        sugeridoPor: userRole, criadoEm: Date.now()
+      }).then(() => {
+        document.getElementById('meta-desc').value = '';
+        document.getElementById('meta-valor').value = '';
+        toast(isAdmin ? '🎯 Meta criada!' : '🤞 Meta sugerida! Aguardando aprovação.', isAdmin ? 'success' : 'info');
+      }).catch(() => toast('Erro ao salvar meta', 'error'));
+    }
+
+    function aprovarMeta(id) {
+      if (userRole !== 'admin') { toast('Sem permissão', 'error'); return; }
+      db.collection('gda_metas_clube').doc(id).update({ status: 'aprovada' })
+        .then(() => toast('Meta aprovada!'));
+    }
+
+    function deleteMeta(id) {
+      if (userRole !== 'admin') { toast('Sem permissão', 'error'); return; }
+      db.collection('gda_metas_clube').doc(id).delete()
+        .then(() => toast('Meta removida', 'info'));
+    }
+
+    function updateMetasBadge() {
+      const pendentes = _metasClube.filter(m => m.status === 'sugerida').length;
+      const badge = document.getElementById('badge-metas');
+      if (!badge) return;
+      badge.style.display = pendentes > 0 ? 'inline-block' : 'none';
+      badge.textContent = pendentes;
+    }
+
+    function renderMetasClube() {
+      // Barra hero no dashboard
+      const heroEl = document.getElementById('clube-meta-hero');
+      const listEl = document.getElementById('metas-clube-list');
+
+      const aprovadas = _metasClube.filter(m => m.status === 'aprovada');
+      const sugeridas = _metasClube.filter(m => m.status === 'sugerida');
+
+      const allTxs = APP.clube.transactions;
+      const saldoGeral = allTxs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0)
+                       - allTxs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+
+      // Hero no Dashboard (primeira meta aprovada)
+      if (heroEl) {
+        if (aprovadas.length > 0) {
+          const meta = aprovadas[0];
+          const pct = Math.min(100, Math.round((saldoGeral / meta.valor_alvo) * 100));
+          const over = saldoGeral >= meta.valor_alvo;
+          heroEl.innerHTML = `
+            <div class="goal-hero">
+              <div class="goal-hero-header">
+                <div class="goal-hero-title">🏕️ ${meta.descricao}</div>
+                <div class="goal-hero-value">${fmt(saldoGeral)} / ${fmt(meta.valor_alvo)}</div>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill ${over ? 'over' : ''}" id="hero-fill" style="width:0%"></div>
+              </div>
+              <div class="goal-footer">
+                <span>${pct}% concluído</span>
+                <span>${over ? '🎉 Meta atingida!' : fmt(meta.valor_alvo - saldoGeral) + ' restante'}</span>
+              </div>
+            </div>`;
+          setTimeout(() => {
+            const f = document.getElementById('hero-fill');
+            if (f) f.style.width = pct + '%';
+          }, 80);
+        } else {
+          heroEl.innerHTML = '';
+        }
+      }
+
+      // Lista na aba de Metas
+      if (!listEl) return;
+      if (!_metasClube.length) {
+        listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div>';
+        return;
+      }
+
+      listEl.innerHTML = [...aprovadas, ...sugeridas].map(meta => {
+        const pct = Math.min(100, Math.round((saldoGeral / meta.valor_alvo) * 100));
+        const over = saldoGeral >= meta.valor_alvo;
+        const isSugerida = meta.status === 'sugerida';
+        return `
+          <div style="padding:1rem 0;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem">
+              <div>
+                <span style="font-weight:600;color:var(--text)">${meta.descricao}</span>
+                ${isSugerida ? '<span class="badge-pending" style="margin-left:.4rem">⏳ Pendente</span>' : ''}
+              </div>
+              <div style="display:flex;gap:.35rem;align-items:center">
+                <span style="font-family:var(--font-mono);font-size:.8rem;color:var(--text3)">${fmt(meta.valor_alvo)}</span>
+                ${isSugerida && userRole === 'admin' ? `<button class="btn btn-sm" style="background:var(--accent3);color:#111" onclick="aprovarMeta('${meta.id}')">✓ Aprovar</button>` : ''}
+                ${userRole === 'admin' ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMeta('${meta.id}')">🗑️</button>` : ''}
+              </div>
+            </div>
+            ${!isSugerida ? `
+              <div class="progress-track" style="height:8px">
+                <div class="progress-fill ${over ? 'over' : ''}" style="width:${pct}%"></div>
+              </div>
+              <div class="goal-footer"><span>${pct}%</span><span>${fmt(saldoGeral)} arrecadado</span></div>
+            ` : ''}
+          </div>`;
+      }).join('');
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       UNIDADES
+    ═══════════════════════════════════════════════════════════ */
+    function addUnidade() {
+      if (userRole !== 'admin') { toast('Sem permissão', 'error'); return; }
+      const nome = document.getElementById('unidade-nome').value.trim();
+      const conselheiro = document.getElementById('unidade-conselheiro').value.trim();
+      if (!nome) { toast('Informe o nome da unidade', 'error'); return; }
+      db.collection('gda_unidades').add({ nome, conselheiro, criadoEm: Date.now() })
+        .then(() => {
+          document.getElementById('unidade-nome').value = '';
+          document.getElementById('unidade-conselheiro').value = '';
+          toast('Unidade criada!');
+        }).catch(() => toast('Erro ao criar unidade', 'error'));
+    }
+
+    function deleteUnidade(id) {
+      if (userRole !== 'admin') { toast('Sem permissão', 'error'); return; }
+      db.collection('gda_unidades').doc(id).delete()
+        .then(() => toast('Unidade removida', 'info'));
+    }
+
+    function addMetaUnidade(unidadeId) {
+      const desc = document.getElementById(`um-desc-${unidadeId}`)?.value.trim();
+      const valor = parseFloat(document.getElementById(`um-val-${unidadeId}`)?.value);
+      if (!desc || !valor || valor <= 0) { toast('Preencha descrição e valor', 'error'); return; }
+      db.collection('gda_metas_unidade').add({
+        unidade_id: unidadeId, descricao: desc, valor_alvo: valor, criadoEm: Date.now()
+      }).then(() => {
+        document.getElementById(`um-desc-${unidadeId}`).value = '';
+        document.getElementById(`um-val-${unidadeId}`).value = '';
+        toast('Meta da unidade criada!');
+      }).catch(() => toast('Erro ao salvar', 'error'));
+    }
+
+    function deleteMetaUnidade(id) {
+      if (userRole !== 'admin') { toast('Sem permissão', 'error'); return; }
+      db.collection('gda_metas_unidade').doc(id).delete()
+        .then(() => toast('Meta removida', 'info'));
+    }
+
+    function renderUnidades() {
+      const grid = document.getElementById('unidades-grid');
+      if (!grid) return;
+      if (!_unidades.length) {
+        grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🏕️</div><p>Nenhuma unidade cadastrada</p></div>';
+        return;
+      }
+
+      const allTxs = APP.clube.transactions;
+      const saldoGeral = allTxs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0)
+                       - allTxs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+
+      grid.innerHTML = _unidades.map(u => {
+        const metas = _metasUnidade.filter(m => m.unidade_id === u.id);
+        const canManage = (userRole === 'admin') || (userRole === 'conselheiro' && u.conselheiro);
+        const metasHtml = metas.map(m => {
+          const pct = Math.min(100, Math.round((saldoGeral / m.valor_alvo) * 100));
+          const over = saldoGeral >= m.valor_alvo;
+          return `
+            <div style="margin-top:.6rem">
+              <div style="display:flex;justify-content:space-between;font-size:.76rem;color:var(--text3);font-family:var(--font-mono);margin-bottom:.3rem">
+                <span>${m.descricao}</span>
+                <div style="display:flex;gap:.25rem;align-items:center">
+                  <span>${fmt(m.valor_alvo)}</span>
+                  ${userRole === 'admin' ? `<button class="btn btn-ghost btn-icon btn-sm" style="width:22px;height:22px;font-size:.65rem" onclick="deleteMetaUnidade('${m.id}')">🗑️</button>` : ''}
+                </div>
+              </div>
+              <div class="progress-track" style="height:7px">
+                <div class="progress-fill ${over ? 'over' : ''}" style="width:${pct}%"></div>
+              </div>
+            </div>`;
+        }).join('');
+
+        const addMetaForm = canManage ? `
+          <div style="margin-top:.85rem;padding-top:.75rem;border-top:1px solid var(--border)">
+            <div style="display:flex;gap:.4rem">
+              <input type="text" id="um-desc-${u.id}" placeholder="Desc. da meta" style="font-size:.78rem" />
+              <input type="number" id="um-val-${u.id}" placeholder="R$ Alvo" min="0" step="0.01" style="font-size:.78rem;max-width:90px" />
+              <button class="btn btn-primary btn-sm" onclick="addMetaUnidade('${u.id}')">+</button>
+            </div>
+          </div>` : '';
+
+        return `
+          <div class="unidade-card">
+            <div class="unidade-card-header">
+              <div>
+                <div class="unidade-name">🏕️ ${u.nome}</div>
+                <div class="unidade-conselheiro">${u.conselheiro ? '👤 ' + u.conselheiro : 'Sem conselheiro'}</div>
+              </div>
+              ${userRole === 'admin' ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteUnidade('${u.id}')">🗑️</button>` : ''}
+            </div>
+            ${metas.length ? metasHtml : '<div style="font-size:.78rem;color:var(--text3)">Sem metas definidas</div>'}
+            ${addMetaForm}
+          </div>`;
+      }).join('');
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       EXTRATO PDF
+    ═══════════════════════════════════════════════════════════ */
+    function imprimirExtrato() {
+      const month = document.getElementById('clube-filter-month')?.value || today().slice(0, 7);
+      const txs = APP.clube.transactions
+        .filter(t => monthKey(t.data) === month)
+        .sort((a, b) => a.data.localeCompare(b.data));
+
+      const entrada = txs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0);
+      const saida   = txs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+      const saldo   = entrada - saida;
+
+      const rows = txs.map(t => `
+        <tr>
+          <td>${t.data}</td>
+          <td>${t.categoria}</td>
+          <td style="max-width:220px">${t.desc || '-'}</td>
+          <td class="${t.tipo === 'entrada' ? 'print-positive' : 'print-negative'}" style="text-align:right">
+            ${t.tipo === 'entrada' ? '+' : '-'}${fmt(t.valor)}
+          </td>
+        </tr>`).join('');
+
+      document.getElementById('print-zone').innerHTML = `
+        <div class="print-header">
+          <div class="print-header-icon">⚔️</div>
+          <div>
+            <div class="print-title">Guerreiros do Alto</div>
+            <div class="print-subtitle">Livro Caixa — Clube</div>
+          </div>
+        </div>
+        <div class="print-meta">
+          <strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;
+          <strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;
+          <strong>Responsável:</strong> ${userRole?.toUpperCase() || '-'}
+        </div>
+        <table class="print-table">
+          <thead>
+            <tr><th>Data</th><th>Categoria</th><th>Descrição</th><th style="text-align:right">Valor</th></tr>
+          </thead>
+          <tbody>
+            ${rows || '<tr><td colspan="4" style="text-align:center;color:#999">Sem transações neste período</td></tr>'}
+          </tbody>
+          <tfoot>
+            <tr style="font-weight:700">
+              <td colspan="3" style="text-align:right;padding:.6rem .75rem">Total Entradas</td>
+              <td class="print-positive" style="text-align:right;padding:.6rem .75rem">${fmt(entrada)}</td>
+            </tr>
+            <tr style="font-weight:700">
+              <td colspan="3" style="text-align:right;padding:.4rem .75rem">Total Saídas</td>
+              <td class="print-negative" style="text-align:right;padding:.4rem .75rem">-${fmt(saida)}</td>
+            </tr>
+            <tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111">
+              <td colspan="3" style="text-align:right;padding:.6rem .75rem">Saldo do Período</td>
+              <td class="${saldo >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(saldo)}</td>
+            </tr>
+          </tfoot>
+        </table>
+        <div class="print-signature">
+          <div class="print-sig-line">Diretor(a) do Clube</div>
+          <div class="print-sig-line">Tesoureiro(a)</div>
+        </div>`;
+
+      window.print();
     }
 
     function renderAprovacoes() {
