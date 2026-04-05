@@ -1392,6 +1392,12 @@
               <label>Descrição</label>
               <input type="text" id="clube-desc" placeholder="Descreva brevemente..." />
             </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Destino / Vinculação</label>
+              <select id="clube-destino">
+                <option value="">Geral (sem vinculação específica)</option>
+              </select>
+            </div>
           </div>
           <div class="form-actions" id="clube-add-actions">
             <!-- JS irá customizar este botão dependendo da role -->
@@ -2347,13 +2353,23 @@
       const data = document.getElementById('clube-data').value || today();
       const categoria = document.getElementById('clube-cat').value;
       const desc = document.getElementById('clube-desc').value.trim();
+      const destinoRaw = document.getElementById('clube-destino')?.value || '';
+
+      // Parsear o destino  ex: 'unidade:abc123' ou 'meta:xyz456' ou ''
+      let destino_tipo = null, destino_id = null;
+      if (destinoRaw.startsWith('unidade:')) {
+        destino_tipo = 'unidade'; destino_id = destinoRaw.split(':')[1];
+      } else if (destinoRaw.startsWith('meta:')) {
+        destino_tipo = 'meta'; destino_id = destinoRaw.split(':')[1];
+      }
+
       if (!valor || valor <= 0) { toast('Informe um valor válido', 'error'); return; }
 
       if (userRole === 'conselheiro' && tipo === 'saida') {
-        APP.clube.sugestoes.push({ id: uuid(), valor, data, categoria, desc, status: 'pendente' });
+        APP.clube.sugestoes.push({ id: uuid(), valor, data, categoria, desc, status: 'pendente', destino_tipo, destino_id });
         toast('Sugestão de saída enviada ao Diretor!', 'info');
       } else {
-        APP.clube.transactions.push({ id: uuid(), tipo, valor, data, categoria, desc });
+        APP.clube.transactions.push({ id: uuid(), tipo, valor, data, categoria, desc, destino_tipo, destino_id });
         toast('Transação adicionada!');
       }
       saveData();
@@ -2363,6 +2379,43 @@
     function clearClubeForm() {
       ['clube-valor', 'clube-desc'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('clube-data').value = today();
+      const sel = document.getElementById('clube-destino');
+      if (sel) sel.value = '';
+    }
+
+    function populateClubeDestinoSelect() {
+      const sel = document.getElementById('clube-destino');
+      if (!sel) return;
+      const prev = sel.value;
+      sel.innerHTML = '<option value="">Geral (sem vinculação específica)</option>';
+
+      const aprovadas = _metasClube.filter(m => m.status === 'aprovada');
+      if (aprovadas.length) {
+        const grp1 = document.createElement('optgroup');
+        grp1.label = '🎯 Metas do Clube';
+        aprovadas.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = `meta:${m.id}`;
+          opt.textContent = m.descricao;
+          grp1.appendChild(opt);
+        });
+        sel.appendChild(grp1);
+      }
+
+      if (_unidades.length) {
+        const grp2 = document.createElement('optgroup');
+        grp2.label = '🏕️ Unidades';
+        _unidades.forEach(u => {
+          const opt = document.createElement('option');
+          opt.value = `unidade:${u.id}`;
+          opt.textContent = u.nome + (u.conselheiro ? ` (${u.conselheiro})` : '');
+          grp2.appendChild(opt);
+        });
+        sel.appendChild(grp2);
+      }
+
+      // restaura seleção anterior se ainda existir
+      if (prev) sel.value = prev;
     }
 
     function deleteClubeTransaction(id) {
@@ -2414,6 +2467,7 @@
       const months = allMonths(APP.clube.transactions);
       populateMonthSelect('clube-filter-month', months);
       populateMonthSelect('clube-hist-month', months);
+      populateClubeDestinoSelect();
       renderClubeMetrics();
       renderClubeChart(months);
       renderClubeRecent();
@@ -2595,7 +2649,7 @@
     }
 
     function deleteMetaUnidade(id) {
-      if (userRole !== 'admin') { toast('Sem permissão', 'error'); return; }
+      if (userRole !== 'admin' && userRole !== 'conselheiro') { toast('Sem permissão', 'error'); return; }
       db.collection('gda_metas_unidade').doc(id).delete()
         .then(() => toast('Meta removida', 'info'));
     }
@@ -2608,23 +2662,25 @@
         return;
       }
 
-      const allTxs = APP.clube.transactions;
-      const saldoGeral = allTxs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0)
-                       - allTxs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
-
       grid.innerHTML = _unidades.map(u => {
         const metas = _metasUnidade.filter(m => m.unidade_id === u.id);
+        // Saldo vinculado: só transações taggeadas para esta unidade
+        const unidadeTxs = APP.clube.transactions.filter(t => t.destino_tipo === 'unidade' && t.destino_id === u.id);
+        const saldoUnidade = unidadeTxs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0)
+                           - unidadeTxs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+
         const canManage = (userRole === 'admin') || (userRole === 'conselheiro' && u.conselheiro);
         const metasHtml = metas.map(m => {
-          const pct = Math.min(100, Math.round((saldoGeral / m.valor_alvo) * 100));
-          const over = saldoGeral >= m.valor_alvo;
+          const pct = Math.min(100, Math.round((saldoUnidade / m.valor_alvo) * 100));
+          const over = saldoUnidade >= m.valor_alvo;
+          const canDelete = userRole === 'admin' || userRole === 'conselheiro';
           return `
             <div style="margin-top:.6rem">
               <div style="display:flex;justify-content:space-between;font-size:.76rem;color:var(--text3);font-family:var(--font-mono);margin-bottom:.3rem">
                 <span>${m.descricao}</span>
                 <div style="display:flex;gap:.25rem;align-items:center">
-                  <span>${fmt(m.valor_alvo)}</span>
-                  ${userRole === 'admin' ? `<button class="btn btn-ghost btn-icon btn-sm" style="width:22px;height:22px;font-size:.65rem" onclick="deleteMetaUnidade('${m.id}')">🗑️</button>` : ''}
+                  <span>${saldoUnidade >= 0 ? fmt(saldoUnidade) + ' / ' : ''}${fmt(m.valor_alvo)}</span>
+                  ${canDelete ? `<button class="btn btn-ghost btn-icon btn-sm" style="width:22px;height:22px;font-size:.65rem" onclick="deleteMetaUnidade('${m.id}')">🗑️</button>` : ''}
                 </div>
               </div>
               <div class="progress-track" style="height:7px">
@@ -2642,12 +2698,13 @@
             </div>
           </div>` : '';
 
+        const totalTagged = unidadeTxs.length;
         return `
           <div class="unidade-card">
             <div class="unidade-card-header">
               <div>
                 <div class="unidade-name">🏕️ ${u.nome}</div>
-                <div class="unidade-conselheiro">${u.conselheiro ? '👤 ' + u.conselheiro : 'Sem conselheiro'}</div>
+                <div class="unidade-conselheiro">${u.conselheiro ? '👤 ' + u.conselheiro : 'Sem conselheiro'}${totalTagged ? ' · ' + totalTagged + ' tx vinculada(s)' : ''}</div>
               </div>
               ${userRole === 'admin' ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteUnidade('${u.id}')">🗑️</button>` : ''}
             </div>
