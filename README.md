@@ -106,14 +106,14 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 ## 🧑‍💻 Autor
 
-<img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/SEU_ID_DO_GITHUB_AQUI?v=4" width="100px;" alt=""/>
+<img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/47198565?v=4" width="100px;" alt=""/>
 <br />
 <sub><b>Wallyson</b></sub>
 <br />
 
 Feito com raciocínio analítico, muito código e paciência ☕. Entre em contato!
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/seu_user_aqui/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/wallyjnf/)
 
 ---
 <div align="center">
