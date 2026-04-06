@@ -59,7 +59,7 @@ Aqui você pode mostrar o sistema funcionando. Tire prints bonitos das telas e a
 
 | Dashboard Principal | Fluxo de Cadastro |
 | :---: | :---: |
-| <img src="https://via.placeholder.com/600x400?text=Insira+Print+do+Dashboard+Aqui" width="100%"> | <img src="https://via.placeholder.com/600x400?text=Insira+Print+das+Vendas+Aqui" width="100%"> |
+| <img src="1.jpeg" width="100%"> | <img src="2.jpeg width="100%"> |
 | *Gráficos dinâmicos e controle de caixa* | *Layout mobile first focado na experiência de quem usa na rua* |
 
 *(Dica: Substitua as imagens acima fazendo upload dos prints para a própria pasta do GitHub ou na issue, e colando o link raw aqui na tag src)*
