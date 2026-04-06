@@ -1253,6 +1253,14 @@
     .user-info-btn:hover{background:var(--bg4);color:var(--text)}
     .user-notif-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--accent2);border-radius:50%;display:none;}
     .usuarios-modal-wrap{max-height:55vh;overflow-y:auto;}
+    /* Toggle switch */
+    .toggle-wrap{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--text3);}
+    .tgl{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0;}
+    .tgl input{opacity:0;width:0;height:0;}
+    .tgl-slider{position:absolute;cursor:pointer;inset:0;background:var(--bg4);border-radius:99px;transition:.25s;border:1px solid var(--border);}
+    .tgl-slider:before{content:"";position:absolute;height:12px;width:12px;left:2px;bottom:2px;background:var(--text3);border-radius:50%;transition:.25s;}
+    .tgl input:checked+.tgl-slider{background:rgba(74,222,128,.25);border-color:var(--accent3);}
+    .tgl input:checked+.tgl-slider:before{transform:translateX(16px);background:var(--accent3);}
   </style>
 </head>
 
@@ -2253,6 +2261,7 @@
         if(vg) vg.style.display='none';
       }
       renderClube(); renderDoceria(); renderVendas();
+      applyDoceiraVisibility();
       toast('Bem-vindo, '+(currentUser?.nome||userRole)+'!');
     }
 
@@ -2262,6 +2271,7 @@
       _unsubUsuarios=db.collection('gda_usuarios').orderBy('criadoEm').onSnapshot(snap=>{
         _usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
         updateUsuariosBadge();
+        if(userRole) applyDoceiraVisibility();
       });
       // Listener Metas Doceria
       if(_unsubMetasDoceria) _unsubMetasDoceria();
@@ -3743,10 +3753,22 @@
       }
       if(ativos.length){
         html+=`<div style="font-family:var(--font-mono);font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-top:1rem;margin-bottom:.5rem">✅ Ativos</div>`;
-        html+=ativos.map(u=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:.3rem">
-          <div><div style="font-size:.85rem;font-weight:600;color:var(--text)">${u.usuario}</div><div style="font-size:.72rem;color:var(--text3)">${roleLabel(u.role)}</div></div>
-          ${userRole==='admin'?`<button class="btn btn-ghost btn-icon btn-sm" onclick="removerUsuario('${u.id}')">🗑️</button>`:''}
-        </div>`).join('');
+        html+=ativos.map(u=>{
+          const docOn=!!u.doceria_acesso;
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:.3rem">
+            <div><div style="font-size:.85rem;font-weight:600;color:var(--text)">${u.usuario}</div><div style="font-size:.72rem;color:var(--text3)">${roleLabel(u.role)}</div></div>
+            <div style="display:flex;align-items:center;gap:.65rem">
+              <div class="toggle-wrap">
+                <label class="tgl" title="Acesso à Doceria">
+                  <input type="checkbox" ${docOn?'checked':''} onchange="toggleDoceiraAcesso('${u.id}',${docOn})"/>
+                  <span class="tgl-slider"></span>
+                </label>
+                <span>🎂 Doceria</span>
+              </div>
+              ${userRole==='admin'?`<button class="btn btn-ghost btn-icon btn-sm" onclick="removerUsuario('${u.id}')">🗑️</button>`:''}
+            </div>
+          </div>`;
+        }).join('');
       }
       el.innerHTML=html;
     }
@@ -3767,6 +3789,28 @@
       toast('Usuário removido','info'); renderUsuariosLista();
     }
 
+    async function toggleDoceiraAcesso(userId, current) {
+      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
+      await db.collection('gda_usuarios').doc(userId).update({doceria_acesso:!current});
+      toast(!current?'🎂 Acesso à Doceria ativado!':'Acesso à Doceria removido','info');
+      // If this user is currently logged in (same session), update their access in real-time
+      applyDoceiraVisibility();
+    }
+
+    function applyDoceiraVisibility() {
+      const tab = document.querySelector('[data-mod="doceria"]');
+      if(!tab) return;
+      // Admin and Diretor always have access
+      if(userRole==='admin'||userRole==='diretor'){
+        tab.style.display=''; return;
+      }
+      // For others, check their Firestore user doc
+      if(!currentUser?.id){ tab.style.display='none'; return; }
+      const u = _usuarios.find(x=>x.id===currentUser.id);
+      if(u?.doceria_acesso){ tab.style.display=''; }
+      else { tab.style.display='none'; }
+    }
+
     async function criarUsuarioAdmin() {
       const nome=(document.getElementById('new-user-nome')?.value||'').trim();
       const senha=(document.getElementById('new-user-senha')?.value||'').trim();
@@ -3775,7 +3819,7 @@
       if(role==='diretor'&&userRole!=='admin'){toast('Somente Admin pode criar Diretor','error');return;}
       const snap=await db.collection('gda_usuarios').where('usuario','==',nome).where('role','==',role).get();
       if(!snap.empty){toast('Usuário já existe','error');return;}
-      await db.collection('gda_usuarios').add({usuario:nome,nome,role,senha,status:'ativo',criadoEm:Date.now()});
+      await db.collection('gda_usuarios').add({usuario:nome,nome,role,senha,status:'ativo',doceria_acesso:false,criadoEm:Date.now()});
       toast('Usuário criado!');
       document.getElementById('new-user-nome').value='';
       document.getElementById('new-user-senha').value='';
