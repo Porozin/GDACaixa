@@ -1,6 +1,6 @@
 <div align="center">
   <!-- Substitua o link abaixo pela sua logo ou banner do projeto -->
-  <img src="https://via.placeholder.com/800x200?text=Banner+do+Projeto+Aqui" alt="GDACaixa Banner" width="100%">
+  <img src="file_00000000172c71f5a25c8dcc346f633f.png" alt="GDACaixa Banner" width="100%">
 
   <h1>Guerreiros do Alto · Dashboard Financeira</h1>
   <p>
