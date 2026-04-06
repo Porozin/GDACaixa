@@ -1234,34 +1234,57 @@
     }
 
     /* Role based hiding */
-    body.app-mode-desbravador .form-actions,
+    body.app-mode-desbravador .form-actions:not(.desb-ok),
     body.app-mode-desbravador .edit-only,
     body.app-mode-desbravador .admin-only,
     body.app-mode-desbravador td:last-child:has(button),
     body.app-mode-desbravador th:empty,
-    body.app-mode-desbravador .card:has(.form-grid) {
+    body.app-mode-desbravador .card:has(.form-grid):not(.desb-card) {
       display: none !important;
     }
 
-    body.app-mode-conselheiro .admin-only {
-      display: none !important;
-    }
+    body.app-mode-conselheiro .admin-only { display: none !important; }
+    body.app-mode-diretor .admin-only { display: none !important; }
+    .login-msg-box{margin-top:.85rem;padding:.65rem .9rem;border-radius:var(--radius-sm);font-size:.82rem;text-align:center;display:none;}
+    .login-msg-box.success{background:rgba(74,222,128,.1);color:var(--accent3);border:1px solid rgba(74,222,128,.25)}
+    .login-msg-box.error{background:rgba(232,93,74,.1);color:var(--accent2);border:1px solid rgba(232,93,74,.25)}
+    .login-msg-box.info{background:rgba(240,180,41,.08);color:var(--accent);border:1px solid rgba(240,180,41,.2)}
+    .user-info-btn{display:flex;align-items:center;gap:.4rem;padding:.35rem .8rem;background:var(--bg3);border-radius:var(--radius-sm);font-size:.78rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all var(--trans);position:relative;}
+    .user-info-btn:hover{background:var(--bg4);color:var(--text)}
+    .user-notif-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--accent2);border-radius:50%;display:none;}
+    .usuarios-modal-wrap{max-height:55vh;overflow-y:auto;}
   </style>
 </head>
 
-<body class="app-mode-desbravador">
+<body class="">
 
   <!-- ═══ LOGIN ════════════════════════════════════════════════════ -->
   <div id="login-overlay">
     <div class="login-box">
-      <div class="logo-icon">⚔️</div>
-      <h2>Acesso Restrito</h2>
-      <p>Informe sua senha para acessar o painel financeiro.</p>
-      <div class="form-group" style="text-align:left;margin-bottom:1.25rem;">
-        <input type="password" id="login-senha" placeholder="Sua senha..."
+      <div class="logo-icon" style="margin:0 auto 1.25rem;width:54px;height:54px;font-size:1.6rem">⚔️</div>
+      <h2>Guerreiros do Alto</h2>
+      <p>Informe suas credenciais de acesso ao painel.</p>
+      <div class="form-group" style="text-align:left;margin-bottom:.7rem">
+        <label style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Nível de Acesso</label>
+        <select id="login-role">
+          <option value="admin">👑 Administrador</option>
+          <option value="diretor">🎖️ Diretor</option>
+          <option value="conselheiro">🧭 Conselheiro</option>
+          <option value="desbravador">⚔️ Desbravador</option>
+        </select>
+      </div>
+      <div class="form-group" style="text-align:left;margin-bottom:.7rem">
+        <label style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Usuário</label>
+        <input type="text" id="login-usuario" placeholder="Seu usuário..." autocomplete="username"
           onkeypress="if(event.key==='Enter') doLogin()" />
       </div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="doLogin()">Entrar</button>
+      <div class="form-group" style="text-align:left;margin-bottom:1.1rem">
+        <label style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Senha</label>
+        <input type="password" id="login-senha" placeholder="Sua senha..." autocomplete="current-password"
+          onkeypress="if(event.key==='Enter') doLogin()" />
+      </div>
+      <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;" onclick="doLogin()">Entrar</button>
+      <div class="login-msg-box" id="login-msg"></div>
     </div>
   </div>
 
@@ -1283,6 +1306,11 @@
           <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)" />
         </div>
       </div>
+      <button class="user-info-btn" id="userInfoBtn" onclick="openUsuariosModal()" style="display:none">
+        <span id="userDisplayName">-</span>
+        <span id="userRoleBadge" style="font-size:.65rem;opacity:.7"></span>
+        <span class="user-notif-dot" id="user-notif-dot"></span>
+      </button>
       <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Alternar tema">🌙</button>
       <button class="theme-btn" onclick="doLogout()" title="Sair"
         style="color:var(--accent2); margin-left:.25rem">🚪</button>
@@ -1547,13 +1575,16 @@
         <button class="section-tab" onclick="showSecTab(this,'doc-pedidos')">Pedidos</button>
         <button class="section-tab" onclick="showSecTab(this,'doc-materia')">Matéria-Prima</button>
         <button class="section-tab" onclick="showSecTab(this,'doc-gastos')">Gastos</button>
+        <button class="section-tab edit-only" onclick="showSecTab(this,'doc-metas')">🎯 Metas</button>
       </div>
 
       <!-- Dashboard Doceria -->
       <div class="section-panel active" id="doc-dash">
         <div class="filter-bar">
           <select id="doc-filter-month" onchange="renderDoceria()"></select>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtratoDoceria()">📄 Extrato PDF</button>
         </div>
+        <div id="doc-meta-hero"></div>
         <div class="metrics-grid" id="doc-metrics"></div>
         <div class="two-col">
           <div class="card">
@@ -1671,6 +1702,22 @@
         </div>
       </div>
 
+      <!-- Metas Doceria -->
+      <div class="section-panel edit-only" id="doc-metas">
+        <div class="card">
+          <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta</div></div>
+          <div class="form-grid">
+            <div class="form-group"><label>Descrição</label><input type="text" id="meta-doc-desc" placeholder="Ex: Arrecadar R$ 2.000 em pedidos" /></div>
+            <div class="form-group"><label>Valor Alvo (R$)</label><input type="number" id="meta-doc-valor" placeholder="0,00" min="0" step="0.01" /></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary" onclick="addMetaDoceria()">🎯 Criar Meta</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="card-title-left"><span class="dot"></span>Metas da Doceria</div></div>
+          <div id="metas-doceria-list"><div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta</p></div></div>
+        </div>
+      </div>
+
       <!-- Gastos Doceria -->
       <div class="section-panel" id="doc-gastos">
         <div class="card">
@@ -1737,16 +1784,19 @@
       <div class="section-tabs">
         <button class="section-tab active" onclick="showSecTab(this,'vnd-dash')">Dashboard</button>
         <button class="section-tab" onclick="showSecTab(this,'vnd-venda')">Registrar Venda</button>
-        <button class="section-tab" onclick="showSecTab(this,'vnd-produtos')">Produtos</button>
-        <button class="section-tab" onclick="showSecTab(this,'vnd-vendedores')">Vendedores</button>
-        <button class="section-tab" onclick="showSecTab(this,'vnd-controle')">Controle</button>
+        <button class="section-tab edit-only" onclick="showSecTab(this,'vnd-produtos')">Produtos</button>
+        <button class="section-tab edit-only" onclick="showSecTab(this,'vnd-vendedores')">Vendedores</button>
+        <button class="section-tab edit-only" onclick="showSecTab(this,'vnd-controle')">Controle</button>
+        <button class="section-tab edit-only" onclick="showSecTab(this,'vnd-metas')">🎯 Metas</button>
       </div>
 
       <!-- Dashboard Vendas -->
       <div class="section-panel active" id="vnd-dash">
         <div class="filter-bar">
           <select id="vnd-filter-month" onchange="renderVendas()"></select>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtratoVendas()">📄 Extrato PDF</button>
         </div>
+        <div id="vnd-meta-hero"></div>
         <div class="metrics-grid" id="vnd-metrics"></div>
         <div class="two-col">
           <div class="card">
@@ -1767,12 +1817,12 @@
 
       <!-- Registrar Venda -->
       <div class="section-panel" id="vnd-venda">
-        <div class="card">
+        <div class="card desb-card">
           <div class="card-title">
             <div class="card-title-left"><span class="dot"></span>Nova Venda</div>
           </div>
           <div class="form-grid">
-            <div class="form-group">
+            <div class="form-group" id="vnd-vendedor-group">
               <label>Vendedor</label>
               <select id="vnd-vendedor"></select>
             </div>
@@ -1796,7 +1846,7 @@
           <div id="vnd-preview"
             style="margin:.75rem 0;padding:.75rem;background:var(--bg3);border-radius:var(--radius-sm);font-size:.84rem;display:none">
           </div>
-          <div class="form-actions">
+          <div class="form-actions desb-ok">
             <button class="btn btn-primary" onclick="addVenda()">✚ Registrar Venda</button>
           </div>
         </div>
@@ -1918,6 +1968,22 @@
             <div class="card-title-left"><span class="dot"></span>Vendedores Cadastrados</div>
           </div>
           <div class="sellers-list" id="sellers-list"></div>
+        </div>
+      </div>
+
+      <!-- Metas Vendas -->
+      <div class="section-panel edit-only" id="vnd-metas">
+        <div class="card">
+          <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta de Vendas</div></div>
+          <div class="form-grid">
+            <div class="form-group"><label>Descrição</label><input type="text" id="meta-vnd-desc" placeholder="Ex: Vender R$ 3.000 em tortinhas" /></div>
+            <div class="form-group"><label>Valor Alvo (R$)</label><input type="number" id="meta-vnd-valor" placeholder="0,00" min="0" step="0.01" /></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary" onclick="addMetaVendas()">🎯 Criar Meta</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="card-title-left"><span class="dot"></span>Metas de Vendas</div></div>
+          <div id="metas-vendas-list"><div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta</p></div></div>
         </div>
       </div>
 
@@ -2044,6 +2110,36 @@
     </div>
   </div>
 
+  <!-- ═══ MODAL USUÁRIOS ══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="usuariosModal" onclick="if(event.target===this)closeUsuariosModal()">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-title">👥 Gerenciar Usuários</div>
+      <div class="usuarios-modal-wrap" id="usuarios-lista"></div>
+      <div style="display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)" id="create-user-form">
+        <div style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.75rem">Criar novo usuário</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Usuário</label><input type="text" id="new-user-nome" placeholder="Nome de usuário" /></div>
+          <div class="form-group"><label>Senha</label><input type="password" id="new-user-senha" placeholder="Senha" /></div>
+          <div class="form-group"><label>Nível</label>
+            <select id="new-user-role">
+              <option value="diretor">🎖️ Diretor</option>
+              <option value="conselheiro">🧭 Conselheiro</option>
+              <option value="desbravador">⚔️ Desbravador</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions" style="margin-top:.5rem">
+          <button class="btn btn-primary btn-sm" onclick="criarUsuarioAdmin()">✚ Criar</button>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('create-user-form').style.display='none'">Cancelar</button>
+        </div>
+      </div>
+      <div class="modal-actions" style="justify-content:space-between">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('create-user-form').style.display='block'">✚ Criar Usuário</button>
+        <button class="btn btn-secondary" onclick="closeUsuariosModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══ TOAST ═══════════════════════════════════════════════════════ -->
   <div id="toast-container"></div>
 
@@ -2081,31 +2177,104 @@
     let _unsubUnidades = null, _unsubMetasClube = null, _unsubMetasUnidade = null;
 
     let userRole = null;
+    let currentUser = null; // {id, usuario, nome, role}
+    let _usuarios = [];
+    let _metasDoceria = [];
+    let _metasVendas = [];
+    let _unsubUsuarios=null, _unsubMetasDoceria=null, _unsubMetasVendas=null;
 
-    function doLogin() {
-      const pwd = document.getElementById('login-senha').value.trim();
-      if (pwd === 'lunna' || pwd === 'diretor') userRole = 'admin';
-      else if (pwd === 'conselheiro') userRole = 'conselheiro';
-      else if (pwd === 'desbravador') userRole = 'desbravador';
-      else { toast('Senha incorreta', 'error'); return; }
+    function showLoginMsg(msg, type='info') {
+      const el = document.getElementById('login-msg');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'login-msg-box ' + type;
+      el.style.display = 'block';
+    }
 
-      sessionStorage.setItem('gda_user', userRole);
-      finishLogin();
+    async function doLogin() {
+      const role = document.getElementById('login-role')?.value || 'admin';
+      const usuario = (document.getElementById('login-usuario')?.value||'').trim();
+      const senha = (document.getElementById('login-senha')?.value||'').trim();
+      if (!usuario || !senha) { showLoginMsg('Preencha usuário e senha','error'); return; }
+      const btn = document.getElementById('login-btn');
+      if(btn){ btn.disabled=true; btn.textContent='Aguarde...'; }
+      try {
+        if (role === 'admin') {
+          if ((usuario==='admin'||usuario==='lunna') && (senha==='lunna'||senha==='diretor'||senha==='admin')) {
+            currentUser={usuario:'admin',nome:'Administrador',role:'admin'};
+            localStorage.setItem('gda_session',JSON.stringify(currentUser));
+            userRole='admin'; finishLogin();
+          } else { showLoginMsg('Credenciais incorretas','error'); }
+          return;
+        }
+        const snap = await db.collection('gda_usuarios')
+          .where('usuario','==',usuario).where('role','==',role).get();
+        if (snap.empty) {
+          await db.collection('gda_usuarios').add({
+            usuario, nome:usuario, role, senha, status:'pendente', criadoEm:Date.now()
+          });
+          showLoginMsg('✅ Acesso solicitado! Aguardando aprovação do Diretor/Admin. Entre em contato com o responsável.','info');
+          return;
+        }
+        const docSnap=snap.docs[0]; const data=docSnap.data();
+        if(data.senha!==senha){showLoginMsg('Senha incorreta','error');return;}
+        if(data.status==='pendente'){showLoginMsg('⏳ Seu acesso ainda está pendente de aprovação. Fale com o Diretor ou Admin.','info');return;}
+        if(data.status==='negado'){showLoginMsg('❌ Seu acesso foi negado. Contate o responsável.','error');return;}
+        currentUser={id:docSnap.id,usuario:data.usuario,nome:data.nome||data.usuario,role:data.role};
+        localStorage.setItem('gda_session',JSON.stringify(currentUser));
+        userRole=data.role; finishLogin();
+      } catch(e){ console.error(e); showLoginMsg('Erro de conexão. Verifique sua internet.','error'); }
+      finally{ if(btn){btn.disabled=false;btn.textContent='Entrar';} }
     }
 
     function doLogout() {
-      sessionStorage.removeItem('gda_user');
+      localStorage.removeItem('gda_session');
+      currentUser=null; userRole=null;
       window.location.reload();
     }
 
     function finishLogin() {
       document.getElementById('login-overlay').classList.add('hidden');
       document.body.className = `app-mode-${userRole}`;
+      // Update topbar user info
+      const uBtn = document.getElementById('userInfoBtn');
+      const uName = document.getElementById('userDisplayName');
+      const uRole = document.getElementById('userRoleBadge');
+      const roleEmojis={admin:'👑',diretor:'🎖️',conselheiro:'🧭',desbravador:'⚔️'};
+      if(uBtn){ uBtn.style.display=(userRole==='admin'||userRole==='diretor')?'flex':'none'; }
+      if(uName) uName.textContent = currentUser?.nome || currentUser?.usuario || userRole;
+      if(uRole) uRole.textContent = roleEmojis[userRole]||'';
+      // For desbravador: ensure their vendedor entry exists
+      if(userRole==='desbravador' && currentUser){
+        const exists=APP.vendas.vendedores.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
+        if(!exists){ APP.vendas.vendedores.push({id:uuid(),nome:currentUser.nome}); saveData(); }
+        // Hide vendedor select (auto)
+        const vg=document.getElementById('vnd-vendedor-group');
+        if(vg) vg.style.display='none';
+      }
       renderClube(); renderDoceria(); renderVendas();
-      toast('Sessão iniciada!');
+      toast('Bem-vindo, '+(currentUser?.nome||userRole)+'!');
     }
 
     function initDataSync() {
+      // Listener Usuários
+      if(_unsubUsuarios) _unsubUsuarios();
+      _unsubUsuarios=db.collection('gda_usuarios').orderBy('criadoEm').onSnapshot(snap=>{
+        _usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
+        updateUsuariosBadge();
+      });
+      // Listener Metas Doceria
+      if(_unsubMetasDoceria) _unsubMetasDoceria();
+      _unsubMetasDoceria=db.collection('gda_metas_doceria').orderBy('criadoEm').onSnapshot(snap=>{
+        _metasDoceria=snap.docs.map(d=>({id:d.id,...d.data()}));
+        if(userRole){renderMetasDoceria();renderMetasVendas();}
+      });
+      // Listener Metas Vendas
+      if(_unsubMetasVendas) _unsubMetasVendas();
+      _unsubMetasVendas=db.collection('gda_metas_vendas').orderBy('criadoEm').onSnapshot(snap=>{
+        _metasVendas=snap.docs.map(d=>({id:d.id,...d.data()}));
+        if(userRole){renderMetasVendas();}
+      });
       db.collection('gda_caixa').doc('estado').onSnapshot((doc) => {
         if (doc.exists) {
           APP = deepMerge(APP, doc.data());
@@ -2963,6 +3132,7 @@
       renderDocPedidos();
       renderDocGastos();
       renderMateriaList();
+      renderMetasDoceria();
     }
 
     function renderDocMetrics() {
@@ -3184,7 +3354,11 @@
     }
 
     function addVenda() {
-      const vendedorId = document.getElementById('vnd-vendedor').value;
+      let vendedorId = document.getElementById('vnd-vendedor').value;
+      if(userRole==='desbravador' && currentUser){
+        const myS=APP.vendas.vendedores.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
+        if(myS) vendedorId=myS.id;
+      }
       const produtoId = document.getElementById('vnd-produto').value;
       const qty = parseInt(document.getElementById('vnd-qty').value) || 0;
       const qty2 = parseInt(document.getElementById('vnd-qty2')?.value) || 0;
@@ -3277,7 +3451,12 @@
         const sel = document.getElementById(id);
         if (!sel) return;
         const cur = sel.value;
-        sel.innerHTML = sellers.length ? sellers.map(s => `<option value="${s.id}" ${s.id === cur ? 'selected' : ''}>${s.nome}</option>`).join('') : '<option value="">-- nenhum vendedor --</option>';
+        if(userRole==='desbravador' && currentUser && id==='vnd-vendedor'){
+          const myS=sellers.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
+          sel.innerHTML=myS?`<option value="${myS.id}" selected>${myS.nome}</option>`:'<option value="">-- sem vendedor --</option>';
+        } else {
+          sel.innerHTML = sellers.length ? sellers.map(s => `<option value="${s.id}" ${s.id === cur ? 'selected' : ''}>${s.nome}</option>`).join('') : '<option value="">-- nenhum vendedor --</option>';
+        }
       });
 
       // Filtro vendedor no histórico
@@ -3298,6 +3477,7 @@
       renderDebitos();
       onVndProdutoChange();
       updateVndPreview();
+      renderMetasVendas();
     }
 
     function calcVenda(v) {
@@ -3409,6 +3589,11 @@
       const sellerF = document.getElementById('vnd-hist-seller')?.value || '';
       let vendas = APP.vendas.vendas.filter(v => monthKey(v.data) === month);
       if (sellerF) vendas = vendas.filter(v => v.vendedorId === sellerF);
+      // Desbravador sees only own sales
+      if(userRole==='desbravador' && currentUser){
+        const myS=APP.vendas.vendedores.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
+        if(myS) vendas=vendas.filter(v=>v.vendedorId===myS.id);
+      }
       vendas.sort((a, b) => b.data.localeCompare(a.data));
       const body = document.getElementById('vnd-hist-body');
       if (!vendas.length) { body.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📂</div><p>Sem vendas</p></div></td></tr>`; return; }
@@ -3512,27 +3697,247 @@
       }).join('');
     }
 
+
+    /* ═══════════════════════════════════════════════════════════
+       GERENCIAR USUÁRIOS
+    ═══════════════════════════════════════════════════════════ */
+    function updateUsuariosBadge() {
+      const pendentes = _usuarios.filter(u=>u.status==='pendente').length;
+      const dot = document.getElementById('user-notif-dot');
+      if(dot) dot.style.display = pendentes>0?'block':'none';
+    }
+
+    function openUsuariosModal() {
+      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
+      renderUsuariosLista();
+      document.getElementById('usuariosModal').classList.add('open');
+    }
+
+    function closeUsuariosModal() {
+      document.getElementById('usuariosModal').classList.remove('open');
+    }
+
+    function roleLabel(role){
+      return {admin:'👑 Admin',diretor:'🎖️ Diretor',conselheiro:'🧭 Conselheiro',desbravador:'⚔️ Desbravador'}[role]||role;
+    }
+
+    function renderUsuariosLista() {
+      const el=document.getElementById('usuarios-lista'); if(!el)return;
+      const pendentes=_usuarios.filter(u=>u.status==='pendente');
+      const ativos=_usuarios.filter(u=>u.status==='ativo');
+      if(!pendentes.length&&!ativos.length){
+        el.innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>';return;
+      }
+      let html='';
+      if(pendentes.length){
+        html+=`<div style="font-family:var(--font-mono);font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem">⏳ Pendentes</div>`;
+        html+=pendentes.map(u=>{
+          const canApprove=(u.role==='diretor')?userRole==='admin':true;
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:.35rem">
+            <div><div style="font-weight:600;color:var(--text)">${u.usuario}</div><div style="font-size:.73rem;color:var(--text3)">${roleLabel(u.role)}</div></div>
+            <div style="display:flex;gap:.35rem">
+              ${canApprove?`<button class="btn btn-sm" style="background:var(--accent3);color:#111" onclick="aprovarUsuario('${u.id}','${u.role}')">✓ Aprovar</button>`:`<span style="font-size:.72rem;color:var(--text3)">Somente Admin</span>`}
+              <button class="btn btn-sm btn-danger" onclick="negarUsuario('${u.id}')">✕</button>
+            </div></div>`;
+        }).join('');
+      }
+      if(ativos.length){
+        html+=`<div style="font-family:var(--font-mono);font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-top:1rem;margin-bottom:.5rem">✅ Ativos</div>`;
+        html+=ativos.map(u=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:.3rem">
+          <div><div style="font-size:.85rem;font-weight:600;color:var(--text)">${u.usuario}</div><div style="font-size:.72rem;color:var(--text3)">${roleLabel(u.role)}</div></div>
+          ${userRole==='admin'?`<button class="btn btn-ghost btn-icon btn-sm" onclick="removerUsuario('${u.id}')">🗑️</button>`:''}
+        </div>`).join('');
+      }
+      el.innerHTML=html;
+    }
+
+    async function aprovarUsuario(id, role) {
+      if(role==='diretor'&&userRole!=='admin'){toast('Somente Admin pode aprovar Diretor','error');return;}
+      await db.collection('gda_usuarios').doc(id).update({status:'ativo'});
+      toast('Usuário aprovado!'); renderUsuariosLista();
+    }
+
+    async function negarUsuario(id) {
+      await db.collection('gda_usuarios').doc(id).update({status:'negado'});
+      toast('Acesso negado','info'); renderUsuariosLista();
+    }
+
+    async function removerUsuario(id) {
+      await db.collection('gda_usuarios').doc(id).delete();
+      toast('Usuário removido','info'); renderUsuariosLista();
+    }
+
+    async function criarUsuarioAdmin() {
+      const nome=(document.getElementById('new-user-nome')?.value||'').trim();
+      const senha=(document.getElementById('new-user-senha')?.value||'').trim();
+      const role=document.getElementById('new-user-role')?.value||'conselheiro';
+      if(!nome||!senha){toast('Preencha usuário e senha','error');return;}
+      if(role==='diretor'&&userRole!=='admin'){toast('Somente Admin pode criar Diretor','error');return;}
+      const snap=await db.collection('gda_usuarios').where('usuario','==',nome).where('role','==',role).get();
+      if(!snap.empty){toast('Usuário já existe','error');return;}
+      await db.collection('gda_usuarios').add({usuario:nome,nome,role,senha,status:'ativo',criadoEm:Date.now()});
+      toast('Usuário criado!');
+      document.getElementById('new-user-nome').value='';
+      document.getElementById('new-user-senha').value='';
+      document.getElementById('create-user-form').style.display='none';
+      renderUsuariosLista();
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       METAS DOCERIA
+    ═══════════════════════════════════════════════════════════ */
+    function addMetaDoceria() {
+      const desc=(document.getElementById('meta-doc-desc')?.value||'').trim();
+      const val=parseFloat(document.getElementById('meta-doc-valor')?.value);
+      if(!desc||!val||val<=0){toast('Preencha descrição e valor','error');return;}
+      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
+      db.collection('gda_metas_doceria').add({descricao:desc,valor_alvo:val,criadoEm:Date.now()})
+        .then(()=>{document.getElementById('meta-doc-desc').value='';document.getElementById('meta-doc-valor').value='';toast('🎯 Meta da Doceria criada!')})
+        .catch(()=>toast('Erro ao salvar','error'));
+    }
+
+    function deleteMetaDoceria(id) {
+      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
+      db.collection('gda_metas_doceria').doc(id).delete().then(()=>toast('Meta removida','info'));
+    }
+
+    function renderMetasDoceria() {
+      const heroEl=document.getElementById('doc-meta-hero');
+      const listEl=document.getElementById('metas-doceria-list');
+      const receita=APP.doceria.pedidos.filter(p=>p.status!=='cancelado').reduce((s,p)=>s+p.valor,0);
+      if(heroEl){
+        if(_metasDoceria.length){
+          const m=_metasDoceria[0];
+          const pct=Math.min(100,Math.round((receita/m.valor_alvo)*100));
+          const over=receita>=m.valor_alvo;
+          heroEl.innerHTML=`<div class="goal-hero"><div class="goal-hero-header"><div class="goal-hero-title">🎂 ${m.descricao}</div><div class="goal-hero-value">${fmt(receita)} / ${fmt(m.valor_alvo)}</div></div><div class="progress-track"><div class="progress-fill ${over?'over':''}" id="doc-hero-fill" style="width:0%"></div></div><div class="goal-footer"><span>${pct}% concluído</span><span>${over?'🎉 Meta atingida!':fmt(m.valor_alvo-receita)+' restante'}</span></div></div>`;
+          setTimeout(()=>{const f=document.getElementById('doc-hero-fill');if(f)f.style.width=pct+'%';},80);
+        } else heroEl.innerHTML='';
+      }
+      if(!listEl)return;
+      if(!_metasDoceria.length){listEl.innerHTML='<div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div>';return;}
+      listEl.innerHTML=_metasDoceria.map(m=>{
+        const pct=Math.min(100,Math.round((receita/m.valor_alvo)*100));
+        const over=receita>=m.valor_alvo;
+        const canDel=userRole==='admin'||userRole==='diretor';
+        return `<div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem"><span style="font-weight:600;color:var(--text)">${m.descricao}</span><div style="display:flex;gap:.35rem;align-items:center"><span style="font-family:var(--font-mono);font-size:.8rem;color:var(--text3)">${fmt(m.valor_alvo)}</span>${canDel?`<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMetaDoceria('${m.id}')">🗑️</button>`:''}</div></div><div class="progress-track" style="height:8px"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div><div class="goal-footer"><span>${pct}%</span><span>${fmt(receita)} arrecadado</span></div></div>`;
+      }).join('');
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       METAS VENDAS
+    ═══════════════════════════════════════════════════════════ */
+    function addMetaVendas() {
+      const desc=(document.getElementById('meta-vnd-desc')?.value||'').trim();
+      const val=parseFloat(document.getElementById('meta-vnd-valor')?.value);
+      if(!desc||!val||val<=0){toast('Preencha descrição e valor','error');return;}
+      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
+      db.collection('gda_metas_vendas').add({descricao:desc,valor_alvo:val,criadoEm:Date.now()})
+        .then(()=>{document.getElementById('meta-vnd-desc').value='';document.getElementById('meta-vnd-valor').value='';toast('🎯 Meta de Vendas criada!')})
+        .catch(()=>toast('Erro ao salvar','error'));
+    }
+
+    function deleteMetaVendas(id) {
+      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
+      db.collection('gda_metas_vendas').doc(id).delete().then(()=>toast('Meta removida','info'));
+    }
+
+    function renderMetasVendas() {
+      const heroEl=document.getElementById('vnd-meta-hero');
+      const listEl=document.getElementById('metas-vendas-list');
+      const recTotal=APP.vendas.vendas.reduce((s,v)=>s+calcVenda(v).receita,0);
+      if(heroEl){
+        if(_metasVendas.length){
+          const m=_metasVendas[0];
+          const pct=Math.min(100,Math.round((recTotal/m.valor_alvo)*100));
+          const over=recTotal>=m.valor_alvo;
+          heroEl.innerHTML=`<div class="goal-hero"><div class="goal-hero-header"><div class="goal-hero-title">🥧 ${m.descricao}</div><div class="goal-hero-value">${fmt(recTotal)} / ${fmt(m.valor_alvo)}</div></div><div class="progress-track"><div class="progress-fill ${over?'over':''}" id="vnd-hero-fill" style="width:0%"></div></div><div class="goal-footer"><span>${pct}% concluído</span><span>${over?'🎉 Meta atingida!':fmt(m.valor_alvo-recTotal)+' restante'}</span></div></div>`;
+          setTimeout(()=>{const f=document.getElementById('vnd-hero-fill');if(f)f.style.width=pct+'%';},80);
+        } else heroEl.innerHTML='';
+      }
+      if(!listEl)return;
+      if(!_metasVendas.length){listEl.innerHTML='<div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div>';return;}
+      listEl.innerHTML=_metasVendas.map(m=>{
+        const pct=Math.min(100,Math.round((recTotal/m.valor_alvo)*100));
+        const over=recTotal>=m.valor_alvo;
+        const canDel=userRole==='admin'||userRole==='diretor';
+        return `<div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem"><span style="font-weight:600;color:var(--text)">${m.descricao}</span><div style="display:flex;gap:.35rem;align-items:center"><span style="font-family:var(--font-mono);font-size:.8rem;color:var(--text3)">${fmt(m.valor_alvo)}</span>${canDel?`<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMetaVendas('${m.id}')">🗑️</button>`:''}</div></div><div class="progress-track" style="height:8px"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div><div class="goal-footer"><span>${pct}%</span><span>${fmt(recTotal)} arrecadado</span></div></div>`;
+      }).join('');
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       EXTRATO PDF - DOCERIA
+    ═══════════════════════════════════════════════════════════ */
+    function imprimirExtratoDoceria() {
+      const month=document.getElementById('doc-filter-month')?.value||today().slice(0,7);
+      const peds=APP.doceria.pedidos.filter(p=>monthKey(p.data)===month&&p.status!=='cancelado').sort((a,b)=>a.data.localeCompare(b.data));
+      const gastos=APP.doceria.gastos.filter(g=>monthKey(g.data)===month).sort((a,b)=>a.data.localeCompare(b.data));
+      const receita=peds.reduce((s,p)=>s+p.valor,0);
+      const custos=gastos.reduce((s,g)=>s+g.valor,0);
+      const lucro=receita-custos;
+      const recTotal=APP.doceria.pedidos.filter(p=>p.status!=='cancelado').reduce((s,p)=>s+p.valor,0);
+      let metaHtml='';
+      if(_metasDoceria.length){
+        const m=_metasDoceria[0];
+        const pct=Math.min(100,Math.round((recTotal/m.valor_alvo)*100));
+        metaHtml=`<div style="margin-bottom:1.5rem;padding:1rem;border:1px solid #ccc;border-radius:8px"><div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:.5rem"><span>🎯 ${m.descricao}</span><span>${fmt(recTotal)} / ${fmt(m.valor_alvo)}</span></div><div style="width:100%;height:10px;background:#eee;border-radius:99px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#4ade80;border-radius:99px"></div></div><div style="display:flex;justify-content:space-between;font-size:.78rem;color:#555;margin-top:.25rem"><span>${pct}% concluído</span><span>${pct>=100?'🎉 Meta atingida!':fmt(m.valor_alvo-recTotal)+' restante'}</span></div></div>`;
+      }
+      const rowsPed=peds.map(p=>`<tr><td>${p.data}</td><td>${p.cliente||'-'}</td><td>${p.produto}</td><td style="text-align:center">${p.qty}</td><td class="print-positive" style="text-align:right">${fmt(p.valor)}</td></tr>`).join('');
+      const rowsGas=gastos.map(g=>`<tr><td>${g.data}</td><td colspan="2">${g.desc}</td><td>${g.cat}</td><td class="print-negative" style="text-align:right">-${fmt(g.valor)}</td></tr>`).join('');
+      document.getElementById('print-zone').innerHTML=`<div class="print-header"><div class="print-header-icon">🎂</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato — Doceria</div></div></div><div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome||userRole||'-'}</div>${metaHtml}<table class="print-table"><thead><tr><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rowsPed||'<tr><td colspan="5" style="text-align:center;color:#999">Sem pedidos</td></tr>'}</tbody></table>${gastos.length?`<table class="print-table" style="margin-top:1rem"><thead><tr><th>Data</th><th colspan="2">Gasto</th><th>Categoria</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rowsGas}</tbody></table>`:''}<table class="print-table" style="margin-top:1rem"><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Total</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.4rem .75rem">Custos Totais</td><td class="print-negative" style="text-align:right;padding:.4rem .75rem">-${fmt(custos)}</td></tr><tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro do Período</td><td class="${lucro>=0?'print-positive':'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Doceria</div></div>`;
+      window.print();
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       EXTRATO PDF - VENDAS
+    ═══════════════════════════════════════════════════════════ */
+    function imprimirExtratoVendas() {
+      const month=document.getElementById('vnd-filter-month')?.value||today().slice(0,7);
+      const vendas=APP.vendas.vendas.filter(v=>monthKey(v.data)===month).sort((a,b)=>a.data.localeCompare(b.data));
+      const avarias=APP.vendas.avarias.filter(a=>monthKey(a.data)===month);
+      let receita=0,custo=0,comissao=0,lucro=0;
+      vendas.forEach(v=>{const c=calcVenda(v);receita+=c.receita;custo+=c.custo;comissao+=c.comissao;lucro+=c.lucro;});
+      const perdas=avarias.reduce((s,a)=>{const p=APP.vendas.produtos.find(x=>x.id===a.produtoId);return s+(p?.custo||0)*a.qty;},0);
+      const recTotal=APP.vendas.vendas.reduce((s,v)=>s+calcVenda(v).receita,0);
+      let metaHtml='';
+      if(_metasVendas.length){
+        const m=_metasVendas[0];
+        const pct=Math.min(100,Math.round((recTotal/m.valor_alvo)*100));
+        metaHtml=`<div style="margin-bottom:1.5rem;padding:1rem;border:1px solid #ccc;border-radius:8px"><div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:.5rem"><span>🎯 ${m.descricao}</span><span>${fmt(recTotal)} / ${fmt(m.valor_alvo)}</span></div><div style="width:100%;height:10px;background:#eee;border-radius:99px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#4ade80;border-radius:99px"></div></div><div style="display:flex;justify-content:space-between;font-size:.78rem;color:#555;margin-top:.25rem"><span>${pct}% concluído</span><span>${pct>=100?'🎉 Meta atingida!':fmt(m.valor_alvo-recTotal)+' restante'}</span></div></div>`;
+      }
+      const rows=vendas.map(v=>{
+        const prod=APP.vendas.produtos.find(p=>p.id===v.produtoId);
+        const seller=APP.vendas.vendedores.find(s=>s.id===v.vendedorId);
+        const c=calcVenda(v);
+        let dq=v.qty||0;if(prod?.isMulti&&v.qty2)dq=`${v.qty||0}u/${v.qty2}c`;
+        return `<tr><td>${v.data}</td><td>${seller?.nome||'-'}</td><td>${prod?.nome||'-'}</td><td style="text-align:center">${dq}</td><td class="print-positive" style="text-align:right">${fmt(c.receita)}</td><td style="text-align:right;color:#555">${fmt(c.comissao)}</td><td class="${c.lucro>=0?'print-positive':'print-negative'}" style="text-align:right">${fmt(c.lucro)}</td></tr>`;
+      }).join('');
+      document.getElementById('print-zone').innerHTML=`<div class="print-header"><div class="print-header-icon">🥧</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato — Vendas (Tortinhas)</div></div></div><div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome||userRole||'-'}</div>${metaHtml}<table class="print-table"><thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Receita</th><th style="text-align:right">Comissão</th><th style="text-align:right">Lucro</th></tr></thead><tbody>${rows||'<tr><td colspan="7" style="text-align:center;color:#999">Sem vendas</td></tr>'}</tbody><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Bruta</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td><td colspan="2"></td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right">Comissões</td><td style="text-align:right">${fmt(comissao)}</td><td colspan="2"></td></tr>${avarias.length?`<tr style="font-weight:700"><td colspan="4" style="text-align:right">Perdas (Avarias)</td><td class="print-negative" style="text-align:right">-${fmt(perdas)}</td><td colspan="2"></td></tr>`:''}<tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro Líquido</td><td class="${lucro>=0?'print-positive':'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td><td colspan="2"></td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Vendas</div></div>`;
+      window.print();
+    }
+
     /* ═══════════════════════════════════════════════════════════
        INICIALIZAÇÃO
     ═══════════════════════════════════════════════════════════ */
     function init() {
       loadData();
-
       // Restaurar tema
       const savedTheme = localStorage.getItem('gda_theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
       document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '🌙' : '🌑';
-
       // Datas padrão
-      document.getElementById('clube-data').value = today();
-      document.getElementById('doc-data').value = today();
-      document.getElementById('doc-gasto-data').value = today();
-      document.getElementById('vnd-data').value = today();
-      document.getElementById('av-data').value = today();
-      document.getElementById('deb-data').value = today();
-
-      // Renderizar módulo inicial
-      renderClube();
+      ['clube-data','doc-data','doc-gasto-data','vnd-data','av-data','deb-data']
+        .forEach(id=>{const el=document.getElementById(id);if(el)el.value=today();});
+      // Restore session
+      const saved = localStorage.getItem('gda_session');
+      if(saved){
+        try{
+          const u=JSON.parse(saved);
+          currentUser=u; userRole=u.role;
+          finishLogin();
+        }catch(e){ localStorage.removeItem('gda_session'); }
+      }
+      if(!userRole) renderClube();
     }
 
     init();
