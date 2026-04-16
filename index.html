@@ -4471,24 +4471,56 @@
        EXTRATO PDF - DOCERIA
     ═══════════════════════════════════════════════════════════ */
     function imprimirExtratoDoceria() {
-      const month=document.getElementById('doc-filter-month')?.value||today().slice(0,7);
-      const peds=APP.doceria.pedidos.filter(p=>monthKey(p.data)===month&&p.status!=='cancelado').sort((a,b)=>a.data.localeCompare(b.data));
-      const gastos=APP.doceria.gastos.filter(g=>monthKey(g.data)===month).sort((a,b)=>a.data.localeCompare(b.data));
-      const receita=peds.reduce((s,p)=>s+p.valor,0);
-      const custos=gastos.reduce((s,g)=>s+g.valor,0);
-      const lucro=receita-custos;
-      const recTotal=APP.doceria.pedidos.filter(p=>p.status!=='cancelado').reduce((s,p)=>s+p.valor,0);
-      let metaHtml='';
-      if(_metasDoceria.length){
-        const m=_metasDoceria[0];
-        const pct=Math.min(100,Math.round((recTotal/m.valor_alvo)*100));
-        metaHtml=`<div style="margin-bottom:1.5rem;padding:1rem;border:1px solid #ccc;border-radius:8px"><div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:.5rem"><span>🎯 ${m.descricao}</span><span>${fmt(recTotal)} / ${fmt(m.valor_alvo)}</span></div><div style="width:100%;height:10px;background:#eee;border-radius:99px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#4ade80;border-radius:99px"></div></div><div style="display:flex;justify-content:space-between;font-size:.78rem;color:#555;margin-top:.25rem"><span>${pct}% concluído</span><span>${pct>=100?'🎉 Meta atingida!':fmt(m.valor_alvo-recTotal)+' restante'}</span></div></div>`;
+      const month = document.getElementById('doc-filter-month')?.value || today().slice(0, 7);
+      const peds = APP.doceria.pedidos.filter(p => monthKey(p.data) === month && p.status !== 'cancelado').sort((a, b) => a.data.localeCompare(b.data));
+      const gastos = APP.doceria.gastos.filter(g => monthKey(g.data) === month).sort((a, b) => a.data.localeCompare(b.data));
+      const receita = peds.reduce((s, p) => s + p.valor, 0);
+      const custos = gastos.reduce((s, g) => s + g.valor, 0);
+      const lucro = receita - custos;
+      const recTotal = APP.doceria.pedidos.filter(p => p.status !== 'cancelado').reduce((s, p) => s + p.valor, 0);
+      
+      let metaHtml = '';
+      if (_metasDoceria.length) {
+        const m = _metasDoceria[0];
+        const pct = Math.min(100, Math.round((recTotal / m.valor_alvo) * 100));
+        metaHtml = `<div style="margin-bottom:1.5rem;padding:1rem;border:1px solid #ccc;border-radius:8px"><div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:.5rem"><span>🎯 ${m.descricao}</span><span>${fmt(recTotal)} / ${fmt(m.valor_alvo)}</span></div><div style="width:100%;height:10px;background:#eee;border-radius:99px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#4ade80;border-radius:99px"></div></div><div style="display:flex;justify-content:space-between;font-size:.78rem;color:#555;margin-top:.25rem"><span>${pct}% concluído</span><span>${pct >= 100 ? '🎉 Meta atingida!' : fmt(m.valor_alvo - recTotal) + ' restante'}</span></div></div>`;
       }
-      const rowsPed=peds.map(p=>`<tr><td>${p.data}</td><td>${p.cliente||'-'}</td><td>${p.produto}</td><td style="text-align:center">${p.qty}</td><td class="print-positive" style="text-align:right">${fmt(p.valor)}</td></tr>`).join('');
-      const rowsGas=gastos.map(g=>`<tr><td>${g.data}</td><td colspan="2">${g.desc}</td><td>${g.cat}</td><td class="print-negative" style="text-align:right">-${fmt(g.valor)}</td></tr>`).join('');
-      document.getElementById('print-zone').innerHTML=`<div class="print-header"><div class="print-header-icon">🎂</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato — Doceria</div></div></div><div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome||userRole||'-'}</div>${metaHtml}<table class="print-table"><thead><tr><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rowsPed||'<tr><td colspan="5" style="text-align:center;color:#999">Sem pedidos</td></tr>'}</tbody></table>${gastos.length?`<table class="print-table" style="margin-top:1rem"><thead><tr><th>Data</th><th colspan="2">Gasto</th><th>Categoria</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rowsGas}</tbody></table>`:''}<table class="print-table" style="margin-top:1rem"><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Total</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.4rem .75rem">Custos Totais</td><td class="print-negative" style="text-align:right;padding:.4rem .75rem">-${fmt(custos)}</td></tr><tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro do Período</td><td class="${lucro>=0?'print-positive':'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Doceria</div></div>`;
+      
+      const rowsPed = peds.map(p => `<tr><td>${p.data}</td><td>${p.cliente || '-'}</td><td>${p.produto}</td><td style="text-align:center">${p.qty}</td><td class="print-positive" style="text-align:right">${fmt(p.valor)}</td></tr>`).join('');
+      const rowsGas = gastos.map(g => `<tr><td>${g.data}</td><td colspan="2">${g.desc}</td><td>${g.cat}</td><td class="print-negative" style="text-align:right">-${fmt(g.valor)}</td></tr>`).join('');
+      const chartSVG = getPrintChartSVG(receita, custos);
+
+      document.getElementById('print-zone').innerHTML = `
+        <div class="print-header">
+          <div class="print-header-icon">🎂</div>
+          <div>
+            <div class="print-title">Guerreiros do Alto</div>
+            <div class="print-subtitle">Extrato — Doceria</div>
+          </div>
+        </div>
+        <div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome || userRole || '-'}</div>
+        ${chartSVG}
+        ${metaHtml}
+        <table class="print-table">
+          <thead><tr><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Valor</th></tr></thead>
+          <tbody>${rowsPed || '<tr><td colspan="5" style="text-align:center;color:#999">Sem pedidos</td></tr>'}</tbody>
+        </table>
+        ${gastos.length ? `
+        <table class="print-table" style="margin-top:1rem">
+          <thead><tr><th>Data</th><th colspan="2">Gasto</th><th>Categoria</th><th style="text-align:right">Valor</th></tr></thead>
+          <tbody>${rowsGas}</tbody>
+        </table>` : ''}
+        <table class="print-table" style="margin-top:1rem">
+          <tfoot>
+            <tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Total</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td></tr>
+            <tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.4rem .75rem">Custos Totais</td><td class="print-negative" style="text-align:right;padding:.4rem .75rem">-${fmt(custos)}</td></tr>
+            <tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro do Período</td><td class="${lucro >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td></tr>
+          </tfoot>
+        </table>
+        <div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Doceria</div></div>`;
       window.print();
     }
+
 
     /* ═══════════════════════════════════════════════════════════
        EXTRATO PDF - VENDAS
