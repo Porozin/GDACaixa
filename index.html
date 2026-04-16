@@ -1390,17 +1390,22 @@
         <!-- Meta geral do clube -->
         <div id="clube-meta-hero"></div>
         <div class="metrics-grid" id="clube-metrics"></div>
-        <div class="two-col">
+        <div class="three-col">
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot"></span>Fluxo Mensal</div>
+              <div class="card-title-left"><span class="dot"></span>Fluxo Mensal (Barra)</div>
             </div>
             <div class="chart-container"><canvas id="clube-chart"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Últimas Transações
-              </div>
+              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Distribuição (Pizza)</div>
+            </div>
+            <div class="chart-container"><canvas id="clube-chart-pie"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title">
+              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Últimas Transações</div>
             </div>
             <div id="clube-recent-list"></div>
           </div>
@@ -1691,19 +1696,26 @@
         </div>
         <div id="doc-meta-hero"></div>
         <div class="metrics-grid" id="doc-metrics"></div>
-        <div class="two-col">
-          <div class="card">
-            <div class="card-title">
-              <div class="card-title-left"><span class="dot"></span>Receita vs Custos</div>
-            </div>
+        <div class="three-col">
+          <div class="card" style="grid-column: span 2">
+            <div class="card-title"><div class="card-title-left"><span class="dot"></span>Receita vs Custos (Linha)</div></div>
             <div class="chart-container"><canvas id="doc-chart"></canvas></div>
           </div>
           <div class="card">
-            <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Últimos Pedidos
-              </div>
-            </div>
+            <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Últimos Pedidos</div></div>
             <div id="doc-recent-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Comparativo Mensal (Barra)</div></div>
+            <div class="chart-container"><canvas id="doc-chart-bar"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><div class="card-title-left"><span class="dot" style="background:#a78bfa"></span>Categorias (Pizza)</div></div>
+            <div class="chart-container"><canvas id="doc-chart-pie"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Produtos Ranking</div></div>
+            <div id="doc-prod-ranking" style="max-height: 240px; overflow-y: auto;"></div>
           </div>
         </div>
       </div>
@@ -1915,21 +1927,28 @@
         <div class="three-col">
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot"></span>Receita por Produto (Geral)</div>
+              <div class="card-title-left"><span class="dot"></span>Receita % Produto (Pizza)</div>
             </div>
             <div class="chart-container"><canvas id="vnd-chart"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Ranking de Produtos</div>
+              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Receita por Produto (Barra)</div>
             </div>
-            <div id="vnd-prod-ranking"></div>
+            <div class="chart-container"><canvas id="vnd-chart-bar"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">
               <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Ranking de Vendedores</div>
             </div>
             <div id="vnd-ranking"></div>
+          </div>
+          <!-- O ranking de produtos em texto fica aqui embaixo ocupando espaço se necessário -->
+          <div class="card" style="grid-column: span 3">
+            <div class="card-title">
+              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Ranking de Produtos (Lista)</div>
+            </div>
+            <div id="vnd-prod-ranking"></div>
           </div>
         </div>
       </div>
@@ -2862,6 +2881,7 @@
     }
 
     let clubeChartInst = null;
+    let clubeChartInstPie = null;
 
     function renderClube() {
       const months = allMonths(APP.clube.transactions);
@@ -3118,66 +3138,49 @@
     /* ═══════════════════════════════════════════════════════════
        EXTRATO PDF
     ═══════════════════════════════════════════════════════════ */
+    function getPrintChartSVG(valVerde, valVermelho) {
+      if (valVerde === 0 && valVermelho === 0) return '';
+      const total = valVerde + valVermelho;
+      const pctV = (valVerde / total) * 360;
+      const x1 = Math.cos(0) * 50 + 50;
+      const y1 = Math.sin(0) * 50 + 50;
+      const x2 = Math.cos((pctV * Math.PI) / 180) * 50 + 50;
+      const y2 = Math.sin((pctV * Math.PI) / 180) * 50 + 50;
+      const largeArc = pctV > 180 ? 1 : 0;
+      return `
+        <div style="display:flex;align-items:center;gap:3rem;margin-bottom:2rem;padding:1.5rem;background:#f9f9f9;border-radius:12px;border:1px solid #eee">
+          <svg width="120" height="120" viewBox="0 0 100 100" style="transform: rotate(-90deg)">
+            <circle cx="50" cy="50" r="50" fill="#e85d4a" />
+            <path d="M 50 50 L ${x1} ${y1} A 50 50 0 ${largeArc} 1 ${x2} ${y2} Z" fill="#4ade80" />
+            <circle cx="50" cy="50" r="30" fill="#f9f9f9" />
+          </svg>
+          <div>
+            <div style="font-weight:700;font-size:1.1rem;margin-bottom:.8rem">Resumo Visual do Período</div>
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem">
+              <span style="width:14px;height:14px;background:#4ade80;border-radius:3px"></span>
+              <span style="font-size:.9rem;color:#333"><strong>${Math.round((valVerde/total)*100)}%</strong> Receita / Entradas</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.6rem">
+              <span style="width:14px;height:14px;background:#e85d4a;border-radius:3px"></span>
+              <span style="font-size:.9rem;color:#333"><strong>${Math.round((valVermelho/total)*100)}%</strong> Despesas / Custos</span>
+            </div>
+          </div>
+        </div>`;
+    }
+
     function imprimirExtrato() {
       const month = document.getElementById('clube-filter-month')?.value || today().slice(0, 7);
-      const txs = APP.clube.transactions
-        .filter(t => monthKey(t.data) === month)
-        .sort((a, b) => a.data.localeCompare(b.data));
+      const txs = APP.clube.transactions.filter(t => monthKey(t.data) === month).sort((a, b) => a.data.localeCompare(b.data));
+      const ent = txs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0);
+      const sai = txs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+      const chartSVG = getPrintChartSVG(ent, sai);
 
-      const entrada = txs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0);
-      const saida   = txs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
-      const saldo   = entrada - saida;
-
-      const rows = txs.map(t => `
-        <tr>
-          <td>${t.data}</td>
-          <td>${t.categoria}</td>
-          <td style="max-width:220px">${t.desc || '-'}</td>
-          <td class="${t.tipo === 'entrada' ? 'print-positive' : 'print-negative'}" style="text-align:right">
-            ${t.tipo === 'entrada' ? '+' : '-'}${fmt(t.valor)}
-          </td>
-        </tr>`).join('');
-
+      const rows = txs.map(t => `<tr class="${t.tipo === 'entrada' ? 'print-positive' : 'print-negative'}"><td>${t.data}</td><td>${t.tipo.toUpperCase()}</td><td>${t.categoria}</td><td>${t.descricao}</td><td style="text-align:right">${fmt(t.valor)}</td></tr>`).join('');
       document.getElementById('print-zone').innerHTML = `
-        <div class="print-header">
-          <div class="print-header-icon">⚔️</div>
-          <div>
-            <div class="print-title">Guerreiros do Alto</div>
-            <div class="print-subtitle">Livro Caixa — Clube</div>
-          </div>
-        </div>
-        <div class="print-meta">
-          <strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;
-          <strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;
-          <strong>Responsável:</strong> ${userRole?.toUpperCase() || '-'}
-        </div>
-        <table class="print-table">
-          <thead>
-            <tr><th>Data</th><th>Categoria</th><th>Descrição</th><th style="text-align:right">Valor</th></tr>
-          </thead>
-          <tbody>
-            ${rows || '<tr><td colspan="4" style="text-align:center;color:#999">Sem transações neste período</td></tr>'}
-          </tbody>
-          <tfoot>
-            <tr style="font-weight:700">
-              <td colspan="3" style="text-align:right;padding:.6rem .75rem">Total Entradas</td>
-              <td class="print-positive" style="text-align:right;padding:.6rem .75rem">${fmt(entrada)}</td>
-            </tr>
-            <tr style="font-weight:700">
-              <td colspan="3" style="text-align:right;padding:.4rem .75rem">Total Saídas</td>
-              <td class="print-negative" style="text-align:right;padding:.4rem .75rem">-${fmt(saida)}</td>
-            </tr>
-            <tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111">
-              <td colspan="3" style="text-align:right;padding:.6rem .75rem">Saldo do Período</td>
-              <td class="${saldo >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(saldo)}</td>
-            </tr>
-          </tfoot>
-        </table>
-        <div class="print-signature">
-          <div class="print-sig-line">Diretor(a) do Clube</div>
-          <div class="print-sig-line">Tesoureiro(a)</div>
-        </div>`;
-
+        <div class="print-header"><div class="print-header-icon">🧭</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato Mensal — Clube</div></div></div>
+        <div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome || userRole || '-'}</div>
+        ${chartSVG}
+        <table class="print-table"><thead><tr><th>Data</th><th>Tipo</th><th>Categoria</th><th>Descrição</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rows || '<tr><td colspan="5" style="text-align:center;color:#999">Nenhuma movimentação</td></tr>'}</tbody><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Total Entradas</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(ent)}</td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Total Saídas</td><td class="print-negative" style="text-align:right;padding:.5rem .75rem">${fmt(sai)}</td></tr><tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Saldo do Período</td><td class="${(ent - sai) >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(ent - sai)}</td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Tesoureiro(a)</div></div>`;
       window.print();
     }
 
@@ -3233,33 +3236,63 @@
   `;
     }
 
+    let clubeChartInst = null;
+    let clubeChartInstPie = null;
+
     function renderClubeChart(months) {
+      if (!months || !months.length) return;
       const last6 = [...months].reverse().slice(-6);
       const labels = last6.map(monthLabel);
-      const entradas = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0));
-      const saidas = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'saida').reduce((s, t) => s + t.valor, 0));
+      const rec = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0));
+      const exp = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'saida').reduce((s, t) => s + t.valor, 0));
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const gridColor = isDark ? '#2a2f3f' : '#e2e5ed';
       const textColor = isDark ? '#8891a8' : '#4a5168';
+
+      // 1. Barra
       const ctx = document.getElementById('clube-chart');
-      if (!ctx) return;
-      if (clubeChartInst) clubeChartInst.destroy();
-      clubeChartInst = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels, datasets: [
-            { label: 'Entradas', data: entradas, backgroundColor: 'rgba(74,222,128,.7)', borderRadius: 6 },
-            { label: 'Saídas', data: saidas, backgroundColor: 'rgba(232,93,74,.7)', borderRadius: 6 }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 11 } } } },
-          scales: {
-            x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } },
-            y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
+      if (ctx) {
+        if (clubeChartInst) clubeChartInst.destroy();
+        clubeChartInst = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              { label: 'Entradas', data: rec, backgroundColor: '#4ade80', borderRadius: 4 },
+              { label: 'Saídas', data: exp, backgroundColor: '#e85d4a', borderRadius: 4 }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 10 } } } },
+            scales: {
+              x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { display: false } },
+              y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
+            }
           }
-        }
-      });
+        });
+      }
+
+      // 2. Pizza
+      const ctxPie = document.getElementById('clube-chart-pie');
+      if (ctxPie) {
+        if (clubeChartInstPie) clubeChartInstPie.destroy();
+        const currentM = months[0];
+        const ent = APP.clube.transactions.filter(t => monthKey(t.data) === currentM && t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0);
+        const sai = APP.clube.transactions.filter(t => monthKey(t.data) === currentM && t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+        
+        clubeChartInstPie = new Chart(ctxPie, {
+          type: 'doughnut',
+          data: {
+            labels: ['Entradas', 'Saídas'],
+            datasets: [{ data: [ent, sai], backgroundColor: ['#4ade80', '#e85d4a'], borderWidth: 0 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: '70%',
+            plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 10 } } } }
+          }
+        });
+      }
     }
 
     function renderClubeRecent() {
@@ -3392,6 +3425,11 @@
     }
 
     let docChartInst = null;
+    let docChartInstBar = null;
+    let docChartInstPie = null;
+
+    let vndChartInst = null;
+    let vndChartInstBar = null;
 
     function renderDoceria() {
       if (!APP.doceria.entradas) APP.doceria.entradas = [];
@@ -3401,6 +3439,7 @@
       renderDocMetrics();
       renderDocChart(months);
       renderDocRecent();
+      renderDocProdRanking();
       renderDocPedidos();
       renderDocGastos();
       renderDocEntradas();
@@ -3429,6 +3468,7 @@
     }
 
     function renderDocChart(months) {
+      if (!months || !months.length) return;
       const last6 = [...months].reverse().slice(-6);
       const labels = last6.map(monthLabel);
       const rec = last6.map(m => APP.doceria.pedidos.filter(p => monthKey(p.data) === m && p.status !== 'cancelado').reduce((s, p) => s + p.valor, 0));
@@ -3436,26 +3476,75 @@
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const gridColor = isDark ? '#2a2f3f' : '#e2e5ed';
       const textColor = isDark ? '#8891a8' : '#4a5168';
+
+      // 1. Linha
       const ctx = document.getElementById('doc-chart');
-      if (!ctx) return;
-      if (docChartInst) docChartInst.destroy();
-      docChartInst = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels, datasets: [
-            { label: 'Receita', data: rec, borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,.1)', tension: .4, fill: true },
-            { label: 'Custos', data: cus, borderColor: '#e85d4a', backgroundColor: 'rgba(232,93,74,.08)', tension: .4, fill: true }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 11 } } } },
-          scales: {
-            x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } },
-            y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
+      if (ctx) {
+        if (docChartInst) docChartInst.destroy();
+        docChartInst = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels, datasets: [
+              { label: 'Receita', data: rec, borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,.1)', tension: .4, fill: true },
+              { label: 'Custos', data: cus, borderColor: '#e85d4a', backgroundColor: 'rgba(232,93,74,.08)', tension: .4, fill: true }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 10 } } } },
+            scales: {
+              x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } },
+              y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
+            }
           }
-        }
-      });
+        });
+      }
+
+      // 2. Barra
+      const ctxBar = document.getElementById('doc-chart-bar');
+      if (ctxBar) {
+        if (docChartInstBar) docChartInstBar.destroy();
+        const curMonth = months[0];
+        const curRec = APP.doceria.pedidos.filter(p => monthKey(p.data) === curMonth && p.status !== 'cancelado').reduce((s, p) => s + p.valor, 0);
+        const curCus = APP.doceria.gastos.filter(g => monthKey(g.data) === curMonth).reduce((s, g) => s + g.valor, 0);
+        docChartInstBar = new Chart(ctxBar, {
+          type: 'bar',
+          data: {
+            labels: ['Mês Atual'],
+            datasets: [
+              { label: 'Receita', data: [curRec], backgroundColor: '#4ade80' },
+              { label: 'Custos', data: [curCus], backgroundColor: '#e85d4a' }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 10 } } } }
+          }
+        });
+      }
+
+      // 3. Pizza
+      const ctxPie = document.getElementById('doc-chart-pie');
+      if (ctxPie) {
+        if (docChartInstPie) docChartInstPie.destroy();
+        const curMonth = months[0];
+        const entries = (APP.doceria.entradas || []).filter(e => monthKey(e.data) === curMonth);
+        const catMap = {};
+        entries.forEach(e => { if(!catMap[e.cat]) catMap[e.cat] = 0; catMap[e.cat] += e.valor; });
+        const labelsP = Object.keys(catMap);
+        const dataP = Object.values(catMap);
+        docChartInstPie = new Chart(ctxPie, {
+          type: 'doughnut',
+          data: {
+            labels: labelsP.length ? labelsP : ['Sem dados'],
+            datasets: [{ data: dataP.length ? dataP : [1], backgroundColor: ['#60a5fa', '#a78bfa', '#f0b429', '#4ade80', '#e85d4a'], borderWidth: 0 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: '70%',
+            plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 9 } } } }
+          }
+        });
+      }
     }
 
     function renderDocRecent() {
@@ -3741,8 +3830,6 @@
       saveData(); renderVendas(); toast('Removido', 'info');
     }
 
-    let vndChartInst = null;
-
     function renderVendas() {
       const allDates = [...APP.vendas.vendas, ...APP.vendas.avarias, ...APP.vendas.debitos];
       const months = allMonths(allDates);
@@ -3946,28 +4033,61 @@
         const prod = APP.vendas.produtos.find(p => p.id === v.produtoId);
         if (!prod) return;
         if (!prodMap[prod.nome]) prodMap[prod.nome] = 0;
-        prodMap[prod.nome] += prod.preco * v.qty;
+        prodMap[prod.nome] += calcVenda(v).receita;
       });
       const labels = Object.keys(prodMap);
       const data = Object.values(prodMap);
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const textColor = isDark ? '#8891a8' : '#4a5168';
+
+      // 1. Pizza (Rosca)
       const ctx = document.getElementById('vnd-chart');
-      if (!ctx) return;
-      if (vndChartInst) vndChartInst.destroy();
-      if (!labels.length) {
-        ctx.parentElement.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><p>Sem vendas no período</p></div>`;
-        return;
-      }
-      const colors = ['#f0b429', '#4ade80', '#60a5fa', '#a78bfa', '#e85d4a', '#f97316', '#06b6d4'];
-      vndChartInst = new Chart(ctx, {
-        type: 'doughnut',
-        data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }] },
-        options: {
-          responsive: true, maintainAspectRatio: false, cutout: '68%',
-          plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { family: 'DM Mono', size: 11 }, boxWidth: 12 } } }
+      if (ctx) {
+        if (vndChartInst) vndChartInst.destroy();
+        const parent = ctx.parentElement;
+        if (!labels.length) {
+          parent.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><p>Sem vendas</p></div>`;
+        } else {
+          // Re-inserir canvas se foi removido pelo empty-state
+          if(!document.getElementById('vnd-chart')) parent.innerHTML = '<canvas id="vnd-chart"></canvas>';
+          const ctxReal = document.getElementById('vnd-chart');
+          const colors = ['#f0b429', '#4ade80', '#60a5fa', '#a78bfa', '#e85d4a', '#f97316', '#06b6d4'];
+          vndChartInst = new Chart(ctxReal, {
+            type: 'doughnut',
+            data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }] },
+            options: {
+              responsive: true, maintainAspectRatio: false, cutout: '68%',
+              plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { family: 'DM Mono', size: 9 }, boxWidth: 10 } } }
+            }
+          });
         }
-      });
+      }
+
+      // 2. Barra
+      const ctxBar = document.getElementById('vnd-chart-bar');
+      if (ctxBar) {
+        if (vndChartInstBar) vndChartInstBar.destroy();
+        if (labels.length) {
+          vndChartInstBar = new Chart(ctxBar, {
+            type: 'bar',
+            data: { 
+              labels, 
+              datasets: [{ label: 'Receita', data, backgroundColor: '#60a5fa', borderRadius: 4 }] 
+            },
+            options: {
+              indexAxis: 'y',
+              responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
+                y: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } }
+              }
+            }
+          });
+        } else {
+          ctxBar.parentElement.innerHTML = `<div class="empty-state"><p>Sem dados</p></div>`;
+        }
+      }
     }
 
     function renderVendasProdutoRanking() {
@@ -4394,7 +4514,29 @@
         let dq=v.qty||0;if(prod?.isMulti&&v.qty2)dq=`${v.qty||0}u/${v.qty2}c`;
         return `<tr><td>${v.data}</td><td>${seller?.nome||'-'}</td><td>${prod?.nome||'-'}</td><td style="text-align:center">${dq}</td><td class="print-positive" style="text-align:right">${fmt(c.receita)}</td><td style="text-align:right;color:#555">${fmt(c.comissao)}</td><td class="${c.lucro>=0?'print-positive':'print-negative'}" style="text-align:right">${fmt(c.lucro)}</td></tr>`;
       }).join('');
-      document.getElementById('print-zone').innerHTML=`<div class="print-header"><div class="print-header-icon">🥧</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato — Vendas (Tortinhas)</div></div></div><div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome||userRole||'-'}</div>${metaHtml}<table class="print-table"><thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Receita</th><th style="text-align:right">Comissão</th><th style="text-align:right">Lucro</th></tr></thead><tbody>${rows||'<tr><td colspan="7" style="text-align:center;color:#999">Sem vendas</td></tr>'}</tbody><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Bruta</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td><td colspan="2"></td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right">Comissões</td><td style="text-align:right">${fmt(comissao)}</td><td colspan="2"></td></tr>${avarias.length?`<tr style="font-weight:700"><td colspan="4" style="text-align:right">Perdas (Avarias)</td><td class="print-negative" style="text-align:right">-${fmt(perdas)}</td><td colspan="2"></td></tr>`:''}<tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro Líquido</td><td class="${lucro>=0?'print-positive':'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td><td colspan="2"></td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Vendas</div></div>`;
+      const chartSVG = getPrintChartSVG(receita, custo + perdas);
+      document.getElementById('print-zone').innerHTML = `
+        <div class="print-header">
+          <div class="print-header-icon">🥧</div>
+          <div>
+            <div class="print-title">Guerreiros do Alto</div>
+            <div class="print-subtitle">Extrato — Vendas (Tortinhas)</div>
+          </div>
+        </div>
+        <div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome || userRole || '-'}</div>
+        ${chartSVG}
+        ${metaHtml}
+        <table class="print-table">
+          <thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Receita</th><th style="text-align:right">Comissão</th><th style="text-align:right">Lucro</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="7" style="text-align:center;color:#999">Sem vendas</td></tr>'}</tbody>
+          <tfoot>
+            <tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Bruta</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td><td colspan="2"></td></tr>
+            <tr style="font-weight:700"><td colspan="4" style="text-align:right">Comissões</td><td style="text-align:right">${fmt(comissao)}</td><td colspan="2"></td></tr>
+            ${avarias.length ? `<tr style="font-weight:700"><td colspan="4" style="text-align:right">Perdas (Avarias)</td><td class="print-negative" style="text-align:right">-${fmt(perdas)}</td><td colspan="2"></td></tr>` : ''}
+            <tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro Líquido</td><td class="${lucro >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td><td colspan="2"></td></tr>
+          </tfoot>
+        </table>
+        <div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Vendas</div></div>`;
       window.print();
     }
 
