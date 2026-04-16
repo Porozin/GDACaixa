@@ -2683,6 +2683,7 @@
     }
 
     function finishLogin() {
+      initDataSync();
       document.getElementById('login-overlay').classList.add('hidden');
       document.body.className = `app-mode-${userRole}`;
       // Update topbar user info
