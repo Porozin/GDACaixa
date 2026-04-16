@@ -1300,9 +1300,6 @@
       display: none !important;
     }
 
-    body.app-mode-diretor .admin-only {
-      display: none !important;
-    }
 
     .login-msg-box {
       margin-top: .85rem;
@@ -2703,7 +2700,7 @@
         if (vg) vg.style.display = 'none';
       }
       renderClube(); renderDoceria(); renderVendas();
-      if (userRole === 'admin') renderPrivado();
+      if (userRole === 'admin' || userRole === 'diretor') renderPrivado();
       applyDoceiraVisibility();
       toast('Bem-vindo, ' + (currentUser?.nome || userRole) + '!');
     }
@@ -2763,7 +2760,7 @@
 
       // Listener Controle Interno (só admin)
       if (_unsubPrivado) _unsubPrivado();
-      if (userRole === 'admin') {
+      if (userRole === 'admin' || userRole === 'diretor') {
         _unsubPrivado = db.collection('gda_privado').orderBy('criadoEm').onSnapshot(snap => {
           _privado = snap.docs.map(d => ({ id: d.id, ...d.data() }));
           renderPrivado();
@@ -4642,7 +4639,7 @@
       const obs = document.getElementById('priv-obs').value.trim();
 
       if (!nome || !valor) { toast('Nome e valor obrigatórios', 'error'); return; }
-      if (userRole !== 'admin') { toast('Acesso negado', 'error'); return; }
+      if (userRole !== 'admin' && userRole !== 'diretor') { toast('Acesso negado', 'error'); return; }
 
       db.collection('gda_privado').add({
         nome, valor, data, status, obs, criadoEm: Date.now()
@@ -4653,7 +4650,7 @@
     }
 
     function deleteDivida(id) {
-      if (userRole !== 'admin') return;
+      if (userRole !== 'admin' && userRole !== 'diretor') return;
       if (!confirm('Excluir este registro permanentemente?')) return;
       db.collection('gda_privado').doc(id).delete()
         .then(() => toast('Registro removido', 'info'))
@@ -4661,7 +4658,7 @@
     }
 
     function pagarDivida(id) {
-      if (userRole !== 'admin') return;
+      if (userRole !== 'admin' && userRole !== 'diretor') return;
       db.collection('gda_privado').doc(id).update({ status: 'pago' })
         .then(() => toast('Dívida marcada como paga'))
         .catch(() => toast('Erro ao atualizar', 'error'));
