@@ -713,6 +713,7 @@
     }
 
     @media(max-width:800px) {
+
       .two-col,
       .three-col {
         grid-template-columns: 1fr
@@ -841,8 +842,8 @@
    BARRAS DE PROGRESSO — METAS
 ═══════════════════════════════════════════════════════════ */
     .goal-hero {
-      background: linear-gradient(135deg, rgba(240,180,41,.08) 0%, rgba(74,222,128,.06) 100%);
-      border: 1px solid rgba(240,180,41,.25);
+      background: linear-gradient(135deg, rgba(240, 180, 41, .08) 0%, rgba(74, 222, 128, .06) 100%);
+      border: 1px solid rgba(240, 180, 41, .25);
       border-radius: var(--radius);
       padding: 1.4rem 1.6rem;
       margin-bottom: 1.25rem;
@@ -886,7 +887,7 @@
       border-radius: 99px;
       background: linear-gradient(90deg, var(--accent3), var(--accent));
       width: 0%;
-      transition: width 1s cubic-bezier(.4,0,.2,1);
+      transition: width 1s cubic-bezier(.4, 0, .2, 1);
     }
 
     .progress-fill.over {
@@ -950,9 +951,9 @@
 
     /* badge pendente */
     .badge-pending {
-      background: rgba(96,165,250,.15);
+      background: rgba(96, 165, 250, .15);
       color: #60a5fa;
-      border: 1px solid rgba(96,165,250,.3);
+      border: 1px solid rgba(96, 165, 250, .3);
       font-size: .68rem;
       padding: .15rem .5rem;
       border-radius: 99px;
@@ -963,16 +964,22 @@
     /* ═══════════════════════════════════════════════════════════
    @MEDIA PRINT — EXTRATO PDF
 ═══════════════════════════════════════════════════════════ */
-    #print-zone { display: none; }
+    #print-zone {
+      display: none;
+    }
 
     @media print {
-      body > * { display: none !important; }
+      body>* {
+        display: none !important;
+      }
+
       #print-zone {
         display: block !important;
         font-family: 'DM Sans', sans-serif;
         color: #111;
         padding: 2rem;
       }
+
       .print-header {
         display: flex;
         align-items: center;
@@ -981,17 +988,40 @@
         padding-bottom: 1rem;
         margin-bottom: 1.5rem;
       }
+
       .print-header-icon {
-        width: 48px; height: 48px;
+        width: 48px;
+        height: 48px;
         background: #f0b429;
         border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 1.5rem;
       }
-      .print-title { font-size: 1.4rem; font-weight: 800; }
-      .print-subtitle { font-size: .85rem; color: #555; }
-      .print-meta { margin-bottom: 1.5rem; font-size: .85rem; color: #333; }
-      .print-table { width: 100%; border-collapse: collapse; margin-bottom: 3rem; }
+
+      .print-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+      }
+
+      .print-subtitle {
+        font-size: .85rem;
+        color: #555;
+      }
+
+      .print-meta {
+        margin-bottom: 1.5rem;
+        font-size: .85rem;
+        color: #333;
+      }
+
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 3rem;
+      }
+
       .print-table th {
         background: #f4f5f8;
         padding: .5rem .75rem;
@@ -1002,16 +1032,19 @@
         color: #555;
         border-bottom: 1px solid #ccc;
       }
+
       .print-table td {
         padding: .5rem .75rem;
         border-bottom: 1px solid #eee;
         font-size: .85rem;
       }
+
       .print-signature {
         display: flex;
         gap: 4rem;
         margin-top: 4rem;
       }
+
       .print-sig-line {
         border-top: 1px solid #333;
         width: 200px;
@@ -1020,8 +1053,14 @@
         color: #555;
         text-align: center;
       }
-      .print-positive { color: #16a34a; }
-      .print-negative { color: #dc2626; }
+
+      .print-positive {
+        color: #16a34a;
+      }
+
+      .print-negative {
+        color: #dc2626;
+      }
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -1215,7 +1254,6 @@
     #login-overlay.hidden {
       opacity: 0;
       pointer-events: none;
-      display: none;
     }
 
     .login-box {
@@ -1258,24 +1296,131 @@
       display: none !important;
     }
 
-    body.app-mode-conselheiro .admin-only { display: none !important; }
-    body.app-mode-diretor .admin-only { display: none !important; }
-    .login-msg-box{margin-top:.85rem;padding:.65rem .9rem;border-radius:var(--radius-sm);font-size:.82rem;text-align:center;display:none;}
-    .login-msg-box.success{background:rgba(74,222,128,.1);color:var(--accent3);border:1px solid rgba(74,222,128,.25)}
-    .login-msg-box.error{background:rgba(232,93,74,.1);color:var(--accent2);border:1px solid rgba(232,93,74,.25)}
-    .login-msg-box.info{background:rgba(240,180,41,.08);color:var(--accent);border:1px solid rgba(240,180,41,.2)}
-    .user-info-btn{display:flex;align-items:center;gap:.4rem;padding:.35rem .8rem;background:var(--bg3);border-radius:var(--radius-sm);font-size:.78rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all var(--trans);position:relative;}
-    .user-info-btn:hover{background:var(--bg4);color:var(--text)}
-    .user-notif-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--accent2);border-radius:50%;display:none;}
-    .usuarios-modal-wrap{max-height:55vh;overflow-y:auto;}
+    body.app-mode-conselheiro .admin-only {
+      display: none !important;
+    }
+
+    body.app-mode-diretor .admin-only {
+      display: none !important;
+    }
+
+    .login-msg-box {
+      margin-top: .85rem;
+      padding: .65rem .9rem;
+      border-radius: var(--radius-sm);
+      font-size: .82rem;
+      text-align: center;
+      display: none;
+    }
+
+    .login-msg-box.success {
+      background: rgba(74, 222, 128, .1);
+      color: var(--accent3);
+      border: 1px solid rgba(74, 222, 128, .25)
+    }
+
+    .login-msg-box.error {
+      background: rgba(232, 93, 74, .1);
+      color: var(--accent2);
+      border: 1px solid rgba(232, 93, 74, .25)
+    }
+
+    .login-msg-box.info {
+      background: rgba(240, 180, 41, .08);
+      color: var(--accent);
+      border: 1px solid rgba(240, 180, 41, .2)
+    }
+
+    .user-info-btn {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .35rem .8rem;
+      background: var(--bg3);
+      border-radius: var(--radius-sm);
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all var(--trans);
+      position: relative;
+    }
+
+    .user-info-btn:hover {
+      background: var(--bg4);
+      color: var(--text)
+    }
+
+    .user-notif-dot {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 8px;
+      height: 8px;
+      background: var(--accent2);
+      border-radius: 50%;
+      display: none;
+    }
+
+    .usuarios-modal-wrap {
+      max-height: 55vh;
+      overflow-y: auto;
+    }
+
     /* Toggle switch */
-    .toggle-wrap{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--text3);}
-    .tgl{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0;}
-    .tgl input{opacity:0;width:0;height:0;}
-    .tgl-slider{position:absolute;cursor:pointer;inset:0;background:var(--bg4);border-radius:99px;transition:.25s;border:1px solid var(--border);}
-    .tgl-slider:before{content:"";position:absolute;height:12px;width:12px;left:2px;bottom:2px;background:var(--text3);border-radius:50%;transition:.25s;}
-    .tgl input:checked+.tgl-slider{background:rgba(74,222,128,.25);border-color:var(--accent3);}
-    .tgl input:checked+.tgl-slider:before{transform:translateX(16px);background:var(--accent3);}
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .72rem;
+      color: var(--text3);
+    }
+
+    .tgl {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .tgl input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .tgl-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: var(--bg4);
+      border-radius: 99px;
+      transition: .25s;
+      border: 1px solid var(--border);
+    }
+
+    .tgl-slider:before {
+      content: "";
+      position: absolute;
+      height: 12px;
+      width: 12px;
+      left: 2px;
+      bottom: 2px;
+      background: var(--text3);
+      border-radius: 50%;
+      transition: .25s;
+    }
+
+    .tgl input:checked+.tgl-slider {
+      background: rgba(74, 222, 128, .25);
+      border-color: var(--accent3);
+    }
+
+    .tgl input:checked+.tgl-slider:before {
+      transform: translateX(16px);
+      background: var(--accent3);
+    }
   </style>
 </head>
 
@@ -1288,7 +1433,9 @@
       <h2>Guerreiros do Alto</h2>
       <p>Informe suas credenciais de acesso ao painel.</p>
       <div class="form-group" style="text-align:left;margin-bottom:.7rem">
-        <label style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Nível de Acesso</label>
+        <label
+          style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Nível
+          de Acesso</label>
         <select id="login-role">
           <option value="admin">👑 Administrador</option>
           <option value="diretor">🎖️ Diretor</option>
@@ -1297,16 +1444,19 @@
         </select>
       </div>
       <div class="form-group" style="text-align:left;margin-bottom:.7rem">
-        <label style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Usuário</label>
+        <label
+          style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Usuário</label>
         <input type="text" id="login-usuario" placeholder="Seu usuário..." autocomplete="username"
           onkeypress="if(event.key==='Enter') doLogin()" />
       </div>
       <div class="form-group" style="text-align:left;margin-bottom:1.1rem">
-        <label style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Senha</label>
+        <label
+          style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Senha</label>
         <input type="password" id="login-senha" placeholder="Sua senha..." autocomplete="current-password"
           onkeypress="if(event.key==='Enter') doLogin()" />
       </div>
-      <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;" onclick="doLogin()">Entrar</button>
+      <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;"
+        onclick="doLogin()">Entrar</button>
       <div class="login-msg-box" id="login-msg"></div>
     </div>
   </div>
@@ -1386,27 +1536,23 @@
         <div class="filter-bar">
           <span style="font-size:.8rem;color:var(--text3);font-weight:600;">Período:</span>
           <select id="clube-filter-month" onchange="renderClube()"></select>
-          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtrato()">📄 Extrato PDF</button>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtrato()">📄 Extrato
+            PDF</button>
         </div>
         <!-- Meta geral do clube -->
         <div id="clube-meta-hero"></div>
         <div class="metrics-grid" id="clube-metrics"></div>
-        <div class="three-col">
+        <div class="two-col">
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot"></span>Fluxo Mensal (Barra)</div>
+              <div class="card-title-left"><span class="dot"></span>Fluxo Mensal</div>
             </div>
             <div class="chart-container"><canvas id="clube-chart"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Distribuição (Pizza)</div>
-            </div>
-            <div class="chart-container"><canvas id="clube-chart-pie"></canvas></div>
-          </div>
-          <div class="card">
-            <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Últimas Transações</div>
+              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Últimas Transações
+              </div>
             </div>
             <div id="clube-recent-list"></div>
           </div>
@@ -1498,7 +1644,8 @@
       <div class="section-panel admin-only" id="clube-metas">
         <div class="card">
           <div class="card-title">
-            <div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta do Clube</div>
+            <div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta do Clube
+            </div>
           </div>
           <div class="form-grid">
             <div class="form-group">
@@ -1518,7 +1665,12 @@
           <div class="card-title">
             <div class="card-title-left"><span class="dot"></span>Metas do Clube</div>
           </div>
-          <div id="metas-clube-list"><div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div></div>
+          <div id="metas-clube-list">
+            <div class="empty-state">
+              <div class="empty-icon">🎯</div>
+              <p>Nenhuma meta cadastrada</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1543,7 +1695,10 @@
           </div>
         </div>
         <div class="unidade-grid" id="unidades-grid">
-          <div class="empty-state"><div class="empty-icon">🏕️</div><p>Nenhuma unidade cadastrada</p></div>
+          <div class="empty-state">
+            <div class="empty-icon">🏕️</div>
+            <p>Nenhuma unidade cadastrada</p>
+          </div>
         </div>
       </div>
 
@@ -1551,14 +1706,20 @@
       <div class="section-panel admin-only" id="clube-apr">
         <div class="card">
           <div class="card-title">
-            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Sugestões de Saída Pendentes
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Sugestões de Saída
+              Pendentes
             </div>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Data</th><th>Sugerido Por</th><th>Categoria</th><th>Descrição</th><th>Valor</th><th>Ação</th>
+                  <th>Data</th>
+                  <th>Sugerido Por</th>
+                  <th>Categoria</th>
+                  <th>Descrição</th>
+                  <th>Valor</th>
+                  <th>Ação</th>
                 </tr>
               </thead>
               <tbody id="clube-apr-body"></tbody>
@@ -1603,7 +1764,8 @@
       <div class="section-panel" id="clube-materia">
         <div class="card">
           <div class="card-title">
-            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Registrar Matéria-Prima (Clube)</div>
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Registrar
+              Matéria-Prima (Clube)</div>
           </div>
           <div class="form-grid">
             <div class="form-group">
@@ -1625,8 +1787,10 @@
         </div>
         <div class="card">
           <div class="card-title">
-            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Estoque / Matéria-Prima (Clube)</div>
-            <div id="mat-total-cost-clube" class="text-mono" style="font-size:.8rem;color:var(--text3)">Total: R$ 0,00</div>
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Estoque /
+              Matéria-Prima (Clube)</div>
+            <div id="mat-total-cost-clube" class="text-mono" style="font-size:.8rem;color:var(--text3)">Total: R$ 0,00
+            </div>
           </div>
           <div id="mat-list-clube"></div>
         </div>
@@ -1649,7 +1813,10 @@
       <!-- Entradas Doceria -->
       <div class="section-panel" id="doc-entradas">
         <div class="card">
-          <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Registrar Entrada</div></div>
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Registrar Entrada
+            </div>
+          </div>
           <div class="form-grid">
             <div class="form-group">
               <label>Valor (R$)</label>
@@ -1678,11 +1845,21 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-title"><div class="card-title-left"><span class="dot"></span>Histórico de Entradas</div></div>
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot"></span>Histórico de Entradas</div>
+          </div>
           <div class="filter-bar"><select id="doc-ent-month" onchange="renderDocEntradas()"></select></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Categoria</th><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Categoria</th>
+                  <th>Descrição</th>
+                  <th>Valor</th>
+                  <th></th>
+                </tr>
+              </thead>
               <tbody id="doc-ent-body"></tbody>
             </table>
           </div>
@@ -1693,30 +1870,24 @@
       <div class="section-panel active" id="doc-dash">
         <div class="filter-bar">
           <select id="doc-filter-month" onchange="renderDoceria()"></select>
-          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtratoDoceria()">📄 Extrato PDF</button>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtratoDoceria()">📄
+            Extrato PDF</button>
         </div>
         <div id="doc-meta-hero"></div>
         <div class="metrics-grid" id="doc-metrics"></div>
-        <div class="three-col">
-          <div class="card" style="grid-column: span 2">
-            <div class="card-title"><div class="card-title-left"><span class="dot"></span>Receita vs Custos (Linha)</div></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">
+              <div class="card-title-left"><span class="dot"></span>Receita vs Custos</div>
+            </div>
             <div class="chart-container"><canvas id="doc-chart"></canvas></div>
           </div>
           <div class="card">
-            <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Últimos Pedidos</div></div>
+            <div class="card-title">
+              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Últimos Pedidos
+              </div>
+            </div>
             <div id="doc-recent-list"></div>
-          </div>
-          <div class="card">
-            <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Comparativo Mensal (Barra)</div></div>
-            <div class="chart-container"><canvas id="doc-chart-bar"></canvas></div>
-          </div>
-          <div class="card">
-            <div class="card-title"><div class="card-title-left"><span class="dot" style="background:#a78bfa"></span>Categorias (Pizza)</div></div>
-            <div class="chart-container"><canvas id="doc-chart-pie"></canvas></div>
-          </div>
-          <div class="card">
-            <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Produtos Ranking</div></div>
-            <div id="doc-prod-ranking" style="max-height: 240px; overflow-y: auto;"></div>
           </div>
         </div>
       </div>
@@ -1830,16 +2001,28 @@
       <!-- Metas Doceria -->
       <div class="section-panel edit-only" id="doc-metas">
         <div class="card">
-          <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta</div></div>
-          <div class="form-grid">
-            <div class="form-group"><label>Descrição</label><input type="text" id="meta-doc-desc" placeholder="Ex: Arrecadar R$ 2.000 em pedidos" /></div>
-            <div class="form-group"><label>Valor Alvo (R$)</label><input type="number" id="meta-doc-valor" placeholder="0,00" min="0" step="0.01" /></div>
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta</div>
           </div>
-          <div class="form-actions"><button class="btn btn-primary" onclick="addMetaDoceria()">🎯 Criar Meta</button></div>
+          <div class="form-grid">
+            <div class="form-group"><label>Descrição</label><input type="text" id="meta-doc-desc"
+                placeholder="Ex: Arrecadar R$ 2.000 em pedidos" /></div>
+            <div class="form-group"><label>Valor Alvo (R$)</label><input type="number" id="meta-doc-valor"
+                placeholder="0,00" min="0" step="0.01" /></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary" onclick="addMetaDoceria()">🎯 Criar Meta</button>
+          </div>
         </div>
         <div class="card">
-          <div class="card-title"><div class="card-title-left"><span class="dot"></span>Metas da Doceria</div></div>
-          <div id="metas-doceria-list"><div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta</p></div></div>
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot"></span>Metas da Doceria</div>
+          </div>
+          <div id="metas-doceria-list">
+            <div class="empty-state">
+              <div class="empty-icon">🎯</div>
+              <p>Nenhuma meta</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1921,35 +2104,31 @@
       <div class="section-panel active" id="vnd-dash">
         <div class="filter-bar">
           <select id="vnd-filter-month" onchange="renderVendas()"></select>
-          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtratoVendas()">📄 Extrato PDF</button>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="imprimirExtratoVendas()">📄 Extrato
+            PDF</button>
         </div>
         <div id="vnd-meta-hero"></div>
         <div class="metrics-grid" id="vnd-metrics"></div>
         <div class="three-col">
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot"></span>Receita % Produto (Pizza)</div>
+              <div class="card-title-left"><span class="dot"></span>Receita por Produto (Geral)</div>
             </div>
             <div class="chart-container"><canvas id="vnd-chart"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Receita por Produto (Barra)</div>
+              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Ranking de
+                Produtos</div>
             </div>
-            <div class="chart-container"><canvas id="vnd-chart-bar"></canvas></div>
+            <div id="vnd-prod-ranking"></div>
           </div>
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Ranking de Vendedores</div>
+              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Ranking de
+                Vendedores</div>
             </div>
             <div id="vnd-ranking"></div>
-          </div>
-          <!-- O ranking de produtos em texto fica aqui embaixo ocupando espaço se necessário -->
-          <div class="card" style="grid-column: span 3">
-            <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Ranking de Produtos (Lista)</div>
-            </div>
-            <div id="vnd-prod-ranking"></div>
           </div>
         </div>
       </div>
@@ -2128,7 +2307,12 @@
             <table>
               <thead>
                 <tr>
-                  <th>Data</th><th>Vendedor</th><th>Produto</th><th>Comissão</th><th>Status</th><th>Ação</th>
+                  <th>Data</th>
+                  <th>Vendedor</th>
+                  <th>Produto</th>
+                  <th>Comissão</th>
+                  <th>Status</th>
+                  <th>Ação</th>
                 </tr>
               </thead>
               <tbody id="com-body"></tbody>
@@ -2140,16 +2324,29 @@
       <!-- Metas Vendas -->
       <div class="section-panel edit-only" id="vnd-metas">
         <div class="card">
-          <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta de Vendas</div></div>
-          <div class="form-grid">
-            <div class="form-group"><label>Descrição</label><input type="text" id="meta-vnd-desc" placeholder="Ex: Vender R$ 3.000 em tortinhas" /></div>
-            <div class="form-group"><label>Valor Alvo (R$)</label><input type="number" id="meta-vnd-valor" placeholder="0,00" min="0" step="0.01" /></div>
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent)"></span>Nova Meta de Vendas
+            </div>
           </div>
-          <div class="form-actions"><button class="btn btn-primary" onclick="addMetaVendas()">🎯 Criar Meta</button></div>
+          <div class="form-grid">
+            <div class="form-group"><label>Descrição</label><input type="text" id="meta-vnd-desc"
+                placeholder="Ex: Vender R$ 3.000 em tortinhas" /></div>
+            <div class="form-group"><label>Valor Alvo (R$)</label><input type="number" id="meta-vnd-valor"
+                placeholder="0,00" min="0" step="0.01" /></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary" onclick="addMetaVendas()">🎯 Criar Meta</button>
+          </div>
         </div>
         <div class="card">
-          <div class="card-title"><div class="card-title-left"><span class="dot"></span>Metas de Vendas</div></div>
-          <div id="metas-vendas-list"><div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta</p></div></div>
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot"></span>Metas de Vendas</div>
+          </div>
+          <div id="metas-vendas-list">
+            <div class="empty-state">
+              <div class="empty-icon">🎯</div>
+              <p>Nenhuma meta</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2277,7 +2474,8 @@
       <div class="section-panel active" id="priv-lista">
         <div class="card">
           <div class="card-title">
-            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Registrar Dívida</div>
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Registrar Dívida
+            </div>
           </div>
           <div class="form-grid">
             <div class="form-group">
@@ -2321,7 +2519,16 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Nome</th><th>Valor</th><th>Status</th><th>Obs.</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Nome</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                  <th>Obs.</th>
+                  <th></th>
+                </tr>
+              </thead>
               <tbody id="priv-body"></tbody>
             </table>
           </div>
@@ -2351,11 +2558,14 @@
     <div class="modal" style="max-width:520px">
       <div class="modal-title">👥 Gerenciar Usuários</div>
       <div class="usuarios-modal-wrap" id="usuarios-lista"></div>
-      <div style="display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)" id="create-user-form">
+      <div style="display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)"
+        id="create-user-form">
         <div style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.75rem">Criar novo usuário</div>
         <div class="form-grid">
-          <div class="form-group"><label>Usuário</label><input type="text" id="new-user-nome" placeholder="Nome de usuário" /></div>
-          <div class="form-group"><label>Senha</label><input type="password" id="new-user-senha" placeholder="Senha" /></div>
+          <div class="form-group"><label>Usuário</label><input type="text" id="new-user-nome"
+              placeholder="Nome de usuário" /></div>
+          <div class="form-group"><label>Senha</label><input type="password" id="new-user-senha" placeholder="Senha" />
+          </div>
           <div class="form-group"><label>Nível</label>
             <select id="new-user-role">
               <option value="diretor">🎖️ Diretor</option>
@@ -2366,11 +2576,13 @@
         </div>
         <div class="form-actions" style="margin-top:.5rem">
           <button class="btn btn-primary btn-sm" onclick="criarUsuarioAdmin()">✚ Criar</button>
-          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('create-user-form').style.display='none'">Cancelar</button>
+          <button class="btn btn-secondary btn-sm"
+            onclick="document.getElementById('create-user-form').style.display='none'">Cancelar</button>
         </div>
       </div>
       <div class="modal-actions" style="justify-content:space-between">
-        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('create-user-form').style.display='block'">✚ Criar Usuário</button>
+        <button class="btn btn-secondary btn-sm"
+          onclick="document.getElementById('create-user-form').style.display='block'">✚ Criar Usuário</button>
         <button class="btn btn-secondary" onclick="closeUsuariosModal()">Fechar</button>
       </div>
     </div>
@@ -2387,7 +2599,7 @@
     const k1 = "AIzaSyB5BffrCFT";
     const k2 = "107idfh_JjJJOrPz_";
     const k3 = "6efVNfg";
-    
+
     const firebaseConfig = {
       apiKey: k1 + k2 + k3,
       authDomain: "guerreiros-do-alto.firebaseapp.com",
@@ -2418,9 +2630,9 @@
     let _metasDoceria = [];
     let _metasVendas = [];
     let _privado = []; // dívidas privadas
-    let _unsubUsuarios=null, _unsubMetasDoceria=null, _unsubMetasVendas=null, _unsubPrivado=null;
+    let _unsubUsuarios = null, _unsubMetasDoceria = null, _unsubMetasVendas = null, _unsubPrivado = null;
 
-    function showLoginMsg(msg, type='info') {
+    function showLoginMsg(msg, type = 'info') {
       const el = document.getElementById('login-msg');
       if (!el) return;
       el.textContent = msg;
@@ -2430,123 +2642,90 @@
 
     async function doLogin() {
       const role = document.getElementById('login-role')?.value || 'admin';
-      const usuario = (document.getElementById('login-usuario')?.value||'').trim();
-      const senha = (document.getElementById('login-senha')?.value||'').trim();
-      if (!usuario || !senha) { showLoginMsg('Preencha usuário e senha','error'); return; }
-      
+      const usuario = (document.getElementById('login-usuario')?.value || '').trim();
+      const senha = (document.getElementById('login-senha')?.value || '').trim();
+      if (!usuario || !senha) { showLoginMsg('Preencha usuário e senha', 'error'); return; }
       const btn = document.getElementById('login-btn');
-      if(btn){ btn.disabled=true; btn.textContent='Aguarde...'; }
-      
+      if (btn) { btn.disabled = true; btn.textContent = 'Aguarde...'; }
       try {
-        console.log(`[Login] Tentando entrar como: ${usuario} (Cargo: ${role})`);
-        
         if (role === 'admin') {
-          if ((usuario==='admin'||usuario==='lunna') && (senha==='lunna'||senha==='diretor'||senha==='admin')) {
-            currentUser={usuario:'admin',nome:'Administrador',role:'admin'};
-            localStorage.setItem('gda_session',JSON.stringify(currentUser));
-            userRole='admin'; finishLogin();
-          } else { 
-            console.warn('[Login] Credenciais de Admin falharam.');
-            showLoginMsg('Credenciais incorretas','error'); 
-          }
+          if ((usuario === 'admin' || usuario === 'lunna') && (senha === 'lunna' || senha === 'diretor' || senha === 'admin')) {
+            currentUser = { usuario: 'admin', nome: 'Administrador', role: 'admin' };
+            localStorage.setItem('gda_session', JSON.stringify(currentUser));
+            userRole = 'admin'; finishLogin();
+          } else { showLoginMsg('Credenciais incorretas', 'error'); }
           return;
         }
-
         const snap = await db.collection('gda_usuarios')
-          .where('usuario','==',usuario).where('role','==',role).get();
-        
+          .where('usuario', '==', usuario).where('role', '==', role).get();
         if (snap.empty) {
-          console.info('[Login] Usuário não encontrado. Solicitando novo acesso.');
           await db.collection('gda_usuarios').add({
-            usuario, nome:usuario, role, senha, status:'pendente', criadoEm:Date.now()
+            usuario, nome: usuario, role, senha, status: 'pendente', criadoEm: Date.now()
           });
-          showLoginMsg('✅ Acesso solicitado! Aguardando aprovação do Diretor/Admin. Entre em contato com o responsável.','info');
+          showLoginMsg('✅ Acesso solicitado! Aguardando aprovação do Diretor/Admin. Entre em contato com o responsável.', 'info');
           return;
         }
-
-        const docSnap=snap.docs[0]; const data=docSnap.data();
-        if(data.senha!==senha){
-          console.warn('[Login] Senha incorreta para o usuário.');
-          showLoginMsg('Senha incorreta','error');
-          return;
-        }
-        
-        if(data.status==='pendente'){
-          showLoginMsg('⏳ Seu acesso ainda está pendente de aprovação. Fale com o Diretor ou Admin.','info');
-          return;
-        }
-        if(data.status==='negado'){
-          showLoginMsg('❌ Seu acesso foi negado. Contate o responsável.','error');
-          return;
-        }
-
-        currentUser={id:docSnap.id,usuario:data.usuario,nome:data.nome||data.usuario,role:data.role};
-        localStorage.setItem('gda_session',JSON.stringify(currentUser));
-        userRole=data.role; 
-        console.log('[Login] Sucesso! Role:', userRole);
-        finishLogin();
-      } catch(e){ 
-        console.error('[Login Error]', e); 
-        showLoginMsg('Erro de conexão com o Banco de Dados. Verifique sua internet ou permissões.','error'); 
-      }
-      finally{ if(btn){btn.disabled=false;btn.textContent='Entrar';} }
+        const docSnap = snap.docs[0]; const data = docSnap.data();
+        if (data.senha !== senha) { showLoginMsg('Senha incorreta', 'error'); return; }
+        if (data.status === 'pendente') { showLoginMsg('⏳ Seu acesso ainda está pendente de aprovação. Fale com o Diretor ou Admin.', 'info'); return; }
+        if (data.status === 'negado') { showLoginMsg('❌ Seu acesso foi negado. Contate o responsável.', 'error'); return; }
+        currentUser = { id: docSnap.id, usuario: data.usuario, nome: data.nome || data.usuario, role: data.role };
+        localStorage.setItem('gda_session', JSON.stringify(currentUser));
+        userRole = data.role; finishLogin();
+      } catch (e) { console.error(e); showLoginMsg('Erro de conexão. Verifique sua internet.', 'error'); }
+      finally { if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; } }
     }
 
     function doLogout() {
       localStorage.removeItem('gda_session');
-      currentUser=null; userRole=null;
+      currentUser = null; userRole = null;
       window.location.reload();
     }
 
     function finishLogin() {
       document.getElementById('login-overlay').classList.add('hidden');
       document.body.className = `app-mode-${userRole}`;
-      
-      // Ativar ouvintes do banco de dados (especialmente os dependentes do cargo)
-      initDataSync();
-
       // Update topbar user info
       const uBtn = document.getElementById('userInfoBtn');
       const uName = document.getElementById('userDisplayName');
       const uRole = document.getElementById('userRoleBadge');
-      const roleEmojis={admin:'👑',diretor:'🎖️',conselheiro:'🧭',desbravador:'⚔️'};
-      if(uBtn){ uBtn.style.display=(userRole==='admin'||userRole==='diretor')?'flex':'none'; }
-      if(uName) uName.textContent = currentUser?.nome || currentUser?.usuario || userRole;
-      if(uRole) uRole.textContent = roleEmojis[userRole]||'';
-      
+      const roleEmojis = { admin: '👑', diretor: '🎖️', conselheiro: '🧭', desbravador: '⚔️' };
+      if (uBtn) { uBtn.style.display = (userRole === 'admin' || userRole === 'diretor') ? 'flex' : 'none'; }
+      if (uName) uName.textContent = currentUser?.nome || currentUser?.usuario || userRole;
+      if (uRole) uRole.textContent = roleEmojis[userRole] || '';
       // For desbravador: ensure their vendedor entry exists
-      if(userRole==='desbravador' && currentUser){
-        const exists=APP.vendas.vendedores.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
-        if(!exists){ APP.vendas.vendedores.push({id:uuid(),nome:currentUser.nome}); saveData(); }
+      if (userRole === 'desbravador' && currentUser) {
+        const exists = APP.vendas.vendedores.find(v => v.nome.toLowerCase() === currentUser.nome.toLowerCase());
+        if (!exists) { APP.vendas.vendedores.push({ id: uuid(), nome: currentUser.nome }); saveData(); }
         // Hide vendedor select (auto)
-        const vg=document.getElementById('vnd-vendedor-group');
-        if(vg) vg.style.display='none';
+        const vg = document.getElementById('vnd-vendedor-group');
+        if (vg) vg.style.display = 'none';
       }
       renderClube(); renderDoceria(); renderVendas();
       if (userRole === 'admin') renderPrivado();
       applyDoceiraVisibility();
-      toast('Bem-vindo, '+(currentUser?.nome||userRole)+'!');
+      toast('Bem-vindo, ' + (currentUser?.nome || userRole) + '!');
     }
 
     function initDataSync() {
       // Listener Usuários
-      if(_unsubUsuarios) _unsubUsuarios();
-      _unsubUsuarios=db.collection('gda_usuarios').orderBy('criadoEm').onSnapshot(snap=>{
-        _usuarios=snap.docs.map(d=>({id:d.id,...d.data()}));
+      if (_unsubUsuarios) _unsubUsuarios();
+      _unsubUsuarios = db.collection('gda_usuarios').orderBy('criadoEm').onSnapshot(snap => {
+        _usuarios = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         updateUsuariosBadge();
-        if(userRole) applyDoceiraVisibility();
+        if (userRole) applyDoceiraVisibility();
       });
       // Listener Metas Doceria
-      if(_unsubMetasDoceria) _unsubMetasDoceria();
-      _unsubMetasDoceria=db.collection('gda_metas_doceria').orderBy('criadoEm').onSnapshot(snap=>{
-        _metasDoceria=snap.docs.map(d=>({id:d.id,...d.data()}));
-        if(userRole){renderMetasDoceria();renderMetasVendas();}
+      if (_unsubMetasDoceria) _unsubMetasDoceria();
+      _unsubMetasDoceria = db.collection('gda_metas_doceria').orderBy('criadoEm').onSnapshot(snap => {
+        _metasDoceria = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (userRole) { renderMetasDoceria(); renderMetasVendas(); }
       });
       // Listener Metas Vendas
-      if(_unsubMetasVendas) _unsubMetasVendas();
-      _unsubMetasVendas=db.collection('gda_metas_vendas').orderBy('criadoEm').onSnapshot(snap=>{
-        _metasVendas=snap.docs.map(d=>({id:d.id,...d.data()}));
-        if(userRole){renderMetasVendas();}
+      if (_unsubMetasVendas) _unsubMetasVendas();
+      _unsubMetasVendas = db.collection('gda_metas_vendas').orderBy('criadoEm').onSnapshot(snap => {
+        _metasVendas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (userRole) { renderMetasVendas(); }
       });
       db.collection('gda_caixa').doc('estado').onSnapshot((doc) => {
         if (doc.exists) {
@@ -2915,7 +3094,6 @@
     }
 
     let clubeChartInst = null;
-    let clubeChartInstPie = null;
 
     function renderClube() {
       const months = allMonths(APP.clube.transactions);
@@ -3003,7 +3181,7 @@
 
       const allTxs = APP.clube.transactions;
       const saldoGeral = allTxs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0)
-                       - allTxs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+        - allTxs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
 
       // Hero no Dashboard (primeira meta aprovada)
       if (heroEl) {
@@ -3122,7 +3300,7 @@
         // Saldo vinculado: só transações taggeadas para esta unidade
         const unidadeTxs = APP.clube.transactions.filter(t => t.destino_tipo === 'unidade' && t.destino_id === u.id);
         const saldoUnidade = unidadeTxs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0)
-                           - unidadeTxs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+          - unidadeTxs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
 
         const canManage = (userRole === 'admin') || (userRole === 'conselheiro' && u.conselheiro);
         const metasHtml = metas.map(m => {
@@ -3172,49 +3350,66 @@
     /* ═══════════════════════════════════════════════════════════
        EXTRATO PDF
     ═══════════════════════════════════════════════════════════ */
-    function getPrintChartSVG(valVerde, valVermelho) {
-      if (valVerde === 0 && valVermelho === 0) return '';
-      const total = valVerde + valVermelho;
-      const pctV = (valVerde / total) * 360;
-      const x1 = Math.cos(0) * 50 + 50;
-      const y1 = Math.sin(0) * 50 + 50;
-      const x2 = Math.cos((pctV * Math.PI) / 180) * 50 + 50;
-      const y2 = Math.sin((pctV * Math.PI) / 180) * 50 + 50;
-      const largeArc = pctV > 180 ? 1 : 0;
-      return `
-        <div style="display:flex;align-items:center;gap:3rem;margin-bottom:2rem;padding:1.5rem;background:#f9f9f9;border-radius:12px;border:1px solid #eee">
-          <svg width="120" height="120" viewBox="0 0 100 100" style="transform: rotate(-90deg)">
-            <circle cx="50" cy="50" r="50" fill="#e85d4a" />
-            <path d="M 50 50 L ${x1} ${y1} A 50 50 0 ${largeArc} 1 ${x2} ${y2} Z" fill="#4ade80" />
-            <circle cx="50" cy="50" r="30" fill="#f9f9f9" />
-          </svg>
-          <div>
-            <div style="font-weight:700;font-size:1.1rem;margin-bottom:.8rem">Resumo Visual do Período</div>
-            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem">
-              <span style="width:14px;height:14px;background:#4ade80;border-radius:3px"></span>
-              <span style="font-size:.9rem;color:#333"><strong>${Math.round((valVerde/total)*100)}%</strong> Receita / Entradas</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:.6rem">
-              <span style="width:14px;height:14px;background:#e85d4a;border-radius:3px"></span>
-              <span style="font-size:.9rem;color:#333"><strong>${Math.round((valVermelho/total)*100)}%</strong> Despesas / Custos</span>
-            </div>
-          </div>
-        </div>`;
-    }
-
     function imprimirExtrato() {
       const month = document.getElementById('clube-filter-month')?.value || today().slice(0, 7);
-      const txs = APP.clube.transactions.filter(t => monthKey(t.data) === month).sort((a, b) => a.data.localeCompare(b.data));
-      const ent = txs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0);
-      const sai = txs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
-      const chartSVG = getPrintChartSVG(ent, sai);
+      const txs = APP.clube.transactions
+        .filter(t => monthKey(t.data) === month)
+        .sort((a, b) => a.data.localeCompare(b.data));
 
-      const rows = txs.map(t => `<tr class="${t.tipo === 'entrada' ? 'print-positive' : 'print-negative'}"><td>${t.data}</td><td>${t.tipo.toUpperCase()}</td><td>${t.categoria}</td><td>${t.descricao}</td><td style="text-align:right">${fmt(t.valor)}</td></tr>`).join('');
+      const entrada = txs.filter(t => t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0);
+      const saida = txs.filter(t => t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
+      const saldo = entrada - saida;
+
+      const rows = txs.map(t => `
+        <tr>
+          <td>${t.data}</td>
+          <td>${t.categoria}</td>
+          <td style="max-width:220px">${t.desc || '-'}</td>
+          <td class="${t.tipo === 'entrada' ? 'print-positive' : 'print-negative'}" style="text-align:right">
+            ${t.tipo === 'entrada' ? '+' : '-'}${fmt(t.valor)}
+          </td>
+        </tr>`).join('');
+
       document.getElementById('print-zone').innerHTML = `
-        <div class="print-header"><div class="print-header-icon">🧭</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato Mensal — Clube</div></div></div>
-        <div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome || userRole || '-'}</div>
-        ${chartSVG}
-        <table class="print-table"><thead><tr><th>Data</th><th>Tipo</th><th>Categoria</th><th>Descrição</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rows || '<tr><td colspan="5" style="text-align:center;color:#999">Nenhuma movimentação</td></tr>'}</tbody><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Total Entradas</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(ent)}</td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Total Saídas</td><td class="print-negative" style="text-align:right;padding:.5rem .75rem">${fmt(sai)}</td></tr><tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Saldo do Período</td><td class="${(ent - sai) >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(ent - sai)}</td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Tesoureiro(a)</div></div>`;
+        <div class="print-header">
+          <div class="print-header-icon">⚔️</div>
+          <div>
+            <div class="print-title">Guerreiros do Alto</div>
+            <div class="print-subtitle">Livro Caixa — Clube</div>
+          </div>
+        </div>
+        <div class="print-meta">
+          <strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;
+          <strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;
+          <strong>Responsável:</strong> ${userRole?.toUpperCase() || '-'}
+        </div>
+        <table class="print-table">
+          <thead>
+            <tr><th>Data</th><th>Categoria</th><th>Descrição</th><th style="text-align:right">Valor</th></tr>
+          </thead>
+          <tbody>
+            ${rows || '<tr><td colspan="4" style="text-align:center;color:#999">Sem transações neste período</td></tr>'}
+          </tbody>
+          <tfoot>
+            <tr style="font-weight:700">
+              <td colspan="3" style="text-align:right;padding:.6rem .75rem">Total Entradas</td>
+              <td class="print-positive" style="text-align:right;padding:.6rem .75rem">${fmt(entrada)}</td>
+            </tr>
+            <tr style="font-weight:700">
+              <td colspan="3" style="text-align:right;padding:.4rem .75rem">Total Saídas</td>
+              <td class="print-negative" style="text-align:right;padding:.4rem .75rem">-${fmt(saida)}</td>
+            </tr>
+            <tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111">
+              <td colspan="3" style="text-align:right;padding:.6rem .75rem">Saldo do Período</td>
+              <td class="${saldo >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(saldo)}</td>
+            </tr>
+          </tfoot>
+        </table>
+        <div class="print-signature">
+          <div class="print-sig-line">Diretor(a) do Clube</div>
+          <div class="print-sig-line">Tesoureiro(a)</div>
+        </div>`;
+
       window.print();
     }
 
@@ -3270,62 +3465,33 @@
   `;
     }
 
-
-
     function renderClubeChart(months) {
-      if (!months || !months.length) return;
       const last6 = [...months].reverse().slice(-6);
       const labels = last6.map(monthLabel);
-      const rec = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0));
-      const exp = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'saida').reduce((s, t) => s + t.valor, 0));
+      const entradas = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0));
+      const saidas = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'saida').reduce((s, t) => s + t.valor, 0));
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const gridColor = isDark ? '#2a2f3f' : '#e2e5ed';
       const textColor = isDark ? '#8891a8' : '#4a5168';
-
-      // 1. Barra
       const ctx = document.getElementById('clube-chart');
-      if (ctx) {
-        if (clubeChartInst) clubeChartInst.destroy();
-        clubeChartInst = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels,
-            datasets: [
-              { label: 'Entradas', data: rec, backgroundColor: '#4ade80', borderRadius: 4 },
-              { label: 'Saídas', data: exp, backgroundColor: '#e85d4a', borderRadius: 4 }
-            ]
-          },
-          options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 10 } } } },
-            scales: {
-              x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { display: false } },
-              y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
-            }
+      if (!ctx) return;
+      if (clubeChartInst) clubeChartInst.destroy();
+      clubeChartInst = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels, datasets: [
+            { label: 'Entradas', data: entradas, backgroundColor: 'rgba(74,222,128,.7)', borderRadius: 6 },
+            { label: 'Saídas', data: saidas, backgroundColor: 'rgba(232,93,74,.7)', borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 11 } } } },
+          scales: {
+            x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } },
+            y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
           }
-        });
-      }
-
-      // 2. Pizza
-      const ctxPie = document.getElementById('clube-chart-pie');
-      if (ctxPie) {
-        if (clubeChartInstPie) clubeChartInstPie.destroy();
-        const currentM = months[0];
-        const ent = APP.clube.transactions.filter(t => monthKey(t.data) === currentM && t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0);
-        const sai = APP.clube.transactions.filter(t => monthKey(t.data) === currentM && t.tipo === 'saida').reduce((s, t) => s + t.valor, 0);
-        
-        clubeChartInstPie = new Chart(ctxPie, {
-          type: 'doughnut',
-          data: {
-            labels: ['Entradas', 'Saídas'],
-            datasets: [{ data: [ent, sai], backgroundColor: ['#4ade80', '#e85d4a'], borderWidth: 0 }]
-          },
-          options: {
-            responsive: true, maintainAspectRatio: false, cutout: '70%',
-            plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 10 } } } }
-          }
-        });
-      }
+        }
+      });
     }
 
     function renderClubeRecent() {
@@ -3458,11 +3624,6 @@
     }
 
     let docChartInst = null;
-    let docChartInstBar = null;
-    let docChartInstPie = null;
-
-    let vndChartInst = null;
-    let vndChartInstBar = null;
 
     function renderDoceria() {
       if (!APP.doceria.entradas) APP.doceria.entradas = [];
@@ -3472,7 +3633,6 @@
       renderDocMetrics();
       renderDocChart(months);
       renderDocRecent();
-      renderDocProdRanking();
       renderDocPedidos();
       renderDocGastos();
       renderDocEntradas();
@@ -3501,7 +3661,6 @@
     }
 
     function renderDocChart(months) {
-      if (!months || !months.length) return;
       const last6 = [...months].reverse().slice(-6);
       const labels = last6.map(monthLabel);
       const rec = last6.map(m => APP.doceria.pedidos.filter(p => monthKey(p.data) === m && p.status !== 'cancelado').reduce((s, p) => s + p.valor, 0));
@@ -3509,75 +3668,26 @@
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const gridColor = isDark ? '#2a2f3f' : '#e2e5ed';
       const textColor = isDark ? '#8891a8' : '#4a5168';
-
-      // 1. Linha
       const ctx = document.getElementById('doc-chart');
-      if (ctx) {
-        if (docChartInst) docChartInst.destroy();
-        docChartInst = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels, datasets: [
-              { label: 'Receita', data: rec, borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,.1)', tension: .4, fill: true },
-              { label: 'Custos', data: cus, borderColor: '#e85d4a', backgroundColor: 'rgba(232,93,74,.08)', tension: .4, fill: true }
-            ]
-          },
-          options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 10 } } } },
-            scales: {
-              x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } },
-              y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
-            }
+      if (!ctx) return;
+      if (docChartInst) docChartInst.destroy();
+      docChartInst = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels, datasets: [
+            { label: 'Receita', data: rec, borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,.1)', tension: .4, fill: true },
+            { label: 'Custos', data: cus, borderColor: '#e85d4a', backgroundColor: 'rgba(232,93,74,.08)', tension: .4, fill: true }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 11 } } } },
+          scales: {
+            x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } },
+            y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
           }
-        });
-      }
-
-      // 2. Barra
-      const ctxBar = document.getElementById('doc-chart-bar');
-      if (ctxBar) {
-        if (docChartInstBar) docChartInstBar.destroy();
-        const curMonth = months[0];
-        const curRec = APP.doceria.pedidos.filter(p => monthKey(p.data) === curMonth && p.status !== 'cancelado').reduce((s, p) => s + p.valor, 0);
-        const curCus = APP.doceria.gastos.filter(g => monthKey(g.data) === curMonth).reduce((s, g) => s + g.valor, 0);
-        docChartInstBar = new Chart(ctxBar, {
-          type: 'bar',
-          data: {
-            labels: ['Mês Atual'],
-            datasets: [
-              { label: 'Receita', data: [curRec], backgroundColor: '#4ade80' },
-              { label: 'Custos', data: [curCus], backgroundColor: '#e85d4a' }
-            ]
-          },
-          options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 10 } } } }
-          }
-        });
-      }
-
-      // 3. Pizza
-      const ctxPie = document.getElementById('doc-chart-pie');
-      if (ctxPie) {
-        if (docChartInstPie) docChartInstPie.destroy();
-        const curMonth = months[0];
-        const entries = (APP.doceria.entradas || []).filter(e => monthKey(e.data) === curMonth);
-        const catMap = {};
-        entries.forEach(e => { if(!catMap[e.cat]) catMap[e.cat] = 0; catMap[e.cat] += e.valor; });
-        const labelsP = Object.keys(catMap);
-        const dataP = Object.values(catMap);
-        docChartInstPie = new Chart(ctxPie, {
-          type: 'doughnut',
-          data: {
-            labels: labelsP.length ? labelsP : ['Sem dados'],
-            datasets: [{ data: dataP.length ? dataP : [1], backgroundColor: ['#60a5fa', '#a78bfa', '#f0b429', '#4ade80', '#e85d4a'], borderWidth: 0 }]
-          },
-          options: {
-            responsive: true, maintainAspectRatio: false, cutout: '70%',
-            plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 9 } } } }
-          }
-        });
-      }
+        }
+      });
     }
 
     function renderDocRecent() {
@@ -3774,9 +3884,9 @@
 
     function addVenda() {
       let vendedorId = document.getElementById('vnd-vendedor').value;
-      if(userRole==='desbravador' && currentUser){
-        const myS=APP.vendas.vendedores.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
-        if(myS) vendedorId=myS.id;
+      if (userRole === 'desbravador' && currentUser) {
+        const myS = APP.vendas.vendedores.find(v => v.nome.toLowerCase() === currentUser.nome.toLowerCase());
+        if (myS) vendedorId = myS.id;
       }
       const produtoId = document.getElementById('vnd-produto').value;
       const qty = parseInt(document.getElementById('vnd-qty').value) || 0;
@@ -3863,6 +3973,8 @@
       saveData(); renderVendas(); toast('Removido', 'info');
     }
 
+    let vndChartInst = null;
+
     function renderVendas() {
       const allDates = [...APP.vendas.vendas, ...APP.vendas.avarias, ...APP.vendas.debitos];
       const months = allMonths(allDates);
@@ -3883,9 +3995,9 @@
         const sel = document.getElementById(id);
         if (!sel) return;
         const cur = sel.value;
-        if(userRole==='desbravador' && currentUser && id==='vnd-vendedor'){
-          const myS=sellers.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
-          sel.innerHTML=myS?`<option value="${myS.id}" selected>${myS.nome}</option>`:'<option value="">-- sem vendedor --</option>';
+        if (userRole === 'desbravador' && currentUser && id === 'vnd-vendedor') {
+          const myS = sellers.find(v => v.nome.toLowerCase() === currentUser.nome.toLowerCase());
+          sel.innerHTML = myS ? `<option value="${myS.id}" selected>${myS.nome}</option>` : '<option value="">-- sem vendedor --</option>';
         } else {
           sel.innerHTML = sellers.length ? sellers.map(s => `<option value="${s.id}" ${s.id === cur ? 'selected' : ''}>${s.nome}</option>`).join('') : '<option value="">-- nenhum vendedor --</option>';
         }
@@ -3964,10 +4076,10 @@
             <td><span class="badge ${status === 'pago' ? 'badge-green' : 'badge-yellow'}">${status}</span></td>
             <td>
               <div style="display:flex;gap:.3rem">
-                ${status === 'pendente' && userRole === 'admin' ? 
-                  `<button class="btn btn-primary btn-sm" onclick="pagarComissao('${v.id}')">Pagar</button>` : ''}
-                ${status === 'pago' && userRole === 'admin' ? 
-                  `<button class="btn btn-ghost btn-sm" onclick="estornarComissao('${v.id}')" title="Voltar para pendente">Estornar</button>` : ''}
+                ${status === 'pendente' && userRole === 'admin' ?
+            `<button class="btn btn-primary btn-sm" onclick="pagarComissao('${v.id}')">Pagar</button>` : ''}
+                ${status === 'pago' && userRole === 'admin' ?
+            `<button class="btn btn-ghost btn-sm" onclick="estornarComissao('${v.id}')" title="Voltar para pendente">Estornar</button>` : ''}
               </div>
             </td>
           </tr>
@@ -3999,11 +4111,11 @@
     function estornarComissao(id) {
       const v = APP.vendas.vendas.find(x => x.id === id);
       if (!v || v.comissao_status !== 'pago') return;
-      
+
       v.comissao_status = 'pendente';
       // Remover o registro de debito vinculado
       APP.vendas.debitos = APP.vendas.debitos.filter(d => d.vendaId !== id);
-      
+
       saveData();
       renderVendas();
       toast('Comissão estornada e saldo recomposto!', 'info');
@@ -4022,29 +4134,29 @@
       const month = document.getElementById('vnd-filter-month')?.value || today().slice(0, 7);
       const vendas = APP.vendas.vendas.filter(v => monthKey(v.data) === month);
       let receita = 0, custo = 0, comissaoTotalPosssivel = 0, comissaoPaga = 0, lucro = 0;
-      
-      vendas.forEach(v => { 
-        const c = calcVenda(v); 
-        receita += c.receita; 
-        custo += c.custo; 
-        comissaoTotalPosssivel += c.comissao; 
-        if(v.comissao_status === 'pago') comissaoPaga += c.comissao;
-        lucro += c.lucro; 
+
+      vendas.forEach(v => {
+        const c = calcVenda(v);
+        receita += c.receita;
+        custo += c.custo;
+        comissaoTotalPosssivel += c.comissao;
+        if (v.comissao_status === 'pago') comissaoPaga += c.comissao;
+        lucro += c.lucro;
       });
 
       const avarias = APP.vendas.avarias.filter(a => monthKey(a.data) === month);
       const perdas = avarias.reduce((s, a) => { const p = APP.vendas.produtos.find(x => x.id === a.produtoId); return s + (p?.custo || 0) * a.qty; }, 0);
-      
+
       // Retiradas que afetam caixa (só as novas com flag)
       const retiradas = APP.vendas.debitos.filter(d => monthKey(d.data) === month && d.afeta_caixa).reduce((s, d) => s + d.valor, 0);
-      
+
       // Saldo do Caixa segue a lógica de: Bruto - Custos - Perdas - (Tudo que saiu do caixa)
       // Note: O lucro já deduz comissões, mas as pendentes ainda não saíram do caixa físico.
       // O usuário pediu que o Saldo de Caixa reflita o Bruto menos o que de fato saiu.
       const saldoCaixa = receita - custo - perdas - retiradas;
-      
+
       const pendentes = APP.vendas.vendas.filter(v => !v.comissao_status || v.comissao_status === 'pendente');
-      
+
       document.getElementById('vnd-metrics').innerHTML = `
     <div class="metric-card green"><div class="metric-label">Receita Bruta</div><div class="metric-value positive">${fmt(receita)}</div></div>
     <div class="metric-card red"><div class="metric-label">Custos</div><div class="metric-value negative">${fmt(custo)}</div></div>
@@ -4066,61 +4178,28 @@
         const prod = APP.vendas.produtos.find(p => p.id === v.produtoId);
         if (!prod) return;
         if (!prodMap[prod.nome]) prodMap[prod.nome] = 0;
-        prodMap[prod.nome] += calcVenda(v).receita;
+        prodMap[prod.nome] += prod.preco * v.qty;
       });
       const labels = Object.keys(prodMap);
       const data = Object.values(prodMap);
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const textColor = isDark ? '#8891a8' : '#4a5168';
-
-      // 1. Pizza (Rosca)
       const ctx = document.getElementById('vnd-chart');
-      if (ctx) {
-        if (vndChartInst) vndChartInst.destroy();
-        const parent = ctx.parentElement;
-        if (!labels.length) {
-          parent.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><p>Sem vendas</p></div>`;
-        } else {
-          // Re-inserir canvas se foi removido pelo empty-state
-          if(!document.getElementById('vnd-chart')) parent.innerHTML = '<canvas id="vnd-chart"></canvas>';
-          const ctxReal = document.getElementById('vnd-chart');
-          const colors = ['#f0b429', '#4ade80', '#60a5fa', '#a78bfa', '#e85d4a', '#f97316', '#06b6d4'];
-          vndChartInst = new Chart(ctxReal, {
-            type: 'doughnut',
-            data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }] },
-            options: {
-              responsive: true, maintainAspectRatio: false, cutout: '68%',
-              plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { family: 'DM Mono', size: 9 }, boxWidth: 10 } } }
-            }
-          });
-        }
+      if (!ctx) return;
+      if (vndChartInst) vndChartInst.destroy();
+      if (!labels.length) {
+        ctx.parentElement.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><p>Sem vendas no período</p></div>`;
+        return;
       }
-
-      // 2. Barra
-      const ctxBar = document.getElementById('vnd-chart-bar');
-      if (ctxBar) {
-        if (vndChartInstBar) vndChartInstBar.destroy();
-        if (labels.length) {
-          vndChartInstBar = new Chart(ctxBar, {
-            type: 'bar',
-            data: { 
-              labels, 
-              datasets: [{ label: 'Receita', data, backgroundColor: '#60a5fa', borderRadius: 4 }] 
-            },
-            options: {
-              indexAxis: 'y',
-              responsive: true, maintainAspectRatio: false,
-              plugins: { legend: { display: false } },
-              scales: {
-                x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
-                y: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } }
-              }
-            }
-          });
-        } else {
-          ctxBar.parentElement.innerHTML = `<div class="empty-state"><p>Sem dados</p></div>`;
+      const colors = ['#f0b429', '#4ade80', '#60a5fa', '#a78bfa', '#e85d4a', '#f97316', '#06b6d4'];
+      vndChartInst = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }] },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '68%',
+          plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { family: 'DM Mono', size: 11 }, boxWidth: 12 } } }
         }
-      }
+      });
     }
 
     function renderVendasProdutoRanking() {
@@ -4191,9 +4270,9 @@
       let vendas = APP.vendas.vendas.filter(v => monthKey(v.data) === month);
       if (sellerF) vendas = vendas.filter(v => v.vendedorId === sellerF);
       // Desbravador sees only own sales
-      if(userRole==='desbravador' && currentUser){
-        const myS=APP.vendas.vendedores.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
-        if(myS) vendas=vendas.filter(v=>v.vendedorId===myS.id);
+      if (userRole === 'desbravador' && currentUser) {
+        const myS = APP.vendas.vendedores.find(v => v.nome.toLowerCase() === currentUser.nome.toLowerCase());
+        if (myS) vendas = vendas.filter(v => v.vendedorId === myS.id);
       }
       vendas.sort((a, b) => b.data.localeCompare(a.data));
       const body = document.getElementById('vnd-hist-body');
@@ -4303,13 +4382,13 @@
        GERENCIAR USUÁRIOS
     ═══════════════════════════════════════════════════════════ */
     function updateUsuariosBadge() {
-      const pendentes = _usuarios.filter(u=>u.status==='pendente').length;
+      const pendentes = _usuarios.filter(u => u.status === 'pendente').length;
       const dot = document.getElementById('user-notif-dot');
-      if(dot) dot.style.display = pendentes>0?'block':'none';
+      if (dot) dot.style.display = pendentes > 0 ? 'block' : 'none';
     }
 
     function openUsuariosModal() {
-      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
+      if (userRole !== 'admin' && userRole !== 'diretor') { toast('Sem permissão', 'error'); return; }
       renderUsuariosLista();
       document.getElementById('usuariosModal').classList.add('open');
     }
@@ -4318,103 +4397,103 @@
       document.getElementById('usuariosModal').classList.remove('open');
     }
 
-    function roleLabel(role){
-      return {admin:'👑 Admin',diretor:'🎖️ Diretor',conselheiro:'🧭 Conselheiro',desbravador:'⚔️ Desbravador'}[role]||role;
+    function roleLabel(role) {
+      return { admin: '👑 Admin', diretor: '🎖️ Diretor', conselheiro: '🧭 Conselheiro', desbravador: '⚔️ Desbravador' }[role] || role;
     }
 
     function renderUsuariosLista() {
-      const el=document.getElementById('usuarios-lista'); if(!el)return;
-      const pendentes=_usuarios.filter(u=>u.status==='pendente');
-      const ativos=_usuarios.filter(u=>u.status==='ativo');
-      if(!pendentes.length&&!ativos.length){
-        el.innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>';return;
+      const el = document.getElementById('usuarios-lista'); if (!el) return;
+      const pendentes = _usuarios.filter(u => u.status === 'pendente');
+      const ativos = _usuarios.filter(u => u.status === 'ativo');
+      if (!pendentes.length && !ativos.length) {
+        el.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>'; return;
       }
-      let html='';
-      if(pendentes.length){
-        html+=`<div style="font-family:var(--font-mono);font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem">⏳ Pendentes</div>`;
-        html+=pendentes.map(u=>{
-          const canApprove=(u.role==='diretor')?userRole==='admin':true;
+      let html = '';
+      if (pendentes.length) {
+        html += `<div style="font-family:var(--font-mono);font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem">⏳ Pendentes</div>`;
+        html += pendentes.map(u => {
+          const canApprove = (u.role === 'diretor') ? userRole === 'admin' : true;
           return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:.35rem">
             <div><div style="font-weight:600;color:var(--text)">${u.usuario}</div><div style="font-size:.73rem;color:var(--text3)">${roleLabel(u.role)}</div></div>
             <div style="display:flex;gap:.35rem">
-              ${canApprove?`<button class="btn btn-sm" style="background:var(--accent3);color:#111" onclick="aprovarUsuario('${u.id}','${u.role}')">✓ Aprovar</button>`:`<span style="font-size:.72rem;color:var(--text3)">Somente Admin</span>`}
+              ${canApprove ? `<button class="btn btn-sm" style="background:var(--accent3);color:#111" onclick="aprovarUsuario('${u.id}','${u.role}')">✓ Aprovar</button>` : `<span style="font-size:.72rem;color:var(--text3)">Somente Admin</span>`}
               <button class="btn btn-sm btn-danger" onclick="negarUsuario('${u.id}')">✕</button>
             </div></div>`;
         }).join('');
       }
-      if(ativos.length){
-        html+=`<div style="font-family:var(--font-mono);font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-top:1rem;margin-bottom:.5rem">✅ Ativos</div>`;
-        html+=ativos.map(u=>{
-          const docOn=!!u.doceria_acesso;
+      if (ativos.length) {
+        html += `<div style="font-family:var(--font-mono);font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-top:1rem;margin-bottom:.5rem">✅ Ativos</div>`;
+        html += ativos.map(u => {
+          const docOn = !!u.doceria_acesso;
           return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:.3rem">
             <div><div style="font-size:.85rem;font-weight:600;color:var(--text)">${u.usuario}</div><div style="font-size:.72rem;color:var(--text3)">${roleLabel(u.role)}</div></div>
             <div style="display:flex;align-items:center;gap:.65rem">
               <div class="toggle-wrap">
                 <label class="tgl" title="Acesso à Doceria">
-                  <input type="checkbox" ${docOn?'checked':''} onchange="toggleDoceiraAcesso('${u.id}',${docOn})"/>
+                  <input type="checkbox" ${docOn ? 'checked' : ''} onchange="toggleDoceiraAcesso('${u.id}',${docOn})"/>
                   <span class="tgl-slider"></span>
                 </label>
                 <span>🎂 Doceria</span>
               </div>
-              ${userRole==='admin'?`<button class="btn btn-ghost btn-icon btn-sm" onclick="removerUsuario('${u.id}')">🗑️</button>`:''}
+              ${userRole === 'admin' ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="removerUsuario('${u.id}')">🗑️</button>` : ''}
             </div>
           </div>`;
         }).join('');
       }
-      el.innerHTML=html;
+      el.innerHTML = html;
     }
 
     async function aprovarUsuario(id, role) {
-      if(role==='diretor'&&userRole!=='admin'){toast('Somente Admin pode aprovar Diretor','error');return;}
-      await db.collection('gda_usuarios').doc(id).update({status:'ativo'});
+      if (role === 'diretor' && userRole !== 'admin') { toast('Somente Admin pode aprovar Diretor', 'error'); return; }
+      await db.collection('gda_usuarios').doc(id).update({ status: 'ativo' });
       toast('Usuário aprovado!'); renderUsuariosLista();
     }
 
     async function negarUsuario(id) {
-      await db.collection('gda_usuarios').doc(id).update({status:'negado'});
-      toast('Acesso negado','info'); renderUsuariosLista();
+      await db.collection('gda_usuarios').doc(id).update({ status: 'negado' });
+      toast('Acesso negado', 'info'); renderUsuariosLista();
     }
 
     async function removerUsuario(id) {
       await db.collection('gda_usuarios').doc(id).delete();
-      toast('Usuário removido','info'); renderUsuariosLista();
+      toast('Usuário removido', 'info'); renderUsuariosLista();
     }
 
     async function toggleDoceiraAcesso(userId, current) {
-      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
-      await db.collection('gda_usuarios').doc(userId).update({doceria_acesso:!current});
-      toast(!current?'🎂 Acesso à Doceria ativado!':'Acesso à Doceria removido','info');
+      if (userRole !== 'admin' && userRole !== 'diretor') { toast('Sem permissão', 'error'); return; }
+      await db.collection('gda_usuarios').doc(userId).update({ doceria_acesso: !current });
+      toast(!current ? '🎂 Acesso à Doceria ativado!' : 'Acesso à Doceria removido', 'info');
       // If this user is currently logged in (same session), update their access in real-time
       applyDoceiraVisibility();
     }
 
     function applyDoceiraVisibility() {
       const tab = document.querySelector('[data-mod="doceria"]');
-      if(!tab) return;
+      if (!tab) return;
       // Admin and Diretor always have access
-      if(userRole==='admin'||userRole==='diretor'){
-        tab.style.display=''; return;
+      if (userRole === 'admin' || userRole === 'diretor') {
+        tab.style.display = ''; return;
       }
       // For others, check their Firestore user doc
-      if(!currentUser?.id){ tab.style.display='none'; return; }
-      const u = _usuarios.find(x=>x.id===currentUser.id);
-      if(u?.doceria_acesso){ tab.style.display=''; }
-      else { tab.style.display='none'; }
+      if (!currentUser?.id) { tab.style.display = 'none'; return; }
+      const u = _usuarios.find(x => x.id === currentUser.id);
+      if (u?.doceria_acesso) { tab.style.display = ''; }
+      else { tab.style.display = 'none'; }
     }
 
     async function criarUsuarioAdmin() {
-      const nome=(document.getElementById('new-user-nome')?.value||'').trim();
-      const senha=(document.getElementById('new-user-senha')?.value||'').trim();
-      const role=document.getElementById('new-user-role')?.value||'conselheiro';
-      if(!nome||!senha){toast('Preencha usuário e senha','error');return;}
-      if(role==='diretor'&&userRole!=='admin'){toast('Somente Admin pode criar Diretor','error');return;}
-      const snap=await db.collection('gda_usuarios').where('usuario','==',nome).where('role','==',role).get();
-      if(!snap.empty){toast('Usuário já existe','error');return;}
-      await db.collection('gda_usuarios').add({usuario:nome,nome,role,senha,status:'ativo',doceria_acesso:false,criadoEm:Date.now()});
+      const nome = (document.getElementById('new-user-nome')?.value || '').trim();
+      const senha = (document.getElementById('new-user-senha')?.value || '').trim();
+      const role = document.getElementById('new-user-role')?.value || 'conselheiro';
+      if (!nome || !senha) { toast('Preencha usuário e senha', 'error'); return; }
+      if (role === 'diretor' && userRole !== 'admin') { toast('Somente Admin pode criar Diretor', 'error'); return; }
+      const snap = await db.collection('gda_usuarios').where('usuario', '==', nome).where('role', '==', role).get();
+      if (!snap.empty) { toast('Usuário já existe', 'error'); return; }
+      await db.collection('gda_usuarios').add({ usuario: nome, nome, role, senha, status: 'ativo', doceria_acesso: false, criadoEm: Date.now() });
       toast('Usuário criado!');
-      document.getElementById('new-user-nome').value='';
-      document.getElementById('new-user-senha').value='';
-      document.getElementById('create-user-form').style.display='none';
+      document.getElementById('new-user-nome').value = '';
+      document.getElementById('new-user-senha').value = '';
+      document.getElementById('create-user-form').style.display = 'none';
       renderUsuariosLista();
     }
 
@@ -4422,40 +4501,40 @@
        METAS DOCERIA
     ═══════════════════════════════════════════════════════════ */
     function addMetaDoceria() {
-      const desc=(document.getElementById('meta-doc-desc')?.value||'').trim();
-      const val=parseFloat(document.getElementById('meta-doc-valor')?.value);
-      if(!desc||!val||val<=0){toast('Preencha descrição e valor','error');return;}
-      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
-      db.collection('gda_metas_doceria').add({descricao:desc,valor_alvo:val,criadoEm:Date.now()})
-        .then(()=>{document.getElementById('meta-doc-desc').value='';document.getElementById('meta-doc-valor').value='';toast('🎯 Meta da Doceria criada!')})
-        .catch(()=>toast('Erro ao salvar','error'));
+      const desc = (document.getElementById('meta-doc-desc')?.value || '').trim();
+      const val = parseFloat(document.getElementById('meta-doc-valor')?.value);
+      if (!desc || !val || val <= 0) { toast('Preencha descrição e valor', 'error'); return; }
+      if (userRole !== 'admin' && userRole !== 'diretor') { toast('Sem permissão', 'error'); return; }
+      db.collection('gda_metas_doceria').add({ descricao: desc, valor_alvo: val, criadoEm: Date.now() })
+        .then(() => { document.getElementById('meta-doc-desc').value = ''; document.getElementById('meta-doc-valor').value = ''; toast('🎯 Meta da Doceria criada!') })
+        .catch(() => toast('Erro ao salvar', 'error'));
     }
 
     function deleteMetaDoceria(id) {
-      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
-      db.collection('gda_metas_doceria').doc(id).delete().then(()=>toast('Meta removida','info'));
+      if (userRole !== 'admin' && userRole !== 'diretor') { toast('Sem permissão', 'error'); return; }
+      db.collection('gda_metas_doceria').doc(id).delete().then(() => toast('Meta removida', 'info'));
     }
 
     function renderMetasDoceria() {
-      const heroEl=document.getElementById('doc-meta-hero');
-      const listEl=document.getElementById('metas-doceria-list');
-      const receita=APP.doceria.pedidos.filter(p=>p.status!=='cancelado').reduce((s,p)=>s+p.valor,0);
-      if(heroEl){
-        if(_metasDoceria.length){
-          const m=_metasDoceria[0];
-          const pct=Math.min(100,Math.round((receita/m.valor_alvo)*100));
-          const over=receita>=m.valor_alvo;
-          heroEl.innerHTML=`<div class="goal-hero"><div class="goal-hero-header"><div class="goal-hero-title">🎂 ${m.descricao}</div><div class="goal-hero-value">${fmt(receita)} / ${fmt(m.valor_alvo)}</div></div><div class="progress-track"><div class="progress-fill ${over?'over':''}" id="doc-hero-fill" style="width:0%"></div></div><div class="goal-footer"><span>${pct}% concluído</span><span>${over?'🎉 Meta atingida!':fmt(m.valor_alvo-receita)+' restante'}</span></div></div>`;
-          setTimeout(()=>{const f=document.getElementById('doc-hero-fill');if(f)f.style.width=pct+'%';},80);
-        } else heroEl.innerHTML='';
+      const heroEl = document.getElementById('doc-meta-hero');
+      const listEl = document.getElementById('metas-doceria-list');
+      const receita = APP.doceria.pedidos.filter(p => p.status !== 'cancelado').reduce((s, p) => s + p.valor, 0);
+      if (heroEl) {
+        if (_metasDoceria.length) {
+          const m = _metasDoceria[0];
+          const pct = Math.min(100, Math.round((receita / m.valor_alvo) * 100));
+          const over = receita >= m.valor_alvo;
+          heroEl.innerHTML = `<div class="goal-hero"><div class="goal-hero-header"><div class="goal-hero-title">🎂 ${m.descricao}</div><div class="goal-hero-value">${fmt(receita)} / ${fmt(m.valor_alvo)}</div></div><div class="progress-track"><div class="progress-fill ${over ? 'over' : ''}" id="doc-hero-fill" style="width:0%"></div></div><div class="goal-footer"><span>${pct}% concluído</span><span>${over ? '🎉 Meta atingida!' : fmt(m.valor_alvo - receita) + ' restante'}</span></div></div>`;
+          setTimeout(() => { const f = document.getElementById('doc-hero-fill'); if (f) f.style.width = pct + '%'; }, 80);
+        } else heroEl.innerHTML = '';
       }
-      if(!listEl)return;
-      if(!_metasDoceria.length){listEl.innerHTML='<div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div>';return;}
-      listEl.innerHTML=_metasDoceria.map(m=>{
-        const pct=Math.min(100,Math.round((receita/m.valor_alvo)*100));
-        const over=receita>=m.valor_alvo;
-        const canDel=userRole==='admin'||userRole==='diretor';
-        return `<div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem"><span style="font-weight:600;color:var(--text)">${m.descricao}</span><div style="display:flex;gap:.35rem;align-items:center"><span style="font-family:var(--font-mono);font-size:.8rem;color:var(--text3)">${fmt(m.valor_alvo)}</span>${canDel?`<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMetaDoceria('${m.id}')">🗑️</button>`:''}</div></div><div class="progress-track" style="height:8px"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div><div class="goal-footer"><span>${pct}%</span><span>${fmt(receita)} arrecadado</span></div></div>`;
+      if (!listEl) return;
+      if (!_metasDoceria.length) { listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div>'; return; }
+      listEl.innerHTML = _metasDoceria.map(m => {
+        const pct = Math.min(100, Math.round((receita / m.valor_alvo) * 100));
+        const over = receita >= m.valor_alvo;
+        const canDel = userRole === 'admin' || userRole === 'diretor';
+        return `<div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem"><span style="font-weight:600;color:var(--text)">${m.descricao}</span><div style="display:flex;gap:.35rem;align-items:center"><span style="font-family:var(--font-mono);font-size:.8rem;color:var(--text3)">${fmt(m.valor_alvo)}</span>${canDel ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMetaDoceria('${m.id}')">🗑️</button>` : ''}</div></div><div class="progress-track" style="height:8px"><div class="progress-fill ${over ? 'over' : ''}" style="width:${pct}%"></div></div><div class="goal-footer"><span>${pct}%</span><span>${fmt(receita)} arrecadado</span></div></div>`;
       }).join('');
     }
 
@@ -4463,40 +4542,40 @@
        METAS VENDAS
     ═══════════════════════════════════════════════════════════ */
     function addMetaVendas() {
-      const desc=(document.getElementById('meta-vnd-desc')?.value||'').trim();
-      const val=parseFloat(document.getElementById('meta-vnd-valor')?.value);
-      if(!desc||!val||val<=0){toast('Preencha descrição e valor','error');return;}
-      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
-      db.collection('gda_metas_vendas').add({descricao:desc,valor_alvo:val,criadoEm:Date.now()})
-        .then(()=>{document.getElementById('meta-vnd-desc').value='';document.getElementById('meta-vnd-valor').value='';toast('🎯 Meta de Vendas criada!')})
-        .catch(()=>toast('Erro ao salvar','error'));
+      const desc = (document.getElementById('meta-vnd-desc')?.value || '').trim();
+      const val = parseFloat(document.getElementById('meta-vnd-valor')?.value);
+      if (!desc || !val || val <= 0) { toast('Preencha descrição e valor', 'error'); return; }
+      if (userRole !== 'admin' && userRole !== 'diretor') { toast('Sem permissão', 'error'); return; }
+      db.collection('gda_metas_vendas').add({ descricao: desc, valor_alvo: val, criadoEm: Date.now() })
+        .then(() => { document.getElementById('meta-vnd-desc').value = ''; document.getElementById('meta-vnd-valor').value = ''; toast('🎯 Meta de Vendas criada!') })
+        .catch(() => toast('Erro ao salvar', 'error'));
     }
 
     function deleteMetaVendas(id) {
-      if(userRole!=='admin'&&userRole!=='diretor'){toast('Sem permissão','error');return;}
-      db.collection('gda_metas_vendas').doc(id).delete().then(()=>toast('Meta removida','info'));
+      if (userRole !== 'admin' && userRole !== 'diretor') { toast('Sem permissão', 'error'); return; }
+      db.collection('gda_metas_vendas').doc(id).delete().then(() => toast('Meta removida', 'info'));
     }
 
     function renderMetasVendas() {
-      const heroEl=document.getElementById('vnd-meta-hero');
-      const listEl=document.getElementById('metas-vendas-list');
-      const recTotal=APP.vendas.vendas.reduce((s,v)=>s+calcVenda(v).receita,0);
-      if(heroEl){
-        if(_metasVendas.length){
-          const m=_metasVendas[0];
-          const pct=Math.min(100,Math.round((recTotal/m.valor_alvo)*100));
-          const over=recTotal>=m.valor_alvo;
-          heroEl.innerHTML=`<div class="goal-hero"><div class="goal-hero-header"><div class="goal-hero-title">🥧 ${m.descricao}</div><div class="goal-hero-value">${fmt(recTotal)} / ${fmt(m.valor_alvo)}</div></div><div class="progress-track"><div class="progress-fill ${over?'over':''}" id="vnd-hero-fill" style="width:0%"></div></div><div class="goal-footer"><span>${pct}% concluído</span><span>${over?'🎉 Meta atingida!':fmt(m.valor_alvo-recTotal)+' restante'}</span></div></div>`;
-          setTimeout(()=>{const f=document.getElementById('vnd-hero-fill');if(f)f.style.width=pct+'%';},80);
-        } else heroEl.innerHTML='';
+      const heroEl = document.getElementById('vnd-meta-hero');
+      const listEl = document.getElementById('metas-vendas-list');
+      const recTotal = APP.vendas.vendas.reduce((s, v) => s + calcVenda(v).receita, 0);
+      if (heroEl) {
+        if (_metasVendas.length) {
+          const m = _metasVendas[0];
+          const pct = Math.min(100, Math.round((recTotal / m.valor_alvo) * 100));
+          const over = recTotal >= m.valor_alvo;
+          heroEl.innerHTML = `<div class="goal-hero"><div class="goal-hero-header"><div class="goal-hero-title">🥧 ${m.descricao}</div><div class="goal-hero-value">${fmt(recTotal)} / ${fmt(m.valor_alvo)}</div></div><div class="progress-track"><div class="progress-fill ${over ? 'over' : ''}" id="vnd-hero-fill" style="width:0%"></div></div><div class="goal-footer"><span>${pct}% concluído</span><span>${over ? '🎉 Meta atingida!' : fmt(m.valor_alvo - recTotal) + ' restante'}</span></div></div>`;
+          setTimeout(() => { const f = document.getElementById('vnd-hero-fill'); if (f) f.style.width = pct + '%'; }, 80);
+        } else heroEl.innerHTML = '';
       }
-      if(!listEl)return;
-      if(!_metasVendas.length){listEl.innerHTML='<div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div>';return;}
-      listEl.innerHTML=_metasVendas.map(m=>{
-        const pct=Math.min(100,Math.round((recTotal/m.valor_alvo)*100));
-        const over=recTotal>=m.valor_alvo;
-        const canDel=userRole==='admin'||userRole==='diretor';
-        return `<div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem"><span style="font-weight:600;color:var(--text)">${m.descricao}</span><div style="display:flex;gap:.35rem;align-items:center"><span style="font-family:var(--font-mono);font-size:.8rem;color:var(--text3)">${fmt(m.valor_alvo)}</span>${canDel?`<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMetaVendas('${m.id}')">🗑️</button>`:''}</div></div><div class="progress-track" style="height:8px"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div><div class="goal-footer"><span>${pct}%</span><span>${fmt(recTotal)} arrecadado</span></div></div>`;
+      if (!listEl) return;
+      if (!_metasVendas.length) { listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div>'; return; }
+      listEl.innerHTML = _metasVendas.map(m => {
+        const pct = Math.min(100, Math.round((recTotal / m.valor_alvo) * 100));
+        const over = recTotal >= m.valor_alvo;
+        const canDel = userRole === 'admin' || userRole === 'diretor';
+        return `<div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem"><span style="font-weight:600;color:var(--text)">${m.descricao}</span><div style="display:flex;gap:.35rem;align-items:center"><span style="font-family:var(--font-mono);font-size:.8rem;color:var(--text3)">${fmt(m.valor_alvo)}</span>${canDel ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMetaVendas('${m.id}')">🗑️</button>` : ''}</div></div><div class="progress-track" style="height:8px"><div class="progress-fill ${over ? 'over' : ''}" style="width:${pct}%"></div></div><div class="goal-footer"><span>${pct}%</span><span>${fmt(recTotal)} arrecadado</span></div></div>`;
       }).join('');
     }
 
@@ -4511,97 +4590,43 @@
       const custos = gastos.reduce((s, g) => s + g.valor, 0);
       const lucro = receita - custos;
       const recTotal = APP.doceria.pedidos.filter(p => p.status !== 'cancelado').reduce((s, p) => s + p.valor, 0);
-      
       let metaHtml = '';
       if (_metasDoceria.length) {
         const m = _metasDoceria[0];
         const pct = Math.min(100, Math.round((recTotal / m.valor_alvo) * 100));
         metaHtml = `<div style="margin-bottom:1.5rem;padding:1rem;border:1px solid #ccc;border-radius:8px"><div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:.5rem"><span>🎯 ${m.descricao}</span><span>${fmt(recTotal)} / ${fmt(m.valor_alvo)}</span></div><div style="width:100%;height:10px;background:#eee;border-radius:99px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#4ade80;border-radius:99px"></div></div><div style="display:flex;justify-content:space-between;font-size:.78rem;color:#555;margin-top:.25rem"><span>${pct}% concluído</span><span>${pct >= 100 ? '🎉 Meta atingida!' : fmt(m.valor_alvo - recTotal) + ' restante'}</span></div></div>`;
       }
-      
       const rowsPed = peds.map(p => `<tr><td>${p.data}</td><td>${p.cliente || '-'}</td><td>${p.produto}</td><td style="text-align:center">${p.qty}</td><td class="print-positive" style="text-align:right">${fmt(p.valor)}</td></tr>`).join('');
       const rowsGas = gastos.map(g => `<tr><td>${g.data}</td><td colspan="2">${g.desc}</td><td>${g.cat}</td><td class="print-negative" style="text-align:right">-${fmt(g.valor)}</td></tr>`).join('');
-      const chartSVG = getPrintChartSVG(receita, custos);
-
-      document.getElementById('print-zone').innerHTML = `
-        <div class="print-header">
-          <div class="print-header-icon">🎂</div>
-          <div>
-            <div class="print-title">Guerreiros do Alto</div>
-            <div class="print-subtitle">Extrato — Doceria</div>
-          </div>
-        </div>
-        <div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome || userRole || '-'}</div>
-        ${chartSVG}
-        ${metaHtml}
-        <table class="print-table">
-          <thead><tr><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Valor</th></tr></thead>
-          <tbody>${rowsPed || '<tr><td colspan="5" style="text-align:center;color:#999">Sem pedidos</td></tr>'}</tbody>
-        </table>
-        ${gastos.length ? `
-        <table class="print-table" style="margin-top:1rem">
-          <thead><tr><th>Data</th><th colspan="2">Gasto</th><th>Categoria</th><th style="text-align:right">Valor</th></tr></thead>
-          <tbody>${rowsGas}</tbody>
-        </table>` : ''}
-        <table class="print-table" style="margin-top:1rem">
-          <tfoot>
-            <tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Total</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td></tr>
-            <tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.4rem .75rem">Custos Totais</td><td class="print-negative" style="text-align:right;padding:.4rem .75rem">-${fmt(custos)}</td></tr>
-            <tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro do Período</td><td class="${lucro >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td></tr>
-          </tfoot>
-        </table>
-        <div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Doceria</div></div>`;
+      document.getElementById('print-zone').innerHTML = `<div class="print-header"><div class="print-header-icon">🎂</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato — Doceria</div></div></div><div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome || userRole || '-'}</div>${metaHtml}<table class="print-table"><thead><tr><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rowsPed || '<tr><td colspan="5" style="text-align:center;color:#999">Sem pedidos</td></tr>'}</tbody></table>${gastos.length ? `<table class="print-table" style="margin-top:1rem"><thead><tr><th>Data</th><th colspan="2">Gasto</th><th>Categoria</th><th style="text-align:right">Valor</th></tr></thead><tbody>${rowsGas}</tbody></table>` : ''}<table class="print-table" style="margin-top:1rem"><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Total</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.4rem .75rem">Custos Totais</td><td class="print-negative" style="text-align:right;padding:.4rem .75rem">-${fmt(custos)}</td></tr><tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro do Período</td><td class="${lucro >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Doceria</div></div>`;
       window.print();
     }
-
 
     /* ═══════════════════════════════════════════════════════════
        EXTRATO PDF - VENDAS
     ═══════════════════════════════════════════════════════════ */
     function imprimirExtratoVendas() {
-      const month=document.getElementById('vnd-filter-month')?.value||today().slice(0,7);
-      const vendas=APP.vendas.vendas.filter(v=>monthKey(v.data)===month).sort((a,b)=>a.data.localeCompare(b.data));
-      const avarias=APP.vendas.avarias.filter(a=>monthKey(a.data)===month);
-      let receita=0,custo=0,comissao=0,lucro=0;
-      vendas.forEach(v=>{const c=calcVenda(v);receita+=c.receita;custo+=c.custo;comissao+=c.comissao;lucro+=c.lucro;});
-      const perdas=avarias.reduce((s,a)=>{const p=APP.vendas.produtos.find(x=>x.id===a.produtoId);return s+(p?.custo||0)*a.qty;},0);
-      const recTotal=APP.vendas.vendas.reduce((s,v)=>s+calcVenda(v).receita,0);
-      let metaHtml='';
-      if(_metasVendas.length){
-        const m=_metasVendas[0];
-        const pct=Math.min(100,Math.round((recTotal/m.valor_alvo)*100));
-        metaHtml=`<div style="margin-bottom:1.5rem;padding:1rem;border:1px solid #ccc;border-radius:8px"><div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:.5rem"><span>🎯 ${m.descricao}</span><span>${fmt(recTotal)} / ${fmt(m.valor_alvo)}</span></div><div style="width:100%;height:10px;background:#eee;border-radius:99px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#4ade80;border-radius:99px"></div></div><div style="display:flex;justify-content:space-between;font-size:.78rem;color:#555;margin-top:.25rem"><span>${pct}% concluído</span><span>${pct>=100?'🎉 Meta atingida!':fmt(m.valor_alvo-recTotal)+' restante'}</span></div></div>`;
+      const month = document.getElementById('vnd-filter-month')?.value || today().slice(0, 7);
+      const vendas = APP.vendas.vendas.filter(v => monthKey(v.data) === month).sort((a, b) => a.data.localeCompare(b.data));
+      const avarias = APP.vendas.avarias.filter(a => monthKey(a.data) === month);
+      let receita = 0, custo = 0, comissao = 0, lucro = 0;
+      vendas.forEach(v => { const c = calcVenda(v); receita += c.receita; custo += c.custo; comissao += c.comissao; lucro += c.lucro; });
+      const perdas = avarias.reduce((s, a) => { const p = APP.vendas.produtos.find(x => x.id === a.produtoId); return s + (p?.custo || 0) * a.qty; }, 0);
+      const recTotal = APP.vendas.vendas.reduce((s, v) => s + calcVenda(v).receita, 0);
+      let metaHtml = '';
+      if (_metasVendas.length) {
+        const m = _metasVendas[0];
+        const pct = Math.min(100, Math.round((recTotal / m.valor_alvo) * 100));
+        metaHtml = `<div style="margin-bottom:1.5rem;padding:1rem;border:1px solid #ccc;border-radius:8px"><div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:.5rem"><span>🎯 ${m.descricao}</span><span>${fmt(recTotal)} / ${fmt(m.valor_alvo)}</span></div><div style="width:100%;height:10px;background:#eee;border-radius:99px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#4ade80;border-radius:99px"></div></div><div style="display:flex;justify-content:space-between;font-size:.78rem;color:#555;margin-top:.25rem"><span>${pct}% concluído</span><span>${pct >= 100 ? '🎉 Meta atingida!' : fmt(m.valor_alvo - recTotal) + ' restante'}</span></div></div>`;
       }
-      const rows=vendas.map(v=>{
-        const prod=APP.vendas.produtos.find(p=>p.id===v.produtoId);
-        const seller=APP.vendas.vendedores.find(s=>s.id===v.vendedorId);
-        const c=calcVenda(v);
-        let dq=v.qty||0;if(prod?.isMulti&&v.qty2)dq=`${v.qty||0}u/${v.qty2}c`;
-        return `<tr><td>${v.data}</td><td>${seller?.nome||'-'}</td><td>${prod?.nome||'-'}</td><td style="text-align:center">${dq}</td><td class="print-positive" style="text-align:right">${fmt(c.receita)}</td><td style="text-align:right;color:#555">${fmt(c.comissao)}</td><td class="${c.lucro>=0?'print-positive':'print-negative'}" style="text-align:right">${fmt(c.lucro)}</td></tr>`;
+      const rows = vendas.map(v => {
+        const prod = APP.vendas.produtos.find(p => p.id === v.produtoId);
+        const seller = APP.vendas.vendedores.find(s => s.id === v.vendedorId);
+        const c = calcVenda(v);
+        let dq = v.qty || 0; if (prod?.isMulti && v.qty2) dq = `${v.qty || 0}u/${v.qty2}c`;
+        return `<tr><td>${v.data}</td><td>${seller?.nome || '-'}</td><td>${prod?.nome || '-'}</td><td style="text-align:center">${dq}</td><td class="print-positive" style="text-align:right">${fmt(c.receita)}</td><td style="text-align:right;color:#555">${fmt(c.comissao)}</td><td class="${c.lucro >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right">${fmt(c.lucro)}</td></tr>`;
       }).join('');
-      const chartSVG = getPrintChartSVG(receita, custo + perdas);
-      document.getElementById('print-zone').innerHTML = `
-        <div class="print-header">
-          <div class="print-header-icon">🥧</div>
-          <div>
-            <div class="print-title">Guerreiros do Alto</div>
-            <div class="print-subtitle">Extrato — Vendas (Tortinhas)</div>
-          </div>
-        </div>
-        <div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome || userRole || '-'}</div>
-        ${chartSVG}
-        ${metaHtml}
-        <table class="print-table">
-          <thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Receita</th><th style="text-align:right">Comissão</th><th style="text-align:right">Lucro</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="7" style="text-align:center;color:#999">Sem vendas</td></tr>'}</tbody>
-          <tfoot>
-            <tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Bruta</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td><td colspan="2"></td></tr>
-            <tr style="font-weight:700"><td colspan="4" style="text-align:right">Comissões</td><td style="text-align:right">${fmt(comissao)}</td><td colspan="2"></td></tr>
-            ${avarias.length ? `<tr style="font-weight:700"><td colspan="4" style="text-align:right">Perdas (Avarias)</td><td class="print-negative" style="text-align:right">-${fmt(perdas)}</td><td colspan="2"></td></tr>` : ''}
-            <tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro Líquido</td><td class="${lucro >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td><td colspan="2"></td></tr>
-          </tfoot>
-        </table>
-        <div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Vendas</div></div>`;
+      document.getElementById('print-zone').innerHTML = `<div class="print-header"><div class="print-header-icon">🥧</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato — Vendas (Tortinhas)</div></div></div><div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome || userRole || '-'}</div>${metaHtml}<table class="print-table"><thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Receita</th><th style="text-align:right">Comissão</th><th style="text-align:right">Lucro</th></tr></thead><tbody>${rows || '<tr><td colspan="7" style="text-align:center;color:#999">Sem vendas</td></tr>'}</tbody><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Bruta</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td><td colspan="2"></td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right">Comissões</td><td style="text-align:right">${fmt(comissao)}</td><td colspan="2"></td></tr>${avarias.length ? `<tr style="font-weight:700"><td colspan="4" style="text-align:right">Perdas (Avarias)</td><td class="print-negative" style="text-align:right">-${fmt(perdas)}</td><td colspan="2"></td></tr>` : ''}<tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro Líquido</td><td class="${lucro >= 0 ? 'print-positive' : 'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td><td colspan="2"></td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Vendas</div></div>`;
       window.print();
     }
 
@@ -4680,18 +4705,18 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '🌙' : '🌑';
       // Datas padrão
-      ['clube-data','doc-data','doc-gasto-data','vnd-data','av-data','deb-data']
-        .forEach(id=>{const el=document.getElementById(id);if(el)el.value=today();});
+      ['clube-data', 'doc-data', 'doc-gasto-data', 'vnd-data', 'av-data', 'deb-data']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = today(); });
       // Restore session
       const saved = localStorage.getItem('gda_session');
-      if(saved){
-        try{
-          const u=JSON.parse(saved);
-          currentUser=u; userRole=u.role;
+      if (saved) {
+        try {
+          const u = JSON.parse(saved);
+          currentUser = u; userRole = u.role;
           finishLogin();
-        }catch(e){ localStorage.removeItem('gda_session'); }
+        } catch (e) { localStorage.removeItem('gda_session'); }
       }
-      if(!userRole) renderClube();
+      if (!userRole) renderClube();
     }
 
     init();
