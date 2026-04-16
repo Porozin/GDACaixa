@@ -1339,6 +1339,10 @@
       <span class="tab-icon">🥧</span>
       <span class="tab-label">Vendas</span>
     </button>
+    <button class="mod-tab admin-only" data-mod="privado" onclick="switchModule('privado')">
+      <span class="tab-icon">🔐</span>
+      <span class="tab-label">Controle Interno</span>
+    </button>
   </nav>
 
   <!-- ═══ CONTEÚDO PRINCIPAL ═══════════════════════════════════════ -->
@@ -1355,6 +1359,7 @@
           <span id="badge-metas" class="badge badge-pending"
             style="padding:2px 6px;margin-left:4px;display:none">0</span></button>
         <button class="section-tab" onclick="showSecTab(this,'clube-unidades')">Unidades</button>
+        <button class="section-tab" onclick="showSecTab(this,'clube-materia')">📦 Estoque</button>
         <button class="section-tab admin-only" onclick="showSecTab(this,'clube-apr')" id="tab-clube-apr">Aprovações
           <span id="badge-sug" class="badge badge-red"
             style="padding:2px 6px;margin-left:4px;display:none">0</span></button>
@@ -1415,6 +1420,7 @@
               <select id="clube-cat">
                 <option>Mensalidade</option>
                 <option>Doação</option>
+                <option>Venda</option>
                 <option>Evento</option>
                 <option>Material</option>
                 <option>Taxa</option>
@@ -1580,10 +1586,54 @@
     <section class="module" id="mod-doceria">
       <div class="section-tabs">
         <button class="section-tab active" onclick="showSecTab(this,'doc-dash')">Dashboard</button>
+        <button class="section-tab" onclick="showSecTab(this,'doc-entradas')">📥 Entradas</button>
         <button class="section-tab" onclick="showSecTab(this,'doc-pedidos')">Pedidos</button>
         <button class="section-tab" onclick="showSecTab(this,'doc-materia')">Matéria-Prima</button>
         <button class="section-tab" onclick="showSecTab(this,'doc-gastos')">Gastos</button>
         <button class="section-tab edit-only" onclick="showSecTab(this,'doc-metas')">🎯 Metas</button>
+      </div>
+
+      <!-- Entradas Doceria -->
+      <div class="section-panel" id="doc-entradas">
+        <div class="card">
+          <div class="card-title"><div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Registrar Entrada</div></div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Valor (R$)</label>
+              <input type="number" id="doc-ent-valor" placeholder="0,00" min="0" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label>Categoria</label>
+              <select id="doc-ent-cat">
+                <option>Venda</option>
+                <option>Produção</option>
+                <option>Evento</option>
+                <option>Outros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="doc-ent-data" />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Descrição</label>
+              <input type="text" id="doc-ent-desc" placeholder="Detalhe desta entrada..." />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="addDocEntrada()">✚ Registrar Entrada</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="card-title-left"><span class="dot"></span>Histórico de Entradas</div></div>
+          <div class="filter-bar"><select id="doc-ent-month" onchange="renderDocEntradas()"></select></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Categoria</th><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+              <tbody id="doc-ent-body"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- Dashboard Doceria -->
@@ -1696,6 +1746,13 @@
               <label>Custo (R$)</label>
               <input type="number" id="mat-custo" placeholder="0,00" min="0" step="0.01" />
             </div>
+            <div class="form-group">
+              <label>Módulo</label>
+              <select id="mat-modulo">
+                <option value="doceria">Doceria</option>
+                <option value="clube">Clube</option>
+              </select>
+            </div>
           </div>
           <div class="form-actions">
             <button class="btn btn-primary" onclick="addMateria()">✚ Adicionar</button>
@@ -1792,6 +1849,8 @@
       <div class="section-tabs">
         <button class="section-tab active" onclick="showSecTab(this,'vnd-dash')">Dashboard</button>
         <button class="section-tab" onclick="showSecTab(this,'vnd-venda')">Registrar Venda</button>
+        <button class="section-tab edit-only" onclick="showSecTab(this,'vnd-comissoes')">💸 Comissões
+          <span id="badge-comissoes" class="badge badge-red" style="margin-left:4px;display:none">0</span></button>
         <button class="section-tab edit-only" onclick="showSecTab(this,'vnd-produtos')">Produtos</button>
         <button class="section-tab edit-only" onclick="showSecTab(this,'vnd-vendedores')">Vendedores</button>
         <button class="section-tab edit-only" onclick="showSecTab(this,'vnd-controle')">Controle</button>
@@ -1979,6 +2038,33 @@
         </div>
       </div>
 
+      <!-- Comissões -->
+      <div class="section-panel" id="vnd-comissoes">
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:#60a5fa"></span>Comissões por Venda</div>
+          </div>
+          <div class="filter-bar">
+            <select id="com-filter-month" onchange="renderComissoes()"></select>
+            <select id="com-filter-status" onchange="renderComissoes()">
+              <option value="">Todas</option>
+              <option value="pendente">Pendentes</option>
+              <option value="pago">Pagas</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th><th>Vendedor</th><th>Produto</th><th>Comissão</th><th>Status</th><th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="com-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- Metas Vendas -->
       <div class="section-panel edit-only" id="vnd-metas">
         <div class="card">
@@ -2101,6 +2187,68 @@
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════════
+     MÓDULO: CONTROLE INTERNO (Admin / Diretor)
+══════════════════════════════════════════ -->
+    <section class="module" id="mod-privado">
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="showSecTab(this,'priv-lista')">Dívidas</button>
+      </div>
+      <div class="section-panel active" id="priv-lista">
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Registrar Dívida</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nome / Devedor</label>
+              <input type="text" id="priv-nome" placeholder="Nome da pessoa ou entidade" />
+            </div>
+            <div class="form-group">
+              <label>Valor (R$)</label>
+              <input type="number" id="priv-valor" placeholder="0,00" min="0" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="priv-data" />
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="priv-status">
+                <option value="aberto">Aberto</option>
+                <option value="pago">Pago</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Observação (sigilosa)</label>
+              <input type="text" id="priv-obs" placeholder="Detalhes internos..." />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="addDivida()">✚ Registrar</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot"></span>Dívidas Registradas</div>
+          </div>
+          <div class="filter-bar">
+            <select id="priv-filter-status" onchange="renderPrivado()">
+              <option value="">Todas</option>
+              <option value="aberto">Em Aberto</option>
+              <option value="pago">Pagas</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Nome</th><th>Valor</th><th>Status</th><th>Obs.</th><th></th></tr></thead>
+              <tbody id="priv-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ═══ ZONA DE IMPRESSÃO (só visível no Print/PDF) ════════════════ -->
@@ -2174,7 +2322,7 @@
 
     let APP = {
       clube: { transactions: [], sugestoes: [] },
-      doceria: { pedidos: [], materias: [], gastos: [] },
+      doceria: { pedidos: [], materias: [], gastos: [], entradas: [] },
       vendas: { vendas: [], produtos: [], vendedores: [], avarias: [], debitos: [] }
     };
 
@@ -2189,7 +2337,8 @@
     let _usuarios = [];
     let _metasDoceria = [];
     let _metasVendas = [];
-    let _unsubUsuarios=null, _unsubMetasDoceria=null, _unsubMetasVendas=null;
+    let _privado = []; // dívidas privadas
+    let _unsubUsuarios=null, _unsubMetasDoceria=null, _unsubMetasVendas=null, _unsubPrivado=null;
 
     function showLoginMsg(msg, type='info') {
       const el = document.getElementById('login-msg');
@@ -2261,6 +2410,7 @@
         if(vg) vg.style.display='none';
       }
       renderClube(); renderDoceria(); renderVendas();
+      if (userRole === 'admin') renderPrivado();
       applyDoceiraVisibility();
       toast('Bem-vindo, '+(currentUser?.nome||userRole)+'!');
     }
@@ -2317,6 +2467,15 @@
         _metasUnidade = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         if (userRole) { renderUnidades(); }
       });
+
+      // Listener Controle Interno (só admin)
+      if (_unsubPrivado) _unsubPrivado();
+      if (userRole === 'admin') {
+        _unsubPrivado = db.collection('gda_privado').orderBy('criadoEm').onSnapshot(snap => {
+          _privado = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderPrivado();
+        });
+      }
     }
 
     // ── Carregar/Salvar na Nuvem ─────────────────────────────────────
@@ -2396,6 +2555,7 @@
        NAVEGAÇÃO
     ═══════════════════════════════════════════════════════════ */
     function switchModule(mod) {
+      if (mod === 'privado' && userRole !== 'admin') { toast('Acesso restrito', 'error'); return; }
       document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
       document.querySelectorAll('.mod-tab').forEach(t => t.classList.remove('active'));
       document.getElementById(`mod-${mod}`).classList.add('active');
@@ -2403,6 +2563,7 @@
       if (mod === 'clube') renderClube();
       if (mod === 'doceria') renderDoceria();
       if (mod === 'vendas') renderVendas();
+      if (mod === 'privado') renderPrivado();
     }
 
     function showSecTab(btn, panelId) {
@@ -2654,6 +2815,7 @@
       renderAprovacoes();
       renderMetasClube();
       renderUnidades();
+      renderMateriaListClube();
 
       const addBtn = document.getElementById('btn-add-clube');
       const tipoSel = document.getElementById('clube-tipo');
@@ -3103,8 +3265,9 @@
       const nome = document.getElementById('mat-nome').value.trim();
       const qtd = document.getElementById('mat-qtd').value.trim();
       const custo = parseFloat(document.getElementById('mat-custo').value) || 0;
+      const modulo = document.getElementById('mat-modulo')?.value || 'doceria';
       if (!nome) { toast('Informe o nome', 'error'); return; }
-      APP.doceria.materias.push({ id: uuid(), nome, qtd, custo });
+      APP.doceria.materias.push({ id: uuid(), nome, qtd, custo, modulo });
       saveData(); renderDoceria(); toast('Matéria-prima adicionada!');
       ['mat-nome', 'mat-qtd', 'mat-custo'].forEach(id => document.getElementById(id).value = '');
     }
@@ -3130,17 +3293,53 @@
       saveData(); renderDoceria(); toast('Removido', 'info');
     }
 
+    function addDocEntrada() {
+      const valor = parseFloat(document.getElementById('doc-ent-valor').value);
+      const categoria = document.getElementById('doc-ent-cat').value;
+      const data = document.getElementById('doc-ent-data').value || today();
+      const descricao = document.getElementById('doc-ent-desc').value.trim();
+      if (!valor || valor <= 0) { toast('Informe um valor válido', 'error'); return; }
+      if (!APP.doceria.entradas) APP.doceria.entradas = [];
+      APP.doceria.entradas.push({ id: uuid(), valor, categoria, data, descricao });
+      saveData(); renderDoceria(); toast('Entrada registrada!');
+      ['doc-ent-valor', 'doc-ent-desc'].forEach(id => document.getElementById(id).value = '');
+    }
+
+    function deleteDocEntrada(id) {
+      APP.doceria.entradas = (APP.doceria.entradas || []).filter(e => e.id !== id);
+      saveData(); renderDoceria(); toast('Removido', 'info');
+    }
+
+    function renderDocEntradas() {
+      if (!APP.doceria.entradas) APP.doceria.entradas = [];
+      const month = document.getElementById('doc-ent-month')?.value || today().slice(0, 7);
+      const ents = APP.doceria.entradas.filter(e => monthKey(e.data) === month).sort((a, b) => b.data.localeCompare(a.data));
+      const body = document.getElementById('doc-ent-body');
+      if (!body) return;
+      if (!ents.length) { body.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">💵</div><p>Nenhuma entrada registrada</p></div></td></tr>`; return; }
+      body.innerHTML = ents.map(e => `
+    <tr>
+      <td class="text-mono">${e.data}</td>
+      <td><span class="badge badge-green">${e.categoria}</span></td>
+      <td>${e.descricao || '-'}</td>
+      <td class="text-mono positive">+${fmt(e.valor)}</td>
+      <td><button class="btn btn-ghost btn-icon btn-sm" onclick="deleteDocEntrada('${e.id}')">🗑️</button></td>
+    </tr>`).join('');
+    }
+
     let docChartInst = null;
 
     function renderDoceria() {
-      const allDates = [...APP.doceria.pedidos, ...APP.doceria.gastos];
+      if (!APP.doceria.entradas) APP.doceria.entradas = [];
+      const allDates = [...APP.doceria.pedidos, ...APP.doceria.gastos, ...APP.doceria.entradas];
       const months = allMonths(allDates);
-      ['doc-filter-month', 'doc-ped-month', 'doc-gasto-month'].forEach(id => populateMonthSelect(id, months));
+      ['doc-filter-month', 'doc-ped-month', 'doc-gasto-month', 'doc-ent-month'].forEach(id => populateMonthSelect(id, months));
       renderDocMetrics();
       renderDocChart(months);
       renderDocRecent();
       renderDocPedidos();
       renderDocGastos();
+      renderDocEntradas();
       renderMateriaList();
       renderMetasDoceria();
     }
@@ -3149,12 +3348,15 @@
       const month = document.getElementById('doc-filter-month')?.value || today().slice(0, 7);
       const peds = APP.doceria.pedidos.filter(p => monthKey(p.data) === month && p.status !== 'cancelado');
       const gastos = APP.doceria.gastos.filter(g => monthKey(g.data) === month);
-      const receita = peds.reduce((s, p) => s + p.valor, 0);
+      const entradas = (APP.doceria.entradas || []).filter(e => monthKey(e.data) === month);
+      const receitaPedidos = peds.reduce((s, p) => s + p.valor, 0);
+      const receitaEntradas = entradas.reduce((s, e) => s + e.valor, 0);
+      const receita = receitaPedidos + receitaEntradas;
       const custos = gastos.reduce((s, g) => s + g.valor, 0);
       const lucro = receita - custos;
-      const matCusto = APP.doceria.materias.reduce((s, m) => s + m.custo, 0);
+      const matCusto = APP.doceria.materias.filter(m => !m.modulo || m.modulo === 'doceria').reduce((s, m) => s + m.custo, 0);
       document.getElementById('doc-metrics').innerHTML = `
-    <div class="metric-card green"><div class="metric-label">Receita (mês)</div><div class="metric-value positive">${fmt(receita)}</div></div>
+    <div class="metric-card green"><div class="metric-label">Receita (mês)</div><div class="metric-value positive">${fmt(receita)}</div><div class="metric-sub">Pedidos: ${fmt(receitaPedidos)} · Entradas: ${fmt(receitaEntradas)}</div></div>
     <div class="metric-card red"><div class="metric-label">Custos (mês)</div><div class="metric-value negative">${fmt(custos)}</div></div>
     <div class="metric-card ${lucro >= 0 ? 'green' : 'red'}"><div class="metric-label">Lucro (mês)</div><div class="metric-value ${lucro >= 0 ? 'positive' : 'negative'}">${fmt(lucro)}</div></div>
     <div class="metric-card"><div class="metric-label">Pedidos (mês)</div><div class="metric-value">${peds.length}</div></div>
@@ -3228,11 +3430,14 @@
 
     function renderMateriaList() {
       const list = document.getElementById('mat-list');
-      const total = APP.doceria.materias.reduce((s, m) => s + m.custo, 0);
+      if (!list) return;
+      // Doceria: items sem modulo (legado) ou com modulo='doceria'
+      const materias = APP.doceria.materias.filter(m => !m.modulo || m.modulo === 'doceria');
+      const total = materias.reduce((s, m) => s + m.custo, 0);
       const badge = document.getElementById('mat-total-cost');
       if (badge) badge.textContent = `Total: ${fmt(total)}`;
-      if (!APP.doceria.materias.length) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">🥣</div><p>Nenhuma matéria-prima</p></div>`; return; }
-      list.innerHTML = APP.doceria.materias.map(m => `
+      if (!materias.length) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">🥣</div><p>Nenhuma matéria-prima da Doceria</p></div>`; return; }
+      list.innerHTML = materias.map(m => `
     <div class="materia-item">
       <div>
         <span class="mat-name">${m.nome}</span>
@@ -3243,6 +3448,24 @@
         <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMateria('${m.id}')">🗑️</button>
       </div>
     </div>`).join('');
+    }
+
+    function renderMateriaListClube() {
+      const list = document.getElementById('mat-list-clube');
+      if (!list) return;
+      const materias = APP.doceria.materias.filter(m => m.modulo === 'clube');
+      const total = materias.reduce((s, m) => s + m.custo, 0);
+      const badge = document.getElementById('mat-total-cost-clube');
+      if (badge) badge.textContent = `Total: ${fmt(total)}`;
+      if (!materias.length) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><p>Nenhuma matéria-prima do Clube</p></div>`; return; }
+      list.innerHTML = materias.map(m => `
+        <div class="materia-item">
+          <div><div class="mat-name">${m.nome}</div><div class="mat-info">${m.qtd || '-'}</div></div>
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <span class="text-mono" style="color:var(--text2)">${fmt(m.custo)}</span>
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteMateria('${m.id}')">🗑️</button>
+          </div>
+        </div>`).join('');
     }
 
     function renderDocGastos() {
@@ -3376,8 +3599,8 @@
       if (!vendedorId || !produtoId || (qty < 1 && qty2 < 1)) { toast('Preencha os campos de quantidade', 'error'); return; }
       const prod = APP.vendas.produtos.find(p => p.id === produtoId);
       if (!prod) { toast('Produto inválido', 'error'); return; }
-      APP.vendas.vendas.push({ id: uuid(), vendedorId, produtoId, qty, qty2, data });
-      saveData(); renderVendas(); toast('Venda registrada!');
+      APP.vendas.vendas.push({ id: uuid(), vendedorId, produtoId, qty, qty2, data, comissao_status: 'pendente' });
+      saveData(); renderVendas(); updateComissoesBadge(); toast('Venda registrada!');
       document.getElementById('vnd-qty').value = '';
       if (document.getElementById('vnd-qty2')) document.getElementById('vnd-qty2').value = '';
       updateVndPreview();
@@ -3429,7 +3652,8 @@
       const data = document.getElementById('deb-data').value || today();
       const obs = document.getElementById('deb-obs').value.trim();
       if (!vendedorId || valor <= 0) { toast('Preencha vendedor e valor', 'error'); return; }
-      APP.vendas.debitos.push({ id: uuid(), vendedorId, valor, data, obs });
+      // afeta_caixa: true — só novas retiradas impactam o saldo
+      APP.vendas.debitos.push({ id: uuid(), vendedorId, valor, data, obs, afeta_caixa: true });
       saveData(); renderVendas(); toast('Retirada registrada!');
       ['deb-valor', 'deb-obs'].forEach(id => document.getElementById(id).value = '');
     }
@@ -3485,6 +3709,8 @@
       renderSellers();
       renderAvarias();
       renderDebitos();
+      renderComissoes();
+      updateComissoesBadge();
       onVndProdutoChange();
       updateVndPreview();
       renderMetasVendas();
@@ -3512,6 +3738,69 @@
       return { receita, custo, comissao, lucro };
     }
 
+    function renderComissoes() {
+      const month = document.getElementById('com-filter-month')?.value || today().slice(0, 7);
+      const statusF = document.getElementById('com-filter-status')?.value || '';
+      let list = APP.vendas.vendas.filter(v => monthKey(v.data) === month);
+      if (statusF) list = list.filter(v => (v.comissao_status || 'pendente') === statusF);
+
+      const body = document.getElementById('com-body');
+      if (!body) return;
+      if (!list.length) {
+        body.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">💸</div><p>Nenhuma comissão no período</p></div></td></tr>`;
+        return;
+      }
+
+      body.innerHTML = list.map(v => {
+        const seller = APP.vendas.vendedores.find(s => s.id === v.vendedorId);
+        const prod = APP.vendas.produtos.find(p => p.id === v.produtoId);
+        const calc = calcVenda(v);
+        const status = v.comissao_status || 'pendente';
+        return `
+          <tr>
+            <td class="text-mono">${v.data}</td>
+            <td>${seller?.nome || '-'}</td>
+            <td style="font-size:.8rem">${prod?.nome || '-'}</td>
+            <td class="text-mono" style="color:#60a5fa">${fmt(calc.comissao)}</td>
+            <td><span class="badge ${status === 'pago' ? 'badge-green' : 'badge-yellow'}">${status}</span></td>
+            <td>
+              ${status === 'pendente' && userRole === 'admin' ? 
+                `<button class="btn btn-primary btn-sm" onclick="pagarComissao('${v.id}')">Pagar</button>` : '-'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function pagarComissao(id) {
+      const v = APP.vendas.vendas.find(x => x.id === id);
+      if (!v || v.comissao_status === 'pago') return;
+      const c = calcVenda(v);
+      v.comissao_status = 'pago';
+      // Registrar no caixa do vendedor como uma retirada de tipo "comissao"
+      APP.vendas.debitos.push({
+        id: uuid(),
+        vendedorId: v.vendedorId,
+        valor: c.comissao,
+        data: today(),
+        obs: `Pgmto Comissão: ${v.data}`,
+        tipo: 'comissao',
+        afeta_caixa: true
+      });
+      saveData();
+      renderVendas();
+      toast('Comissão paga e debitada do caixa!');
+    }
+
+    function updateComissoesBadge() {
+      const pendentes = APP.vendas.vendas.filter(v => !v.comissao_status || v.comissao_status === 'pendente').length;
+      const b = document.getElementById('badge-comissoes');
+      if (b) {
+        b.textContent = pendentes;
+        b.style.display = pendentes > 0 ? 'inline-block' : 'none';
+      }
+    }
+
     function renderVendasMetrics() {
       const month = document.getElementById('vnd-filter-month')?.value || today().slice(0, 7);
       const vendas = APP.vendas.vendas.filter(v => monthKey(v.data) === month);
@@ -3519,11 +3808,18 @@
       vendas.forEach(v => { const c = calcVenda(v); receita += c.receita; custo += c.custo; comissao += c.comissao; lucro += c.lucro; });
       const avarias = APP.vendas.avarias.filter(a => monthKey(a.data) === month);
       const perdas = avarias.reduce((s, a) => { const p = APP.vendas.produtos.find(x => x.id === a.produtoId); return s + (p?.custo || 0) * a.qty; }, 0);
+      // Retiradas que afetam caixa (só as novas com flag)
+      const retiradas = APP.vendas.debitos.filter(d => monthKey(d.data) === month && d.afeta_caixa).reduce((s, d) => s + d.valor, 0);
+      // Comissões pagas neste mês também são debitadas
+      const comPagas = APP.vendas.debitos.filter(d => monthKey(d.data) === month && d.tipo === 'comissao').reduce((s, d) => s + d.valor, 0);
+      const saldoCaixa = receita - custo - perdas - retiradas - comPagas;
+      const pendentes = APP.vendas.vendas.filter(v => !v.comissao_status || v.comissao_status === 'pendente');
+      const comPendentesTotal = pendentes.reduce((s, v) => s + calcVenda(v).comissao, 0);
       document.getElementById('vnd-metrics').innerHTML = `
     <div class="metric-card green"><div class="metric-label">Receita Bruta</div><div class="metric-value positive">${fmt(receita)}</div></div>
     <div class="metric-card red"><div class="metric-label">Custos</div><div class="metric-value negative">${fmt(custo)}</div></div>
-    <div class="metric-card blue"><div class="metric-label">Comissões</div><div class="metric-value" style="color:#60a5fa">${fmt(comissao)}</div></div>
-    <div class="metric-card ${lucro >= 0 ? 'green' : 'red'}"><div class="metric-label">Lucro Líquido</div><div class="metric-value ${lucro >= 0 ? 'positive' : 'negative'}">${fmt(lucro)}</div></div>
+    <div class="metric-card blue" style="cursor:pointer" onclick="showSecTab(document.querySelector('[onclick*=vnd-comissoes]'),\'vnd-comissoes\')"><div class="metric-label">Comissões${pendentes.length > 0 ? ' <span style="background:var(--accent2);color:#fff;border-radius:99px;padding:1px 6px;font-size:.65rem;margin-left:4px">' + pendentes.length + ' pend.</span>' : ''}</div><div class="metric-value" style="color:#60a5fa">${fmt(comissao)}</div></div>
+    <div class="metric-card ${saldoCaixa >= 0 ? 'green' : 'red'}"><div class="metric-label">Saldo Caixa</div><div class="metric-value ${saldoCaixa >= 0 ? 'positive' : 'negative'}">${fmt(saldoCaixa)}</div></div>
     <div class="metric-card red"><div class="metric-label">Perdas (Avarias)</div><div class="metric-value negative">${fmt(perdas)}</div></div>
     <div class="metric-card"><div class="metric-label">Vendas (mês)</div><div class="metric-value">${vendas.length}</div></div>
   `;
@@ -3958,6 +4254,71 @@
       }).join('');
       document.getElementById('print-zone').innerHTML=`<div class="print-header"><div class="print-header-icon">🥧</div><div><div class="print-title">Guerreiros do Alto</div><div class="print-subtitle">Extrato — Vendas (Tortinhas)</div></div></div><div class="print-meta"><strong>Período:</strong> ${monthLabel(month)} &nbsp;|&nbsp;<strong>Gerado em:</strong> ${new Date().toLocaleDateString('pt-BR')} &nbsp;|&nbsp;<strong>Operador:</strong> ${currentUser?.nome||userRole||'-'}</div>${metaHtml}<table class="print-table"><thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th>Qtd</th><th style="text-align:right">Receita</th><th style="text-align:right">Comissão</th><th style="text-align:right">Lucro</th></tr></thead><tbody>${rows||'<tr><td colspan="7" style="text-align:center;color:#999">Sem vendas</td></tr>'}</tbody><tfoot><tr style="font-weight:700"><td colspan="4" style="text-align:right;padding:.5rem .75rem">Receita Bruta</td><td class="print-positive" style="text-align:right;padding:.5rem .75rem">${fmt(receita)}</td><td colspan="2"></td></tr><tr style="font-weight:700"><td colspan="4" style="text-align:right">Comissões</td><td style="text-align:right">${fmt(comissao)}</td><td colspan="2"></td></tr>${avarias.length?`<tr style="font-weight:700"><td colspan="4" style="text-align:right">Perdas (Avarias)</td><td class="print-negative" style="text-align:right">-${fmt(perdas)}</td><td colspan="2"></td></tr>`:''}<tr style="font-weight:800;font-size:1.05rem;border-top:2px solid #111"><td colspan="4" style="text-align:right;padding:.6rem .75rem">Lucro Líquido</td><td class="${lucro>=0?'print-positive':'print-negative'}" style="text-align:right;padding:.6rem .75rem">${fmt(lucro)}</td><td colspan="2"></td></tr></tfoot></table><div class="print-signature"><div class="print-sig-line">Diretor(a) do Clube</div><div class="print-sig-line">Responsável Vendas</div></div>`;
       window.print();
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CONTROLE INTERNO
+    ═══════════════════════════════════════════════════════════ */
+    function addDivida() {
+      const nome = document.getElementById('priv-nome').value.trim();
+      const valor = parseFloat(document.getElementById('priv-valor').value);
+      const data = document.getElementById('priv-data').value || today();
+      const status = document.getElementById('priv-status').value;
+      const obs = document.getElementById('priv-obs').value.trim();
+
+      if (!nome || !valor) { toast('Nome e valor obrigatórios', 'error'); return; }
+      if (userRole !== 'admin') { toast('Acesso negado', 'error'); return; }
+
+      db.collection('gda_privado').add({
+        nome, valor, data, status, obs, criadoEm: Date.now()
+      }).then(() => {
+        toast('Dívida registrada');
+        ['priv-nome', 'priv-valor', 'priv-obs'].forEach(id => document.getElementById(id).value = '');
+      }).catch(err => toast('Erro ao salvar', 'error'));
+    }
+
+    function deleteDivida(id) {
+      if (userRole !== 'admin') return;
+      if (!confirm('Excluir este registro permanentemente?')) return;
+      db.collection('gda_privado').doc(id).delete()
+        .then(() => toast('Registro removido', 'info'))
+        .catch(() => toast('Erro ao remover', 'error'));
+    }
+
+    function pagarDivida(id) {
+      if (userRole !== 'admin') return;
+      db.collection('gda_privado').doc(id).update({ status: 'pago' })
+        .then(() => toast('Dívida marcada como paga'))
+        .catch(() => toast('Erro ao atualizar', 'error'));
+    }
+
+    function renderPrivado() {
+      const el = document.getElementById('priv-body');
+      if (!el) return;
+      const statusF = document.getElementById('priv-filter-status')?.value || '';
+      let list = [..._privado];
+      if (statusF) list = list.filter(d => d.status === statusF);
+
+      if (!list.length) {
+        el.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🔐</div><p>Nenhum registro sigiloso</p></div></td></tr>`;
+        return;
+      }
+
+      el.innerHTML = list.map(d => `
+        <tr>
+          <td class="text-mono">${d.data}</td>
+          <td style="font-weight:600">${d.nome}</td>
+          <td class="text-mono negative">${fmt(d.valor)}</td>
+          <td><span class="badge ${d.status === 'pago' ? 'badge-green' : 'badge-yellow'}">${d.status}</span></td>
+          <td style="font-size:.78rem;color:var(--text3)">${d.obs || '-'}</td>
+          <td>
+            <div style="display:flex;gap:.3rem">
+              ${d.status === 'aberto' ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="pagarDivida('${d.id}')" title="Marcar como Pago">💰</button>` : ''}
+              <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteDivida('${d.id}')" title="Remover">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
     }
 
     /* ═══════════════════════════════════════════════════════════
