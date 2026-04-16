@@ -1215,6 +1215,7 @@
     #login-overlay.hidden {
       opacity: 0;
       pointer-events: none;
+      display: none;
     }
 
     .login-box {
@@ -2432,34 +2433,62 @@
       const usuario = (document.getElementById('login-usuario')?.value||'').trim();
       const senha = (document.getElementById('login-senha')?.value||'').trim();
       if (!usuario || !senha) { showLoginMsg('Preencha usuário e senha','error'); return; }
+      
       const btn = document.getElementById('login-btn');
       if(btn){ btn.disabled=true; btn.textContent='Aguarde...'; }
+      
       try {
+        console.log(`[Login] Tentando entrar como: ${usuario} (Cargo: ${role})`);
+        
         if (role === 'admin') {
           if ((usuario==='admin'||usuario==='lunna') && (senha==='lunna'||senha==='diretor'||senha==='admin')) {
             currentUser={usuario:'admin',nome:'Administrador',role:'admin'};
             localStorage.setItem('gda_session',JSON.stringify(currentUser));
             userRole='admin'; finishLogin();
-          } else { showLoginMsg('Credenciais incorretas','error'); }
+          } else { 
+            console.warn('[Login] Credenciais de Admin falharam.');
+            showLoginMsg('Credenciais incorretas','error'); 
+          }
           return;
         }
+
         const snap = await db.collection('gda_usuarios')
           .where('usuario','==',usuario).where('role','==',role).get();
+        
         if (snap.empty) {
+          console.info('[Login] Usuário não encontrado. Solicitando novo acesso.');
           await db.collection('gda_usuarios').add({
             usuario, nome:usuario, role, senha, status:'pendente', criadoEm:Date.now()
           });
           showLoginMsg('✅ Acesso solicitado! Aguardando aprovação do Diretor/Admin. Entre em contato com o responsável.','info');
           return;
         }
+
         const docSnap=snap.docs[0]; const data=docSnap.data();
-        if(data.senha!==senha){showLoginMsg('Senha incorreta','error');return;}
-        if(data.status==='pendente'){showLoginMsg('⏳ Seu acesso ainda está pendente de aprovação. Fale com o Diretor ou Admin.','info');return;}
-        if(data.status==='negado'){showLoginMsg('❌ Seu acesso foi negado. Contate o responsável.','error');return;}
+        if(data.senha!==senha){
+          console.warn('[Login] Senha incorreta para o usuário.');
+          showLoginMsg('Senha incorreta','error');
+          return;
+        }
+        
+        if(data.status==='pendente'){
+          showLoginMsg('⏳ Seu acesso ainda está pendente de aprovação. Fale com o Diretor ou Admin.','info');
+          return;
+        }
+        if(data.status==='negado'){
+          showLoginMsg('❌ Seu acesso foi negado. Contate o responsável.','error');
+          return;
+        }
+
         currentUser={id:docSnap.id,usuario:data.usuario,nome:data.nome||data.usuario,role:data.role};
         localStorage.setItem('gda_session',JSON.stringify(currentUser));
-        userRole=data.role; finishLogin();
-      } catch(e){ console.error(e); showLoginMsg('Erro de conexão. Verifique sua internet.','error'); }
+        userRole=data.role; 
+        console.log('[Login] Sucesso! Role:', userRole);
+        finishLogin();
+      } catch(e){ 
+        console.error('[Login Error]', e); 
+        showLoginMsg('Erro de conexão com o Banco de Dados. Verifique sua internet ou permissões.','error'); 
+      }
       finally{ if(btn){btn.disabled=false;btn.textContent='Entrar';} }
     }
 
@@ -2472,6 +2501,10 @@
     function finishLogin() {
       document.getElementById('login-overlay').classList.add('hidden');
       document.body.className = `app-mode-${userRole}`;
+      
+      // Ativar ouvintes do banco de dados (especialmente os dependentes do cargo)
+      initDataSync();
+
       // Update topbar user info
       const uBtn = document.getElementById('userInfoBtn');
       const uName = document.getElementById('userDisplayName');
@@ -2480,6 +2513,7 @@
       if(uBtn){ uBtn.style.display=(userRole==='admin'||userRole==='diretor')?'flex':'none'; }
       if(uName) uName.textContent = currentUser?.nome || currentUser?.usuario || userRole;
       if(uRole) uRole.textContent = roleEmojis[userRole]||'';
+      
       // For desbravador: ensure their vendedor entry exists
       if(userRole==='desbravador' && currentUser){
         const exists=APP.vendas.vendedores.find(v=>v.nome.toLowerCase()===currentUser.nome.toLowerCase());
