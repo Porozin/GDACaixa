@@ -2761,15 +2761,16 @@
         if (userRole) { renderUnidades(); }
       });
 
-      // Listener Controle Interno (admin e diretor)
-if (_unsubPrivado) _unsubPrivado();
-if (userRole === 'admin' || userRole === 'diretor') {
-  _unsubPrivado = db.collection('gda_privado').orderBy('criadoEm').onSnapshot(snap => {
-    _privado = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderPrivado();
-  });
-}
-      
+      // Listener Controle Interno (só admin)
+      if (_unsubPrivado) _unsubPrivado();
+      if (userRole === 'admin') {
+        _unsubPrivado = db.collection('gda_privado').orderBy('criadoEm').onSnapshot(snap => {
+          _privado = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderPrivado();
+        });
+      }
+    }
+
     // ── Carregar/Salvar na Nuvem ─────────────────────────────────────
     function loadData() {
       initDataSync();
