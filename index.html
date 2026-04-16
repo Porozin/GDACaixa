@@ -69,7 +69,8 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      transition: background var(--trans), color var(--trans)
+      transition: background var(--trans), color var(--trans);
+      overflow-x: hidden;
     }
 
     button {
@@ -352,7 +353,15 @@
       background: var(--bg3);
       padding: 4px;
       border-radius: var(--radius-sm);
-      width: fit-content
+      width: fit-content;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .section-tabs::-webkit-scrollbar {
+      display: none;
     }
 
     .section-tab {
@@ -362,6 +371,7 @@
       font-weight: 600;
       color: var(--text3);
       transition: all var(--trans);
+      flex-shrink: 0;
     }
 
     .section-tab.active {
@@ -1167,7 +1177,7 @@
 ═══════════════════════════════════════════════════════════ */
     @media(max-width:640px) {
       .main {
-        padding: 1rem 1rem 3rem
+        padding: 1rem 1rem 3.5rem
       }
 
       .topbar {
@@ -1176,11 +1186,38 @@
 
       .mod-tabs {
         padding: .75rem 1rem .4rem;
-        overflow-x: auto
+        overflow-x: auto;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-bottom: none;
+        border-top: 1px solid var(--border);
+        justify-content: space-around;
+        gap: 0;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, .1);
+      }
+
+      .mod-tab {
+        flex-direction: column;
+        gap: .2rem;
+        padding: .4rem .75rem;
+        font-size: .7rem;
+        border: none;
+        background: transparent !important;
+      }
+
+      .mod-tab.active {
+        color: var(--accent);
+      }
+
+      .mod-tab .tab-icon {
+        font-size: 1.2rem
       }
 
       .mod-tab span.tab-label {
-        display: none
+        font-size: .65rem;
+        font-weight: 500
       }
 
       .metrics-grid {
@@ -1189,6 +1226,30 @@
 
       .form-grid {
         grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:480px) {
+      .metrics-grid {
+        grid-template-columns: 1fr
+      }
+
+      .topbar-right {
+        gap: .35rem
+      }
+
+      .logo span:not(.logo-icon) {
+        display: none
+      }
+
+      .section-tabs {
+        padding: 3px;
+        gap: .15rem
+      }
+
+      .section-tab {
+        padding: .4rem .75rem;
+        font-size: .78rem
       }
     }
 
