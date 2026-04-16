@@ -2146,6 +2146,14 @@
                   <select id="deb-vendedor"></select>
                 </div>
                 <div class="form-group">
+                  <label>Origem (Onde tirar o $) </label>
+                  <select id="deb-origem">
+                    <option value="venda">Caixa Vendas (Tortinhas)</option>
+                    <option value="doceria">Caixa Doceria</option>
+                    <option value="clube">Caixa Clube</option>
+                  </select>
+                </div>
+                <div class="form-group">
                   <label>Valor (R$)</label>
                   <input type="number" id="deb-valor" placeholder="0,00" min="0" step="0.01" />
                 </div>
@@ -3651,10 +3659,24 @@
       const valor = parseFloat(document.getElementById('deb-valor').value) || 0;
       const data = document.getElementById('deb-data').value || today();
       const obs = document.getElementById('deb-obs').value.trim();
+      const origem = document.getElementById('deb-origem').value;
+
       if (!vendedorId || valor <= 0) { toast('Preencha vendedor e valor', 'error'); return; }
-      // afeta_caixa: true — só novas retiradas impactam o saldo
-      APP.vendas.debitos.push({ id: uuid(), vendedorId, valor, data, obs, afeta_caixa: true });
-      saveData(); renderVendas(); toast('Retirada registrada!');
+
+      const vName = APP.vendas.vendedores.find(v => v.id === vendedorId)?.nome || '?';
+
+      if (origem === 'doceria') {
+        APP.doceria.gastos.push({ id: uuid(), desc: `Retirada (${vName}): ${obs}`, valor, data, cat: 'Retirada' });
+        saveData(); renderDoceria(); toast('Retirada registrada na Doceria!');
+      } else if (origem === 'clube') {
+        APP.clube.transactions.push({ id: uuid(), data, tipo: 'saida', categoria: 'Retirada', descricao: `Retirada (${vName}): ${obs}`, valor });
+        saveData(); renderClube(); toast('Retirada registrada no Clube!');
+      } else {
+        // Padrão: Vendas
+        APP.vendas.debitos.push({ id: uuid(), vendedorId, valor, data, obs, afeta_caixa: true });
+        saveData(); renderVendas(); toast('Retirada registrada em Vendas!');
+      }
+
       ['deb-valor', 'deb-obs'].forEach(id => document.getElementById(id).value = '');
     }
 
@@ -3764,8 +3786,12 @@
             <td class="text-mono" style="color:#60a5fa">${fmt(calc.comissao)}</td>
             <td><span class="badge ${status === 'pago' ? 'badge-green' : 'badge-yellow'}">${status}</span></td>
             <td>
-              ${status === 'pendente' && userRole === 'admin' ? 
-                `<button class="btn btn-primary btn-sm" onclick="pagarComissao('${v.id}')">Pagar</button>` : '-'}
+              <div style="display:flex;gap:.3rem">
+                ${status === 'pendente' && userRole === 'admin' ? 
+                  `<button class="btn btn-primary btn-sm" onclick="pagarComissao('${v.id}')">Pagar</button>` : ''}
+                ${status === 'pago' && userRole === 'admin' ? 
+                  `<button class="btn btn-ghost btn-sm" onclick="estornarComissao('${v.id}')" title="Voltar para pendente">Estornar</button>` : ''}
+              </div>
             </td>
           </tr>
         `;
@@ -3785,11 +3811,25 @@
         data: today(),
         obs: `Pgmto Comissão: ${v.data}`,
         tipo: 'comissao',
-        afeta_caixa: true
+        afeta_caixa: true,
+        vendaId: v.id // Link para estorno
       });
       saveData();
       renderVendas();
       toast('Comissão paga e debitada do caixa!');
+    }
+
+    function estornarComissao(id) {
+      const v = APP.vendas.vendas.find(x => x.id === id);
+      if (!v || v.comissao_status !== 'pago') return;
+      
+      v.comissao_status = 'pendente';
+      // Remover o registro de debito vinculado
+      APP.vendas.debitos = APP.vendas.debitos.filter(d => d.vendaId !== id);
+      
+      saveData();
+      renderVendas();
+      toast('Comissão estornada e saldo recomposto!', 'info');
     }
 
     function updateComissoesBadge() {
@@ -3804,21 +3844,37 @@
     function renderVendasMetrics() {
       const month = document.getElementById('vnd-filter-month')?.value || today().slice(0, 7);
       const vendas = APP.vendas.vendas.filter(v => monthKey(v.data) === month);
-      let receita = 0, custo = 0, comissao = 0, lucro = 0;
-      vendas.forEach(v => { const c = calcVenda(v); receita += c.receita; custo += c.custo; comissao += c.comissao; lucro += c.lucro; });
+      let receita = 0, custo = 0, comissaoTotalPosssivel = 0, comissaoPaga = 0, lucro = 0;
+      
+      vendas.forEach(v => { 
+        const c = calcVenda(v); 
+        receita += c.receita; 
+        custo += c.custo; 
+        comissaoTotalPosssivel += c.comissao; 
+        if(v.comissao_status === 'pago') comissaoPaga += c.comissao;
+        lucro += c.lucro; 
+      });
+
       const avarias = APP.vendas.avarias.filter(a => monthKey(a.data) === month);
       const perdas = avarias.reduce((s, a) => { const p = APP.vendas.produtos.find(x => x.id === a.produtoId); return s + (p?.custo || 0) * a.qty; }, 0);
+      
       // Retiradas que afetam caixa (só as novas com flag)
       const retiradas = APP.vendas.debitos.filter(d => monthKey(d.data) === month && d.afeta_caixa).reduce((s, d) => s + d.valor, 0);
-      // Comissões pagas neste mês também são debitadas
-      const comPagas = APP.vendas.debitos.filter(d => monthKey(d.data) === month && d.tipo === 'comissao').reduce((s, d) => s + d.valor, 0);
-      const saldoCaixa = receita - custo - perdas - retiradas - comPagas;
+      
+      // Saldo do Caixa segue a lógica de: Bruto - Custos - Perdas - (Tudo que saiu do caixa)
+      // Note: O lucro já deduz comissões, mas as pendentes ainda não saíram do caixa físico.
+      // O usuário pediu que o Saldo de Caixa reflita o Bruto menos o que de fato saiu.
+      const saldoCaixa = receita - custo - perdas - retiradas;
+      
       const pendentes = APP.vendas.vendas.filter(v => !v.comissao_status || v.comissao_status === 'pendente');
-      const comPendentesTotal = pendentes.reduce((s, v) => s + calcVenda(v).comissao, 0);
+      
       document.getElementById('vnd-metrics').innerHTML = `
     <div class="metric-card green"><div class="metric-label">Receita Bruta</div><div class="metric-value positive">${fmt(receita)}</div></div>
     <div class="metric-card red"><div class="metric-label">Custos</div><div class="metric-value negative">${fmt(custo)}</div></div>
-    <div class="metric-card blue" style="cursor:pointer" onclick="showSecTab(document.querySelector('[onclick*=vnd-comissoes]'),\'vnd-comissoes\')"><div class="metric-label">Comissões${pendentes.length > 0 ? ' <span style="background:var(--accent2);color:#fff;border-radius:99px;padding:1px 6px;font-size:.65rem;margin-left:4px">' + pendentes.length + ' pend.</span>' : ''}</div><div class="metric-value" style="color:#60a5fa">${fmt(comissao)}</div></div>
+    <div class="metric-card blue" style="cursor:pointer" onclick="showSecTab(document.querySelector('[onclick*=vnd-comissoes]'),\'vnd-comissoes\')">
+      <div class="metric-label">Comissões Pagas${pendentes.length > 0 ? ' <span style="background:var(--accent2);color:#fff;border-radius:99px;padding:1px 6px;font-size:.65rem;margin-left:4px">' + pendentes.length + ' pend.</span>' : ''}</div>
+      <div class="metric-value" style="color:#60a5fa">${fmt(comissaoPaga)}</div>
+    </div>
     <div class="metric-card ${saldoCaixa >= 0 ? 'green' : 'red'}"><div class="metric-label">Saldo Caixa</div><div class="metric-value ${saldoCaixa >= 0 ? 'positive' : 'negative'}">${fmt(saldoCaixa)}</div></div>
     <div class="metric-card red"><div class="metric-label">Perdas (Avarias)</div><div class="metric-value negative">${fmt(perdas)}</div></div>
     <div class="metric-card"><div class="metric-label">Vendas (mês)</div><div class="metric-value">${vendas.length}</div></div>
