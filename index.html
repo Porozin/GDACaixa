@@ -2845,7 +2845,7 @@
        NAVEGAÇÃO
     ═══════════════════════════════════════════════════════════ */
     function switchModule(mod) {
-      if (mod === 'privado' && userRole !== 'admin') { toast('Acesso restrito', 'error'); return; }
+      if (mod === 'privado' && userRole !== 'admin' && userRole !== 'diretor') { toast('Acesso restrito', 'error'); return; }
       document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
       document.querySelectorAll('.mod-tab').forEach(t => t.classList.remove('active'));
       document.getElementById(`mod-${mod}`).classList.add('active');
