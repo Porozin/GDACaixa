@@ -1578,6 +1578,39 @@
           </div>
         </div>
       </div>
+
+      <!-- Matéria-Prima Clube -->
+      <div class="section-panel" id="clube-materia">
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Registrar Matéria-Prima (Clube)</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nome do Item</label>
+              <input type="text" id="mat-nome-clube" placeholder="Ex: Tecido, Linha..." />
+            </div>
+            <div class="form-group">
+              <label>Quantidade/Medida</label>
+              <input type="text" id="mat-qtd-clube" placeholder="Ex: 5m, 10 un..." />
+            </div>
+            <div class="form-group">
+              <label>Custo Estimado (R$)</label>
+              <input type="number" id="mat-custo-clube" placeholder="0,00" min="0" step="0.01" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-secondary" onclick="addMateria('clube')">✚ Adicionar ao Estoque</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Estoque / Matéria-Prima (Clube)</div>
+            <div id="mat-total-cost-clube" class="text-mono" style="font-size:.8rem;color:var(--text3)">Total: R$ 0,00</div>
+          </div>
+          <div id="mat-list-clube"></div>
+        </div>
+      </div>
     </section>
 
     <!-- ══════════════════════════════════════════
@@ -1865,17 +1898,22 @@
         </div>
         <div id="vnd-meta-hero"></div>
         <div class="metrics-grid" id="vnd-metrics"></div>
-        <div class="two-col">
+        <div class="three-col">
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot"></span>Receita por Produto</div>
+              <div class="card-title-left"><span class="dot"></span>Receita por Produto (Geral)</div>
             </div>
             <div class="chart-container"><canvas id="vnd-chart"></canvas></div>
           </div>
           <div class="card">
             <div class="card-title">
-              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Ranking de
-                Vendedores</div>
+              <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Ranking de Produtos</div>
+            </div>
+            <div id="vnd-prod-ranking"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">
+              <div class="card-title-left"><span class="dot" style="background:var(--accent3)"></span>Ranking de Vendedores</div>
             </div>
             <div id="vnd-ranking"></div>
           </div>
@@ -3269,15 +3307,19 @@
       saveData(); renderDoceria(); toast('Removido', 'info');
     }
 
-    function addMateria() {
-      const nome = document.getElementById('mat-nome').value.trim();
-      const qtd = document.getElementById('mat-qtd').value.trim();
-      const custo = parseFloat(document.getElementById('mat-custo').value) || 0;
-      const modulo = document.getElementById('mat-modulo')?.value || 'doceria';
+    function addMateria(targetMod) {
+      const isClube = targetMod === 'clube';
+      const suffix = isClube ? '-clube' : '';
+      const nome = document.getElementById('mat-nome' + suffix).value.trim();
+      const qtd = document.getElementById('mat-qtd' + suffix).value.trim();
+      const custo = parseFloat(document.getElementById('mat-custo' + suffix).value) || 0;
+      const modulo = isClube ? 'clube' : (document.getElementById('mat-modulo')?.value || 'doceria');
       if (!nome) { toast('Informe o nome', 'error'); return; }
       APP.doceria.materias.push({ id: uuid(), nome, qtd, custo, modulo });
-      saveData(); renderDoceria(); toast('Matéria-prima adicionada!');
-      ['mat-nome', 'mat-qtd', 'mat-custo'].forEach(id => document.getElementById(id).value = '');
+      saveData();
+      if (isClube) renderClube(); else renderDoceria();
+      toast('Matéria-prima adicionada!');
+      ['mat-nome' + suffix, 'mat-qtd' + suffix, 'mat-custo' + suffix].forEach(id => document.getElementById(id).value = '');
     }
 
     function deleteMateria(id) {
@@ -3735,6 +3777,7 @@
       updateComissoesBadge();
       onVndProdutoChange();
       updateVndPreview();
+      renderVendasProdutoRanking();
       renderMetasVendas();
     }
 
@@ -3911,6 +3954,35 @@
           plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { family: 'DM Mono', size: 11 }, boxWidth: 12 } } }
         }
       });
+    }
+
+    function renderVendasProdutoRanking() {
+      const month = document.getElementById('vnd-filter-month')?.value || today().slice(0, 7);
+      const vendas = APP.vendas.vendas.filter(v => monthKey(v.data) === month);
+      const prodMap = {};
+      vendas.forEach(v => {
+        const prod = APP.vendas.produtos.find(p => p.id === v.produtoId);
+        if (!prod) return;
+        const c = calcVenda(v);
+        if (!prodMap[v.produtoId]) prodMap[v.produtoId] = { nome: prod.nome, receita: 0 };
+        prodMap[v.produtoId].receita += c.receita;
+      });
+      const sorted = Object.values(prodMap).sort((a, b) => b.receita - a.receita);
+      const max = sorted.length ? sorted[0].receita : 1;
+      const el = document.getElementById('vnd-prod-ranking');
+      if (!el) return;
+      if (!sorted.length) { el.innerHTML = `<div class="empty-state"><div class="empty-icon">🏆</div><p>Sem vendas no período</p></div>`; return; }
+      el.innerHTML = sorted.map((data, i) => `
+        <div class="rank-row">
+          <span class="rank-num">${i + 1}</span>
+          <div style="flex:1;min-width:0;font-size:.83rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${data.nome}</div>
+          <div class="rank-bar-wrap" style="position:relative">
+            <div class="rank-bar" style="width:${Math.round((data.receita / max) * 100)}%;background:var(--accent2)"></div>
+          </div>
+          <div style="text-align:right">
+            <span class="text-mono positive" style="font-size:.78rem">${fmt(data.receita)}</span>
+          </div>
+        </div>`).join('');
     }
 
     function renderVendasRanking() {
