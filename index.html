@@ -2676,6 +2676,8 @@
       vendas: { vendas: [], produtos: [], vendedores: [], avarias: [], debitos: [] }
     };
 
+    let loadedFromDB = false;
+
     // Coleções separadas do Firestore para Unidades e Metas
     let _unidades = []; // { id, nome, conselheiro, criadoEm }
     let _metasClube = []; // { id, descricao, valor_alvo, status, sugeridoPor, criadoEm }
@@ -2789,9 +2791,10 @@
       db.collection('gda_caixa').doc('estado').onSnapshot((doc) => {
         if (doc.exists) {
           APP = deepMerge(APP, doc.data());
+          loadedFromDB = true;
           if (!APP.clube.sugestoes) APP.clube.sugestoes = [];
         } else {
-          saveData();
+          console.warn("Documento não existe ainda. Não sobrescrevendo.");
         }
         if (userRole) {
           renderClube(); renderDoceria(); renderVendas();
@@ -2834,7 +2837,24 @@
       initDataSync();
     }
 
+    function hasData(app) {
+      if (!app) return false;
+      return (
+        (app.clube?.transactions?.length > 0) ||
+        (app.doceria?.pedidos?.length > 0) ||
+        (app.vendas?.vendas?.length > 0)
+      );
+    }
+
     function saveData() {
+      if (!loadedFromDB) {
+        console.warn("Tentativa de salvar estado bloqueada: dados ainda não carregados do DB.");
+        return;
+      }
+      if (!hasData(APP)) {
+        console.warn("Tentativa de salvar estado vazio bloqueada.");
+        return;
+      }
       db.collection('gda_caixa').doc('estado').set(APP, { merge: true }).catch(err => {
         toast('Erro ao sincronizar', 'error');
       });
