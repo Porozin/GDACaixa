@@ -2528,6 +2528,7 @@
     <section class="module" id="mod-privado">
       <div class="section-tabs">
         <button class="section-tab active" onclick="showSecTab(this,'priv-lista')">Dívidas</button>
+        <button class="section-tab" id="tab-admin-sistema" onclick="showSecTab(this,'priv-sistema')" style="display:none; color: var(--accent2);">Sistema (Admin)</button>
       </div>
       <div class="section-panel active" id="priv-lista">
         <div class="card">
@@ -2589,6 +2590,22 @@
               </thead>
               <tbody id="priv-body"></tbody>
             </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section-panel" id="priv-sistema">
+        <div class="card" style="border: 1px solid var(--accent2); background: rgba(232, 93, 74, 0.05);">
+          <div class="card-title">
+            <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Zona de Perigo</div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.5;">
+            Atenção: A ação abaixo é <strong style="color:var(--accent2)">irreversível</strong> e apagará permanentemente todos os dados (Transações, Vendas, Pedidos) de todo o sistema na nuvem.<br/>
+            Esta ferramenta visa reiniciar as configurações para um novo período. Somente o Administrador detém acesso e permissão.
+          </p>
+          <div class="form-actions">
+            <!-- BOTÃO DE WIPE ISOLADO -->
+            <button class="btn btn-danger" onclick="iniciarResetSistema()">🔥 Resetar Todo o Sistema</button>
           </div>
         </div>
       </div>
@@ -4745,7 +4762,76 @@
         .catch(() => toast('Erro ao atualizar', 'error'));
     }
 
+    /* =========================================================================
+       SISTEMA: RESET GLOBAL (AÇÃO CRÍTICA)
+       - Esta função exige interação DURA E LITERAL do usuário para evitar calls autônomos.
+       - Somente o cargo de 'admin' tem permissão (verificado duplamente).
+       - Exige três janelas de confirmação, sendo a última uma prova de string exata.
+       - NÃO DEVE SER CHAMADA EM LOADS OU UPDATES. APENAS NO CLIQUE.
+    ========================================================================= */
+    function iniciarResetSistema() {
+      // Bloqueio de Segurança para garantir que só o "admin" (e não diretores) execute
+      if (userRole !== 'admin') {
+        toast('Ação restrita somente a permissões superiores (Administrador).', 'error');
+        return;
+      }
+
+      // 1ª Confirmação - Intenção Direta
+      const conf1 = confirm("⚠️ PERIGO: Você quer que comece do zero?\nIsso apagará o banco inteiro de todos os módulos. Cancelar evitará qualquer ação.");
+      if (!conf1) {
+        toast("Operação de reset CANCELADA pelo usuário.", "info");
+        return;
+      }
+
+      // 2ª Confirmação - Validação de Responsabilidade
+      const conf2 = confirm("Você tem absoluta certeza e autorização para tal?\nAperte OK apenas se você se responsabiliza por esta remoção na nuvem.");
+      if (!conf2) {
+        toast("Operação de reset CANCELADA na última barreira de diálogo.", "info");
+        return;
+      }
+
+      // 3ª Confirmação - Interação Textual Explícita (Impossível auto-click)
+      const inputNome = prompt("Para confirmar definitivamente, digite o nome completo do administrador (Wallyson...):");
+      
+      if (inputNome !== "Wallyson Jailson do Nascimento Fernandes") {
+        toast("Nome incorreto. O reset foi interceptado preventivamente.", "error");
+        return;
+      }
+
+      // Com todos os checks de usuário concluídos, disparamos a execução:
+      realizarWipeDoSistema();
+    }
+
+    function realizarWipeDoSistema() {
+      // Configura o objeto local zerado simulando o inicial
+      APP = {
+        clube: { transactions: [], sugestoes: [] },
+        doceria: { pedidos: [], materias: [], gastos: [], entradas: [] },
+        vendas: { vendas: [], produtos: [], vendedores: [], avarias: [], debitos: [] }
+      };
+
+      // Setamos explicitamente a bypass da tranca anti-limpeza para este momento exato
+      loadedFromDB = true; 
+
+      // Pulamos a função saveData() normal (que proibiria este push de "APP vazio") 
+      // e injetamos o vazio no Firestore diretamente, sem merge, para realmente aniquilar as chaves filhas.
+      db.collection('gda_caixa').doc('estado').set(APP, { merge: false }).then(() => {
+        toast("O SISTEMA FOI RESETADO. Atualizando a interface...", "info");
+        setTimeout(() => location.reload(), 2500); // Reload pra reengatilhar os listens limpos
+      }).catch(err => {
+        console.error("Erro fatal ao dar Wipe: ", err);
+        toast("Falha na sincronização do Wipe.", "error");
+      });
+    }
+
     function renderPrivado() {
+      // Controle de Aba Específica do admin
+      const sysTab = document.getElementById('tab-admin-sistema');
+      if (sysTab) {
+        sysTab.style.display = (userRole === 'admin') ? 'inline-block' : 'none';
+      }
+
+
       const el = document.getElementById('priv-body');
       if (!el) return;
       const statusF = document.getElementById('priv-filter-status')?.value || '';
