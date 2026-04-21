@@ -17,24 +17,41 @@
    VARIÁVEIS E RESET
 ═══════════════════════════════════════════════════════════ */
     :root {
-      --accent: #f0b429;
-      --accent2: #e85d4a;
-      --accent3: #4ade80;
-      --bg: #0d0f14;
-      --bg2: #13161e;
-      --bg3: #1a1e2a;
-      --bg4: #222737;
-      --border: #2a2f3f;
-      --text: #e8eaf0;
-      --text2: #8891a8;
-      --text3: #5a6175;
-      --card-shadow: 0 4px 32px rgba(0, 0, 0, .45);
-      --radius: 14px;
-      --radius-sm: 8px;
+      /* Cores Principais - Glassmorphism UI */
+      --accent: #F2C94C; /* Dourado principal */
+      --accent-hover: #D4A017;
+      --accent-light: #FFDD75;
+      
+      --accent2: #E63946; /* Vermelho forte */
+      --accent2-hover: #B71C1C;
+      
+      --accent3: #00C2FF; /* Azul neon (Glow/Tech) */
+      --positive: #4CC9F0; /* Azul suave para ganhos/positivos no tema tech */
+      
+      --bg: #0B132B; /* Azul noite - Fundo espacial */
+      --bg-base: #1C2541; /* Azul secundário */
+      
+      /* Glass Layers */
+      --bg2: rgba(255, 255, 255, 0.08); /* Vidro principal */
+      --bg3: rgba(255, 255, 255, 0.04); /* Vidro sutil (inputs) */
+      --bg4: rgba(0, 194, 255, 0.05); /* Vidro com tint azulado */
+      
+      --border: rgba(255, 255, 255, 0.15); /* Borda glass */
+      --border-glow: rgba(0, 194, 255, 0.25);
+      
+      /* Tipografia / Neutros */
+      --text: #FFFFFF;
+      --text2: #A8B2D1;
+      --text3: #6C757D;
+      
+      --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --radius: 20px; /* Bordas mais suaves para o vidro */
+      --radius-sm: 12px;
+      
       --font-head: 'Syne', sans-serif;
       --font-mono: 'DM Mono', monospace;
       --font-body: 'DM Sans', sans-serif;
-      --trans: .18s cubic-bezier(.4, 0, .2, 1);
+      --trans: .25s cubic-bezier(.4, 0, .2, 1);
     }
 
     [data-theme="light"] {
@@ -71,6 +88,36 @@
       flex-direction: column;
       transition: background var(--trans), color var(--trans);
       overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Glow / Orbs Background */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      pointer-events: none;
+      animation: floatOrbs 20s infinite alternate ease-in-out;
+    }
+    
+    body::before {
+      width: 55vw; height: 55vh;
+      background: rgba(0, 194, 255, 0.08); /* Ciano light glow */
+      top: -15%; left: -10%;
+    }
+    
+    body::after {
+      width: 45vw; height: 45vh;
+      background: rgba(242, 201, 76, 0.05); /* Dourado light glow */
+      bottom: -10%; right: -10%;
+      animation-delay: -10s;
+    }
+
+    @keyframes floatOrbs {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(12vw, 8vh) scale(1.15); }
     }
 
     button {
@@ -167,7 +214,8 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .logo {
@@ -281,6 +329,8 @@
       padding: 1.25rem 2rem .5rem;
       border-bottom: 1px solid var(--border);
       background: var(--bg2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .mod-tab {
@@ -408,13 +458,17 @@
       padding: 1.25rem 1.4rem;
       position: relative;
       overflow: hidden;
-      transition: transform var(--trans), box-shadow var(--trans);
+      transition: transform var(--trans), box-shadow var(--trans), border-color var(--trans);
       min-width: 0;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
     }
 
     .metric-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--card-shadow)
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px var(--border-glow); /* Neon glow no hover */
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
     .metric-card::before {
@@ -487,6 +541,9 @@
       margin-bottom: 1.25rem;
       min-width: 0;
       max-width: 100%;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
     }
 
     .card-title {
@@ -569,17 +626,26 @@
 
     .btn-primary {
       background: var(--accent);
-      color: #0d0f14
+      color: #0d0f14;
+      box-shadow: 0 4px 14px rgba(242, 201, 76, 0.25); /* Dourado leve */
     }
 
     .btn-primary:hover {
-      background: #d4a020;
-      transform: translateY(-1px)
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(242, 201, 76, 0.4);
     }
 
     .btn-secondary {
+      background: var(--bg3);
+      color: var(--text2);
+      border: 1px solid transparent;
+    }
+    
+    .btn-secondary:hover {
       background: var(--bg4);
-      color: var(--text2)
+      color: var(--text);
+      border-color: var(--border-glow);
     }
 
     .btn-secondary:hover {
@@ -1205,7 +1271,11 @@
         border-top: 1px solid var(--border);
         justify-content: space-around;
         gap: 0;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, .1);
+        background: var(--bg2);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, .4);
+        z-index: 100;
       }
 
       .mod-tab {
@@ -1324,7 +1394,15 @@
       width: 100%;
       max-width: 380px;
       text-align: center;
-      box-shadow: var(--card-shadow);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      animation: floatIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    @keyframes floatIn {
+      0% { opacity: 0; transform: translateY(24px) scale(0.97); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .login-box .logo-icon {
@@ -3634,9 +3712,8 @@
       const labels = last6.map(monthLabel);
       const entradas = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'entrada').reduce((s, t) => s + t.valor, 0));
       const saidas = last6.map(m => APP.clube.transactions.filter(t => monthKey(t.data) === m && t.tipo === 'saida').reduce((s, t) => s + t.valor, 0));
-      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-      const gridColor = isDark ? '#2a2f3f' : '#e2e5ed';
-      const textColor = isDark ? '#8891a8' : '#4a5168';
+      const gridColor = 'rgba(255, 255, 255, 0.05)';
+      const textColor = '#A8B2D1';
       const ctx = document.getElementById('clube-chart');
       if (!ctx) return;
       if (clubeChartInst) clubeChartInst.destroy();
@@ -3644,15 +3721,15 @@
         type: 'bar',
         data: {
           labels, datasets: [
-            { label: 'Entradas', data: entradas, backgroundColor: 'rgba(74,222,128,.7)', borderRadius: 6 },
-            { label: 'Saídas', data: saidas, backgroundColor: 'rgba(232,93,74,.7)', borderRadius: 6 }
+            { label: 'Entradas', data: entradas, backgroundColor: '#F2C94C', borderRadius: 6 },
+            { label: 'Saídas', data: saidas, backgroundColor: '#E63946', borderRadius: 6 }
           ]
         },
         options: {
           responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 11 } } } },
           scales: {
-            x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } },
-            y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
+            x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor, drawBorder: false } },
+            y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor, drawBorder: false } }
           }
         }
       });
@@ -3829,9 +3906,8 @@
       const labels = last6.map(monthLabel);
       const rec = last6.map(m => APP.doceria.pedidos.filter(p => monthKey(p.data) === m && p.status !== 'cancelado').reduce((s, p) => s + p.valor, 0));
       const cus = last6.map(m => APP.doceria.gastos.filter(g => monthKey(g.data) === m).reduce((s, g) => s + g.valor, 0));
-      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-      const gridColor = isDark ? '#2a2f3f' : '#e2e5ed';
-      const textColor = isDark ? '#8891a8' : '#4a5168';
+      const gridColor = 'rgba(255, 255, 255, 0.05)';
+      const textColor = '#A8B2D1';
       const ctx = document.getElementById('doc-chart');
       if (!ctx) return;
       if (docChartInst) docChartInst.destroy();
@@ -3839,16 +3915,16 @@
         type: 'line',
         data: {
           labels, datasets: [
-            { label: 'Receita', data: rec, borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,.1)', tension: .4, fill: true },
-            { label: 'Custos', data: cus, borderColor: '#e85d4a', backgroundColor: 'rgba(232,93,74,.08)', tension: .4, fill: true }
+            { label: 'Receita', data: rec, borderColor: '#F2C94C', backgroundColor: 'rgba(242, 201, 76, 0.15)', tension: .4, fill: true, pointBackgroundColor: '#F2C94C', borderWidth: 2 },
+            { label: 'Custos', data: cus, borderColor: '#E63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', tension: .4, fill: true, pointBackgroundColor: '#E63946', borderWidth: 2 }
           ]
         },
         options: {
           responsive: true, maintainAspectRatio: false,
           plugins: { legend: { labels: { color: textColor, font: { family: 'DM Mono', size: 11 } } } },
           scales: {
-            x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } },
-            y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor } }
+            x: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor, drawBorder: false } },
+            y: { ticks: { color: textColor, font: { family: 'DM Mono', size: 10 }, callback: v => 'R$' + v }, grid: { color: gridColor, drawBorder: false } }
           }
         }
       });
@@ -4355,7 +4431,7 @@
         ctx.parentElement.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><p>Sem vendas no período</p></div>`;
         return;
       }
-      const colors = ['#f0b429', '#4ade80', '#60a5fa', '#a78bfa', '#e85d4a', '#f97316', '#06b6d4'];
+      const colors = ['#F2C94C', '#00C2FF', '#E63946', '#a78bfa', '#f97316', '#4CC9F0', '#06b6d4'];
       vndChartInst = new Chart(ctx, {
         type: 'doughnut',
         data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }] },
