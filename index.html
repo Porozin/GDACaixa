@@ -90,6 +90,7 @@
       border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
       padding: .55rem .85rem;
+      min-height: 48px; /* Touch target size UX rule */
       outline: none;
       transition: border-color var(--trans), box-shadow var(--trans);
       width: 100%
@@ -547,6 +548,7 @@
       align-items: center;
       gap: .4rem;
       padding: .55rem 1.1rem;
+      min-height: 48px; /* Touch target size UX rule */
       border-radius: var(--radius-sm);
       font-size: .82rem;
       font-weight: 600;
@@ -555,6 +557,10 @@
       cursor: pointer;
       border: none;
       font-family: var(--font-body);
+    }
+    
+    .btn:active {
+      transform: scale(0.97); /* Touch interaction feedback UX rule */
     }
 
     .btn-primary {
@@ -1486,21 +1492,12 @@
 
   <!-- ═══ LOGIN ════════════════════════════════════════════════════ -->
   <div id="login-overlay">
-    <div class="login-box">
+    <!-- Passo 1: Login Inteligente -->
+    <div class="login-box" id="login-step-1" style="transition: all 0.3s ease;">
       <div class="logo-icon" style="margin:0 auto 1.25rem;width:54px;height:54px;font-size:1.6rem">⚔️</div>
       <h2>Guerreiros do Alto</h2>
       <p>Informe suas credenciais de acesso ao painel.</p>
-      <div class="form-group" style="text-align:left;margin-bottom:.7rem">
-        <label
-          style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Nível
-          de Acesso</label>
-        <select id="login-role">
-          <option value="admin">👑 Administrador</option>
-          <option value="diretor">🎖️ Diretor</option>
-          <option value="conselheiro">🧭 Conselheiro</option>
-          <option value="desbravador">⚔️ Desbravador</option>
-        </select>
-      </div>
+      
       <div class="form-group" style="text-align:left;margin-bottom:.7rem">
         <label
           style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Usuário</label>
@@ -1516,6 +1513,29 @@
       <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;"
         onclick="doLogin()">Entrar</button>
       <div class="login-msg-box" id="login-msg"></div>
+    </div>
+
+    <!-- Passo 2: Escolha de Nível para Novos Usuários -->
+    <div class="login-box" id="login-step-2" style="display: none; transform: translateY(20px); opacity: 0; transition: all 0.3s ease;">
+      <div class="logo-icon" style="margin:0 auto 1.25rem;width:54px;height:54px;font-size:1.6rem">👋</div>
+      <h2>Você é novo por aqui!</h2>
+      <p>Qual nível de acesso você deseja solicitar?</p>
+      
+      <div class="form-group" style="text-align:left;margin-bottom:1.1rem">
+        <label
+          style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Nível de Acesso</label>
+        <select id="register-role">
+          <option value="desbravador">⚔️ Desbravador</option>
+          <option value="conselheiro">🧭 Conselheiro</option>
+          <option value="diretor">🎖️ Diretor</option>
+          <option value="admin">👑 Administrador</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="register-btn" style="width:100%;justify-content:center;"
+        onclick="requestAccess()">Solicitar Acesso</button>
+      <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:0.5rem;"
+        onclick="backToLogin()">Voltar</button>
+      <div class="login-msg-box" id="register-msg"></div>
     </div>
   </div>
 
@@ -2718,39 +2738,94 @@
     }
 
     async function doLogin() {
-      const role = document.getElementById('login-role')?.value || 'admin';
       const usuario = (document.getElementById('login-usuario')?.value || '').trim();
       const senha = (document.getElementById('login-senha')?.value || '').trim();
       if (!usuario || !senha) { showLoginMsg('Preencha usuário e senha', 'error'); return; }
+      
       const btn = document.getElementById('login-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'Aguarde...'; }
+      
       try {
-        if (role === 'admin') {
-          if ((usuario === 'admin' || usuario === 'lunna') && (senha === 'lunna' || senha === 'diretor' || senha === 'admin')) {
-            currentUser = { usuario: 'admin', nome: 'Administrador', role: 'admin' };
-            localStorage.setItem('gda_session', JSON.stringify(currentUser));
-            userRole = 'admin'; finishLogin();
-          } else { showLoginMsg('Credenciais incorretas', 'error'); }
+        // Validação hardcoded para admin legado
+        if ((usuario === 'admin' || usuario === 'lunna') && (senha === 'lunna' || senha === 'diretor' || senha === 'admin')) {
+          currentUser = { usuario: 'admin', nome: 'Administrador', role: 'admin' };
+          localStorage.setItem('gda_session', JSON.stringify(currentUser));
+          userRole = 'admin'; finishLogin();
           return;
         }
-        const snap = await db.collection('gda_usuarios')
-          .where('usuario', '==', usuario).where('role', '==', role).get();
+        
+        // Busca inteligente pelo usuário sem precisar de 'role'
+        const snap = await db.collection('gda_usuarios').where('usuario', '==', usuario).get();
+        
         if (snap.empty) {
-          await db.collection('gda_usuarios').add({
-            usuario, nome: usuario, role, senha, status: 'pendente', criadoEm: Date.now()
-          });
-          showLoginMsg('✅ Acesso solicitado! Aguardando aprovação do Diretor/Admin. Entre em contato com o responsável.', 'info');
+          showRoleSelection();
           return;
         }
-        const docSnap = snap.docs[0]; const data = docSnap.data();
+        
+        const docSnap = snap.docs[0]; 
+        const data = docSnap.data();
+        
         if (data.senha !== senha) { showLoginMsg('Senha incorreta', 'error'); return; }
         if (data.status === 'pendente') { showLoginMsg('⏳ Seu acesso ainda está pendente de aprovação. Fale com o Diretor ou Admin.', 'info'); return; }
         if (data.status === 'negado') { showLoginMsg('❌ Seu acesso foi negado. Contate o responsável.', 'error'); return; }
+        
         currentUser = { id: docSnap.id, usuario: data.usuario, nome: data.nome || data.usuario, role: data.role };
         localStorage.setItem('gda_session', JSON.stringify(currentUser));
         userRole = data.role; finishLogin();
-      } catch (e) { console.error(e); showLoginMsg('Erro de conexão. Verifique sua internet.', 'error'); }
-      finally { if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; } }
+      } catch (e) { 
+        console.error(e); 
+        showLoginMsg('Erro de conexão. Verifique sua internet.', 'error'); 
+      } finally { 
+        if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; } 
+      }
+    }
+
+    function showRoleSelection() {
+      const step1 = document.getElementById('login-step-1');
+      const step2 = document.getElementById('login-step-2');
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+      setTimeout(() => {
+        step2.style.transform = 'translateY(0)';
+        step2.style.opacity = '1';
+      }, 10);
+    }
+
+    function backToLogin() {
+      const step1 = document.getElementById('login-step-1');
+      const step2 = document.getElementById('login-step-2');
+      step2.style.transform = 'translateY(20px)';
+      step2.style.opacity = '0';
+      setTimeout(() => {
+        step2.style.display = 'none';
+        step1.style.display = 'block';
+      }, 300);
+    }
+
+    async function requestAccess() {
+      const usuario = (document.getElementById('login-usuario')?.value || '').trim();
+      const senha = (document.getElementById('login-senha')?.value || '').trim();
+      const role = document.getElementById('register-role')?.value || 'desbravador';
+      const btn = document.getElementById('register-btn');
+      const msgEl = document.getElementById('register-msg');
+      
+      if (btn) { btn.disabled = true; btn.textContent = 'Aguarde...'; }
+      try {
+        await db.collection('gda_usuarios').add({
+          usuario, nome: usuario, role, senha, status: 'pendente', criadoEm: Date.now()
+        });
+        msgEl.textContent = '✅ Acesso solicitado! Aguardando aprovação.';
+        msgEl.className = 'login-msg-box success';
+        msgEl.style.display = 'block';
+        setTimeout(backToLogin, 3000);
+      } catch (e) {
+        console.error(e);
+        msgEl.textContent = 'Erro ao solicitar acesso. Verifique a conexão.';
+        msgEl.className = 'login-msg-box error';
+        msgEl.style.display = 'block';
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Solicitar Acesso'; }
+      }
     }
 
     function doLogout() {
