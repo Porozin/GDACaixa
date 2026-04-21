@@ -1,6 +1,7 @@
 firebase-config.js
 config.js
 backups
+.skills/
 node_modules/
 serviceAccountKey.json
 .env
