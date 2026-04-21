@@ -17,7 +17,7 @@
 
 <body class="">
 
-  <!-- Ambient Background: Interactive Orbs + Noise Texture -->
+  <!-- Ambiennt Background: Interactive Orbs + Noise Texture -->
   <div id="ambient-bg">
     <div class="ambient-orb orb-primary" data-orb="primary"></div>
     <div class="ambient-orb orb-secondary" data-orb="secondary"></div>
@@ -56,7 +56,8 @@
             <option value="conselheiro">🧭 Conselheiro (unidade)</option>
           </select>
         </div>
-        <button id="register-btn" class="btn btn-primary" style="width:100%" onclick="requestAccess()">Solicitar Acesso</button>
+        <button id="register-btn" class="btn btn-primary" style="width:100%" onclick="requestAccess()">Solicitar
+          Acesso</button>
         <button class="btn btn-ghost" style="width:100%;margin-top:.5rem" onclick="backToLogin()">← Voltar</button>
         <div id="register-msg" class="login-msg-box" style="margin-top:.5rem"></div>
       </div>
@@ -116,7 +117,8 @@
           <button class="section-tab active" onclick="showSecTab(this, 'clube-dash')">📊 Dashboard</button>
           <button class="section-tab" onclick="showSecTab(this, 'clube-form')">💸 Lançar</button>
           <button class="section-tab" onclick="showSecTab(this, 'clube-hist')">📂 Histórico</button>
-          <button class="section-tab" onclick="showSecTab(this, 'clube-metas')">🎯 Metas <span class="badge badge-pending" id="badge-metas" style="display:none">0</span></button>
+          <button class="section-tab" onclick="showSecTab(this, 'clube-metas')">🎯 Metas <span
+              class="badge badge-pending" id="badge-metas" style="display:none">0</span></button>
           <button class="section-tab" onclick="showSecTab(this, 'clube-unidades')">🏕️ Unidades</button>
         </div>
 
@@ -191,7 +193,16 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Tipo</th><th>Categoria</th><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Categoria</th>
+                  <th>Descrição</th>
+                  <th>Valor</th>
+                  <th></th>
+                </tr>
+              </thead>
               <tbody id="clube-hist-body"></tbody>
             </table>
           </div>
@@ -246,7 +257,8 @@
           <button class="section-tab active" onclick="showSecTab(this, 'doceria-pedidos')">📦 Pedidos</button>
           <button class="section-tab" onclick="showSecTab(this, 'doceria-materias')">🧴 Matérias</button>
           <button class="section-tab" onclick="showSecTab(this, 'doceria-gastos')">💸 Gastos</button>
-          <button class="section-tab" onclick="showSecTab(this, 'doceria-metas')">🎯 Metas <span class="badge badge-pending" id="badge-meta-doceria" style="display:none">0</span></button>
+          <button class="section-tab" onclick="showSecTab(this, 'doceria-metas')">🎯 Metas <span
+              class="badge badge-pending" id="badge-meta-doceria" style="display:none">0</span></button>
         </div>
 
         <!-- Pedidos -->
@@ -278,7 +290,16 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Valor</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Cliente</th>
+                  <th>Produto</th>
+                  <th>Qtd</th>
+                  <th>Valor</th>
+                  <th></th>
+                </tr>
+              </thead>
               <tbody id="doceria-pedidos-body"></tbody>
             </table>
           </div>
@@ -325,7 +346,14 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Valor</th>
+                  <th></th>
+                </tr>
+              </thead>
               <tbody id="doceria-gastos-body"></tbody>
             </table>
           </div>
@@ -360,7 +388,8 @@
           <button class="section-tab" onclick="showSecTab(this, 'vendas-reg')">💸 Registrar Venda</button>
           <button class="section-tab" onclick="showSecTab(this, 'vendas-hist')">📂 Histórico</button>
           <button class="section-tab" onclick="showSecTab(this, 'vendas-prod')">📦 Produtos</button>
-          <button class="section-tab" onclick="showSecTab(this, 'vendas-meta')">🎯 Metas <span class="badge badge-pending" id="badge-meta-vendas" style="display:none">0</span></button>
+          <button class="section-tab" onclick="showSecTab(this, 'vendas-meta')">🎯 Metas <span
+              class="badge badge-pending" id="badge-meta-vendas" style="display:none">0</span></button>
         </div>
 
         <!-- Dashboard -->
@@ -407,7 +436,15 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th>Qtd</th><th>Total</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Vendedor</th>
+                  <th>Produto</th>
+                  <th>Qtd</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
               <tbody id="vendas-hist-body"></tbody>
             </table>
           </div>
@@ -433,7 +470,14 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Nome</th><th>Preço</th><th>Vendas</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Preço</th>
+                  <th>Vendas</th>
+                  <th></th>
+                </tr>
+              </thead>
               <tbody id="produtos-body"></tbody>
             </table>
           </div>
@@ -494,7 +538,15 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Status</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
               <tbody id="privado-body"></tbody>
             </table>
           </div>
@@ -504,7 +556,15 @@
         <div id="privado-usu" class="section-panel">
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Usuário</th><th>Nome</th><th>Role</th><th>Status</th><th></th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Usuário</th>
+                  <th>Nome</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
               <tbody id="usuarios-body"></tbody>
             </table>
           </div>
