@@ -14,68 +14,71 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
   <style>
     /* ═══════════════════════════════════════════════════════════
-   VARIÁVEIS E RESET (GLASSMORPHISM APPLE)
+   VARIÁVEIS E RESET (NEUMORPHISM)
 ═══════════════════════════════════════════════════════════ */
     :root {
-      /* Cores Principais */
-      --primary: #3A86FF;
+      /* Cores Principais - Neumorphism Skill */
+      --primary: #006666;
       --secondary: #F1F2F5;
-      --success: #38b000;
-      --warning: #ffb703;
-      --danger: #ef233c;
-      
+      --success: #00A63D;
+      --warning: #FE9900;
+      --danger: #FF2157;
+
       /* Aliases retrocompatíveis */
       --accent: var(--warning);
       --accent2: var(--danger);
-      --accent3: var(--primary);
-      --accent-hover: #e09f00;
-      --accent2-hover: #d90429;
-      
-      /* Glass Layers - Light Mode */
-      --bg: transparent; /* O fundo real será o #ambient-bg */
-      --bg-color: #f2f2f7; /* Cor base caso o fundo falhe */
-      --bg2: rgba(255, 255, 255, 0.65); /* Vidro principal */
-      --bg3: rgba(255, 255, 255, 0.4); /* Vidro secundário (inputs) */
-      --bg4: rgba(255, 255, 255, 0.8);
-      
-      --border: rgba(255, 255, 255, 0.6); /* Borda brilhante sutil */
-      --border-glow: rgba(58, 134, 255, 0.2);
-      
+      --accent3: var(--success);
+      --accent-hover: #CC7A00;
+      --accent2-hover: #CC1A46;
+
+      --bg: #E7E5E4;
+      /* Surface */
+      --bg2: #E7E5E4;
+      /* Mesma cor para efeito extrudado */
+      --bg3: #DFDDD8;
+      /* Levemente mais escuro para inputs */
+      --bg4: #D5D3CE;
+
+      --border: transparent;
+      /* Neumorfismo geralmente não usa bordas, ou usa bordas muito sutis */
+      --border-glow: rgba(0, 102, 102, 0.25);
+
       /* Tipografia / Neutros */
-      --text: #1C1C1E;
-      --text2: #3A3A3C;
-      --text3: #8E8E93;
-      
-      /* Glass Shadows */
-      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
-      --glass-shadow-hover: 0 12px 48px 0 rgba(0, 0, 0, 0.12);
-      
-      --card-shadow: var(--glass-shadow);
-      --radius: 24px;
+      --text: #1E2938;
+      --text2: #4a5168;
+      --text3: #8891a8;
+
+      /* Neumorphic Shadows - Light Mode (#E7E5E4) */
+      /* Outer shadow para cards/botões */
+      --nm-shadow: 6px 6px 12px #c4c2c1, -6px -6px 12px #ffffff;
+      --nm-shadow-hover: 8px 8px 16px #c4c2c1, -8px -8px 16px #ffffff;
+      /* Inner shadow para botões pressionados e inputs */
+      --nm-inner-shadow: inset 4px 4px 8px #c4c2c1, inset -4px -4px 8px #ffffff;
+
+      --card-shadow: var(--nm-shadow);
+      --radius: 20px;
       --radius-sm: 12px;
-      
-      /* Glass Filter */
-      --glass-filter: blur(24px) saturate(180%);
-      
+
       --font-head: 'Space Mono', monospace;
       --font-mono: 'JetBrains Mono', monospace;
       --font-body: 'Space Mono', monospace;
-      --trans: .3s cubic-bezier(.4, 0, .2, 1);
+      --trans: .25s cubic-bezier(.4, 0, .2, 1);
     }
 
     [data-theme="dark"] {
-      --bg-color: #000000;
-      --bg2: rgba(28, 28, 30, 0.6);
-      --bg3: rgba(44, 44, 46, 0.5);
-      --bg4: rgba(58, 58, 60, 0.7);
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #FFFFFF;
-      --text2: #EBEBF5;
-      --text3: #EBEBF599; /* 60% opacity */
-      
-      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-      --glass-shadow-hover: 0 12px 48px 0 rgba(0, 0, 0, 0.5);
-      --card-shadow: var(--glass-shadow);
+      --primary: #009999;
+      --bg: #1e1e1e;
+      --bg2: #1e1e1e;
+      --bg3: #161616;
+      --bg4: #0a0a0a;
+      --text: #F1F2F5;
+      --text2: #A8B2D1;
+      --text3: #6C757D;
+      /* Neumorphic Shadows - Dark Mode */
+      --nm-shadow: 6px 6px 12px #151515, -6px -6px 12px #272727;
+      --nm-shadow-hover: 8px 8px 16px #151515, -8px -8px 16px #272727;
+      --nm-inner-shadow: inset 4px 4px 8px #151515, inset -4px -4px 8px #272727;
+      --card-shadow: var(--nm-shadow);
     }
 
     *,
@@ -99,7 +102,7 @@
       display: grid;
       grid-template-columns: 260px 1fr;
       grid-template-rows: auto 1fr;
-      grid-template-areas: 
+      grid-template-areas:
         "sidebar topbar"
         "sidebar main";
       transition: background var(--trans), color var(--trans);
@@ -126,7 +129,8 @@
       border: none;
       border-radius: var(--radius-sm);
       padding: .55rem .85rem;
-      min-height: 48px; /* Touch target size UX rule */
+      min-height: 48px;
+      /* Touch target size UX rule */
       outline: none;
       box-shadow: var(--nm-inner-shadow);
       transition: all var(--trans);
@@ -206,11 +210,11 @@
       position: sticky;
       top: 0;
     }
-    
+
     [data-theme="dark"] .sidebar {
       box-shadow: 6px 0 12px #151515, -6px 0 12px #272727;
     }
-    
+
     .sidebar .logo {
       padding: 0 1.5rem;
     }
@@ -616,7 +620,8 @@
       align-items: center;
       gap: .4rem;
       padding: .55rem 1.1rem;
-      min-height: 48px; /* Touch target size UX rule */
+      min-height: 48px;
+      /* Touch target size UX rule */
       border-radius: var(--radius-sm);
       font-size: .82rem;
       font-weight: 600;
@@ -629,9 +634,10 @@
       color: var(--text);
       box-shadow: var(--nm-shadow);
     }
-    
+
     .btn:active {
-      transform: scale(0.97); /* Touch interaction feedback UX rule */
+      transform: scale(0.97);
+      /* Touch interaction feedback UX rule */
       box-shadow: var(--nm-inner-shadow);
     }
 
@@ -651,7 +657,7 @@
       background: var(--bg2);
       color: var(--text);
     }
-    
+
     .btn-secondary:hover {
       background: var(--bg2);
       color: var(--primary);
@@ -1404,10 +1410,17 @@
       -webkit-backdrop-filter: blur(24px);
       animation: floatIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    
+
     @keyframes floatIn {
-      0% { opacity: 0; transform: translateY(24px) scale(0.97); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .login-box .logo-icon {
@@ -1573,7 +1586,7 @@
       <div class="logo-icon" style="margin:0 auto 1.25rem;width:54px;height:54px;font-size:1.6rem">⚔️</div>
       <h2>Guerreiros do Alto</h2>
       <p>Informe suas credenciais de acesso ao painel.</p>
-      
+
       <div class="form-group" style="text-align:left;margin-bottom:.7rem">
         <label
           style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Usuário</label>
@@ -1592,14 +1605,16 @@
     </div>
 
     <!-- Passo 2: Escolha de Nível para Novos Usuários -->
-    <div class="login-box" id="login-step-2" style="display: none; transform: translateY(20px); opacity: 0; transition: all 0.3s ease;">
+    <div class="login-box" id="login-step-2"
+      style="display: none; transform: translateY(20px); opacity: 0; transition: all 0.3s ease;">
       <div class="logo-icon" style="margin:0 auto 1.25rem;width:54px;height:54px;font-size:1.6rem">👋</div>
       <h2>Você é novo por aqui!</h2>
       <p>Qual nível de acesso você deseja solicitar?</p>
-      
+
       <div class="form-group" style="text-align:left;margin-bottom:1.1rem">
         <label
-          style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Nível de Acesso</label>
+          style="font-size:.72rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">Nível
+          de Acesso</label>
         <select id="register-role">
           <option value="desbravador">⚔️ Desbravador</option>
           <option value="conselheiro">🧭 Conselheiro</option>
@@ -2627,7 +2642,8 @@
     <section class="module" id="mod-privado">
       <div class="section-tabs">
         <button class="section-tab active" onclick="showSecTab(this,'priv-lista')">Dívidas</button>
-        <button class="section-tab" id="tab-admin-sistema" onclick="showSecTab(this,'priv-sistema')" style="display:none; color: var(--accent2);">Sistema (Admin)</button>
+        <button class="section-tab" id="tab-admin-sistema" onclick="showSecTab(this,'priv-sistema')"
+          style="display:none; color: var(--accent2);">Sistema (Admin)</button>
       </div>
       <div class="section-panel active" id="priv-lista">
         <div class="card">
@@ -2692,15 +2708,17 @@
           </div>
         </div>
       </div>
-      
+
       <div class="section-panel" id="priv-sistema">
         <div class="card" style="border: 1px solid var(--accent2); background: rgba(232, 93, 74, 0.05);">
           <div class="card-title">
             <div class="card-title-left"><span class="dot" style="background:var(--accent2)"></span>Zona de Perigo</div>
           </div>
           <p style="font-size: 0.85rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.5;">
-            Atenção: A ação abaixo é <strong style="color:var(--accent2)">irreversível</strong> e apagará permanentemente todos os dados (Transações, Vendas, Pedidos) de todo o sistema na nuvem.<br/>
-            Esta ferramenta visa reiniciar as configurações para um novo período. Somente o Administrador detém acesso e permissão.
+            Atenção: A ação abaixo é <strong style="color:var(--accent2)">irreversível</strong> e apagará
+            permanentemente todos os dados (Transações, Vendas, Pedidos) de todo o sistema na nuvem.<br />
+            Esta ferramenta visa reiniciar as configurações para um novo período. Somente o Administrador detém acesso e
+            permissão.
           </p>
           <div class="form-actions">
             <!-- BOTÃO DE WIPE ISOLADO -->
@@ -2820,10 +2838,10 @@
       const usuario = (document.getElementById('login-usuario')?.value || '').trim();
       const senha = (document.getElementById('login-senha')?.value || '').trim();
       if (!usuario || !senha) { showLoginMsg('Preencha usuário e senha', 'error'); return; }
-      
+
       const btn = document.getElementById('login-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'Aguarde...'; }
-      
+
       try {
         // Validação hardcoded para admin legado
         if ((usuario === 'admin' || usuario === 'lunna') && (senha === 'lunna' || senha === 'diretor' || senha === 'admin')) {
@@ -2832,30 +2850,30 @@
           userRole = 'admin'; finishLogin();
           return;
         }
-        
+
         // Busca inteligente pelo usuário sem precisar de 'role'
         const snap = await db.collection('gda_usuarios').where('usuario', '==', usuario).get();
-        
+
         if (snap.empty) {
           showRoleSelection();
           return;
         }
-        
-        const docSnap = snap.docs[0]; 
+
+        const docSnap = snap.docs[0];
         const data = docSnap.data();
-        
+
         if (data.senha !== senha) { showLoginMsg('Senha incorreta', 'error'); return; }
         if (data.status === 'pendente') { showLoginMsg('⏳ Seu acesso ainda está pendente de aprovação. Fale com o Diretor ou Admin.', 'info'); return; }
         if (data.status === 'negado') { showLoginMsg('❌ Seu acesso foi negado. Contate o responsável.', 'error'); return; }
-        
+
         currentUser = { id: docSnap.id, usuario: data.usuario, nome: data.nome || data.usuario, role: data.role };
         localStorage.setItem('gda_session', JSON.stringify(currentUser));
         userRole = data.role; finishLogin();
-      } catch (e) { 
-        console.error(e); 
-        showLoginMsg('Erro de conexão. Verifique sua internet.', 'error'); 
-      } finally { 
-        if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; } 
+      } catch (e) {
+        console.error(e);
+        showLoginMsg('Erro de conexão. Verifique sua internet.', 'error');
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
       }
     }
 
@@ -2887,7 +2905,7 @@
       const role = document.getElementById('register-role')?.value || 'desbravador';
       const btn = document.getElementById('register-btn');
       const msgEl = document.getElementById('register-msg');
-      
+
       if (btn) { btn.disabled = true; btn.textContent = 'Aguarde...'; }
       try {
         await db.collection('gda_usuarios').add({
@@ -4944,7 +4962,7 @@
 
       // 3ª Confirmação - Interação Textual Explícita (Impossível auto-click)
       const inputNome = prompt("Para confirmar definitivamente, digite o nome completo do administrador (Wallyson...):");
-      
+
       if (inputNome !== "Wallyson Jailson do Nascimento Fernandes") {
         toast("Nome incorreto. O reset foi interceptado preventivamente.", "error");
         return;
@@ -4963,7 +4981,7 @@
       };
 
       // Setamos explicitamente a bypass da tranca anti-limpeza para este momento exato
-      loadedFromDB = true; 
+      loadedFromDB = true;
 
       // Pulamos a função saveData() normal (que proibiria este push de "APP vazio") 
       // e injetamos o vazio no Firestore diretamente, sem merge, para realmente aniquilar as chaves filhas.
