@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<html lang="pt-BR" data-theme="dark">
 
 <head>
   <meta charset="UTF-8" />
@@ -7,78 +7,74 @@
   <title>Guerreiros do Alto · Dashboard Financeira</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@100..800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
   <style>
     /* ═══════════════════════════════════════════════════════════
-   VARIÁVEIS E RESET (NEUMORPHISM)
+   VARIÁVEIS E RESET
 ═══════════════════════════════════════════════════════════ */
     :root {
-      /* Cores Principais - Neumorphism Skill */
-      --primary: #006666;
-      --secondary: #F1F2F5;
-      --success: #00A63D;
-      --warning: #FE9900;
-      --danger: #FF2157;
+      /* Cores Principais - Glassmorphism UI */
+      --accent: #F2C94C;
+      /* Dourado principal */
+      --accent-hover: #D4A017;
+      --accent-light: #FFDD75;
 
-      /* Aliases retrocompatíveis */
-      --accent: var(--warning);
-      --accent2: var(--danger);
-      --accent3: var(--success);
-      --accent-hover: #CC7A00;
-      --accent2-hover: #CC1A46;
+      --accent2: #E63946;
+      /* Vermelho forte */
+      --accent2-hover: #B71C1C;
 
-      --bg: #E7E5E4;
-      /* Surface */
-      --bg2: #E7E5E4;
-      /* Mesma cor para efeito extrudado */
-      --bg3: #DFDDD8;
-      /* Levemente mais escuro para inputs */
-      --bg4: #D5D3CE;
+      --accent3: #00C2FF;
+      /* Azul neon (Glow/Tech) */
+      --positive: #4CC9F0;
+      /* Azul suave para ganhos/positivos no tema tech */
 
-      --border: transparent;
-      /* Neumorfismo geralmente não usa bordas, ou usa bordas muito sutis */
-      --border-glow: rgba(0, 102, 102, 0.25);
+      --bg: #0B132B;
+      /* Azul noite - Fundo espacial */
+      --bg-base: #1C2541;
+      /* Azul secundário */
+
+      /* Glass Layers */
+      --bg2: rgba(255, 255, 255, 0.08);
+      /* Vidro principal */
+      --bg3: rgba(255, 255, 255, 0.04);
+      /* Vidro sutil (inputs) */
+      --bg4: rgba(0, 194, 255, 0.05);
+      /* Vidro com tint azulado */
+
+      --border: rgba(255, 255, 255, 0.15);
+      /* Borda glass */
+      --border-glow: rgba(0, 194, 255, 0.25);
 
       /* Tipografia / Neutros */
-      --text: #1E2938;
-      --text2: #4a5168;
-      --text3: #8891a8;
+      --text: #FFFFFF;
+      --text2: #A8B2D1;
+      --text3: #6C757D;
 
-      /* Neumorphic Shadows - Light Mode (#E7E5E4) */
-      /* Outer shadow para cards/botões */
-      --nm-shadow: 6px 6px 12px #c4c2c1, -6px -6px 12px #ffffff;
-      --nm-shadow-hover: 8px 8px 16px #c4c2c1, -8px -8px 16px #ffffff;
-      /* Inner shadow para botões pressionados e inputs */
-      --nm-inner-shadow: inset 4px 4px 8px #c4c2c1, inset -4px -4px 8px #ffffff;
-
-      --card-shadow: var(--nm-shadow);
+      --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
       --radius: 20px;
+      /* Bordas mais suaves para o vidro */
       --radius-sm: 12px;
 
-      --font-head: 'Space Mono', monospace;
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-body: 'Space Mono', monospace;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --font-body: 'DM Sans', sans-serif;
       --trans: .25s cubic-bezier(.4, 0, .2, 1);
     }
 
-    [data-theme="dark"] {
-      --primary: #009999;
-      --bg: #1e1e1e;
-      --bg2: #1e1e1e;
-      --bg3: #161616;
-      --bg4: #0a0a0a;
-      --text: #F1F2F5;
-      --text2: #A8B2D1;
-      --text3: #6C757D;
-      /* Neumorphic Shadows - Dark Mode */
-      --nm-shadow: 6px 6px 12px #151515, -6px -6px 12px #272727;
-      --nm-shadow-hover: 8px 8px 16px #151515, -8px -8px 16px #272727;
-      --nm-inner-shadow: inset 4px 4px 8px #151515, inset -4px -4px 8px #272727;
-      --card-shadow: var(--nm-shadow);
+    [data-theme="light"] {
+      --bg: #f4f5f8;
+      --bg2: #ffffff;
+      --bg3: #eef0f5;
+      --bg4: #e2e5ed;
+      --border: #d0d4e0;
+      --text: #1a1e2a;
+      --text2: #4a5168;
+      --text3: #8891a8;
+      --card-shadow: 0 4px 24px rgba(0, 0, 0, .10);
     }
 
     *,
@@ -99,18 +95,53 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      grid-template-rows: auto 1fr;
-      grid-template-areas:
-        "sidebar topbar"
-        "sidebar main";
+      display: flex;
+      flex-direction: column;
       transition: background var(--trans), color var(--trans);
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Ambient Glow removido para Neumorfismo monocromático */
+    /* Ambient Glow / Orbs Background */
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      pointer-events: none;
+      animation: floatOrbs 20s infinite alternate ease-in-out;
+    }
+
+    body::before {
+      width: 55vw;
+      height: 55vh;
+      background: rgba(0, 194, 255, 0.08);
+      /* Ciano light glow */
+      top: -15%;
+      left: -10%;
+    }
+
+    body::after {
+      width: 45vw;
+      height: 45vh;
+      background: rgba(242, 201, 76, 0.05);
+      /* Dourado light glow */
+      bottom: -10%;
+      right: -10%;
+      animation-delay: -10s;
+    }
+
+    @keyframes floatOrbs {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(12vw, 8vh) scale(1.15);
+      }
+    }
 
     button {
       font-family: var(--font-body);
@@ -126,21 +157,21 @@
       font-size: .9rem;
       color: var(--text);
       background: var(--bg3);
-      border: none;
+      border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
       padding: .55rem .85rem;
       min-height: 48px;
       /* Touch target size UX rule */
       outline: none;
-      box-shadow: var(--nm-inner-shadow);
-      transition: all var(--trans);
+      transition: border-color var(--trans), box-shadow var(--trans);
       width: 100%
     }
 
     input:focus,
     select:focus,
     textarea:focus {
-      box-shadow: inset 6px 6px 12px #c4c2c1, inset -6px -6px 12px #ffffff, 0 0 0 2px var(--primary);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(240, 180, 41, .12)
     }
 
     select option {
@@ -195,41 +226,20 @@
     }
 
     /* ═══════════════════════════════════════════════════════════
-   TOPBAR E SIDEBAR
+   TOPBAR
 ═══════════════════════════════════════════════════════════ */
-    .sidebar {
-      grid-area: sidebar;
-      background: var(--bg2);
-      box-shadow: 6px 0 12px #c4c2c1, -6px 0 12px #ffffff;
-      padding: 1.5rem 0;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      z-index: 101;
-      height: 100vh;
-      position: sticky;
-      top: 0;
-    }
-
-    [data-theme="dark"] .sidebar {
-      box-shadow: 6px 0 12px #151515, -6px 0 12px #272727;
-    }
-
-    .sidebar .logo {
-      padding: 0 1.5rem;
-    }
-
     .topbar {
-      grid-area: topbar;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
       padding: .85rem 2rem;
-      background: transparent;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      padding-top: 1.5rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .logo {
@@ -335,40 +345,41 @@
     }
 
     /* ═══════════════════════════════════════════════════════════
-   MÓDULO TABS (SIDEBAR MENU)
+   MÓDULO TABS
 ═══════════════════════════════════════════════════════════ */
     .mod-tabs {
       display: flex;
-      flex-direction: column;
-      gap: .5rem;
-      padding: 0 1rem;
-      background: transparent;
+      gap: .25rem;
+      padding: 1.25rem 2rem .5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .mod-tab {
       display: flex;
       align-items: center;
-      gap: .75rem;
-      padding: .85rem 1.25rem;
+      gap: .5rem;
+      padding: .6rem 1.25rem;
       border-radius: var(--radius-sm);
       font-size: .875rem;
       font-weight: 600;
       color: var(--text3);
       transition: all var(--trans);
       font-family: var(--font-head);
-      border: none;
+      border: 1.5px solid transparent;
     }
 
     .mod-tab:hover {
       color: var(--text);
-      background: transparent;
-      box-shadow: var(--nm-shadow);
+      background: var(--bg3)
     }
 
     .mod-tab.active {
-      color: var(--primary);
-      background: transparent;
-      box-shadow: var(--nm-inner-shadow);
+      color: var(--accent);
+      background: rgba(240, 180, 41, .1);
+      border-color: rgba(240, 180, 41, .3);
     }
 
     .mod-tab .tab-icon {
@@ -379,8 +390,8 @@
    CONTEÚDO PRINCIPAL
 ═══════════════════════════════════════════════════════════ */
     .main {
-      grid-area: main;
-      padding: 0.5rem 2rem 3rem;
+      flex: 1;
+      padding: 1.5rem 2rem 3rem;
       max-width: 1400px;
       width: 100%;
       margin: 0 auto;
@@ -416,14 +427,13 @@
       gap: .2rem;
       margin-bottom: 1.5rem;
       background: var(--bg3);
-      padding: 6px;
+      padding: 4px;
       border-radius: var(--radius-sm);
       width: fit-content;
       max-width: 100%;
       overflow-x: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
-      box-shadow: var(--nm-inner-shadow);
     }
 
     .section-tabs::-webkit-scrollbar {
@@ -432,20 +442,18 @@
 
     .section-tab {
       padding: .45rem 1rem;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: .82rem;
       font-weight: 600;
       color: var(--text3);
       transition: all var(--trans);
       flex-shrink: 0;
-      background: transparent;
-      border: none;
     }
 
     .section-tab.active {
       background: var(--bg2);
-      color: var(--primary);
-      box-shadow: var(--nm-shadow);
+      color: var(--text);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .2)
     }
 
     .section-panel {
@@ -469,19 +477,23 @@
 
     .metric-card {
       background: var(--bg2);
-      border: none;
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.25rem 1.4rem;
       position: relative;
       overflow: hidden;
-      transition: transform var(--trans), box-shadow var(--trans);
+      transition: transform var(--trans), box-shadow var(--trans), border-color var(--trans);
       min-width: 0;
-      box-shadow: var(--nm-shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
     }
 
     .metric-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--nm-shadow-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px var(--border-glow);
+      /* Neon glow no hover */
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
     .metric-card::before {
@@ -548,13 +560,15 @@
 ═══════════════════════════════════════════════════════════ */
     .card {
       background: var(--bg2);
-      border: none;
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.35rem 1.5rem;
       margin-bottom: 1.25rem;
       min-width: 0;
       max-width: 100%;
-      box-shadow: var(--nm-shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
     }
 
     .card-title {
@@ -630,38 +644,41 @@
       cursor: pointer;
       border: none;
       font-family: var(--font-body);
-      background: var(--bg2);
-      color: var(--text);
-      box-shadow: var(--nm-shadow);
     }
 
     .btn:active {
       transform: scale(0.97);
       /* Touch interaction feedback UX rule */
-      box-shadow: var(--nm-inner-shadow);
     }
 
     .btn-primary {
-      background: var(--primary);
-      color: #ffffff;
-      box-shadow: 6px 6px 12px #c4c2c1, -6px -6px 12px #ffffff;
+      background: var(--accent);
+      color: #0d0f14;
+      box-shadow: 0 4px 14px rgba(242, 201, 76, 0.25);
+      /* Dourado leve */
     }
 
     .btn-primary:hover {
-      background: #005555;
+      background: var(--accent-hover);
       transform: translateY(-2px);
-      box-shadow: 8px 8px 16px #c4c2c1, -8px -8px 16px #ffffff;
+      box-shadow: 0 6px 20px rgba(242, 201, 76, 0.4);
     }
 
     .btn-secondary {
-      background: var(--bg2);
-      color: var(--text);
+      background: var(--bg3);
+      color: var(--text2);
+      border: 1px solid transparent;
     }
 
     .btn-secondary:hover {
-      background: var(--bg2);
-      color: var(--primary);
-      box-shadow: var(--nm-shadow-hover);
+      background: var(--bg4);
+      color: var(--text);
+      border-color: var(--border-glow);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg3);
+      color: var(--text)
     }
 
     .btn-danger {
@@ -1631,34 +1648,11 @@
   </div>
 
   <!-- ═══ TOPBAR ═══════════════════════════════════════════════════ -->
-  <aside class="sidebar">
+  <header class="topbar">
     <div class="logo">
       <div class="logo-icon">⚔️</div>
       <span>Guerreiros do Alto</span>
     </div>
-    <!-- ═══ MÓDULO TABS ═══════════════════════════════════════════════ -->
-    <nav class="mod-tabs">
-      <button class="mod-tab active" data-mod="clube" onclick="switchModule('clube')">
-        <span class="tab-icon">⚔️</span>
-        <span class="tab-label">Clube</span>
-      </button>
-      <button class="mod-tab" data-mod="doceria" onclick="switchModule('doceria')">
-        <span class="tab-icon">🎂</span>
-        <span class="tab-label">Doceria</span>
-      </button>
-      <button class="mod-tab" data-mod="vendas" onclick="switchModule('vendas')">
-        <span class="tab-icon">🥧</span>
-        <span class="tab-label">Vendas</span>
-      </button>
-      <button class="mod-tab admin-only" data-mod="privado" onclick="switchModule('privado')">
-        <span class="tab-icon">🔐</span>
-        <span class="tab-label">Controle Interno</span>
-      </button>
-    </nav>
-  </aside>
-
-  <!-- ═══ TOPBAR ═══════════════════════════════════════════════════ -->
-  <header class="topbar">
     <div class="topbar-right">
       <div style="position:relative">
         <button class="export-btn" id="exportMenuBtn" onclick="toggleExportMenu()">
@@ -1681,6 +1675,26 @@
         style="color:var(--accent2); margin-left:.25rem">🚪</button>
     </div>
   </header>
+
+  <!-- ═══ MÓDULO TABS ═══════════════════════════════════════════════ -->
+  <nav class="mod-tabs">
+    <button class="mod-tab active" data-mod="clube" onclick="switchModule('clube')">
+      <span class="tab-icon">⚔️</span>
+      <span class="tab-label">Clube</span>
+    </button>
+    <button class="mod-tab" data-mod="doceria" onclick="switchModule('doceria')">
+      <span class="tab-icon">🎂</span>
+      <span class="tab-label">Doceria</span>
+    </button>
+    <button class="mod-tab" data-mod="vendas" onclick="switchModule('vendas')">
+      <span class="tab-icon">🥧</span>
+      <span class="tab-label">Vendas</span>
+    </button>
+    <button class="mod-tab admin-only" data-mod="privado" onclick="switchModule('privado')">
+      <span class="tab-icon">🔐</span>
+      <span class="tab-label">Controle Interno</span>
+    </button>
+  </nav>
 
   <!-- ═══ CONTEÚDO PRINCIPAL ═══════════════════════════════════════ -->
   <main class="main">
