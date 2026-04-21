@@ -1,0 +1,24 @@
+{
+  "name": "gdacaixa",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">   <!-- Substitua o link abaixo pela sua logo ou banner do projeto -->   <img src=\"file_00000000172c71f5a25c8dcc346f633f.png\" alt=\"GDACaixa Banner\" width=\"100%\">",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Porozin/GDACaixa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Porozin/GDACaixa/issues"
+  },
+  "homepage": "https://github.com/Porozin/GDACaixa#readme",
+  "dependencies": {
+    "firebase-admin": "^13.8.0"
+  }
+}

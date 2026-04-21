@@ -1,0 +1,36 @@
+name: Firestore Periodic Backup
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Roda todo dia às 03:00 UTC
+  workflow_dispatch: # Permite rodar manualmente pelo painel do GitHub
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/checkout@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Backup Script
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node scripts/backup.js
+
+      - name: Commit and Push Backup
+        run: |
+          git config --global user.name "GitHub Action Backup"
+          git config --global user.email "action@github.com"
+          git add backups/
+          git commit -m "chore: automated firestore backup $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push origin main
