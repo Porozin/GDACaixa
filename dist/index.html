@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guerreiros do Alto · Dashboard Financeira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script type="module" crossorigin src="/assets/index-Cy3QiWvD.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-ITSP7YQL.css">
+</head>
+
+<body class="">
+
+  <!-- Ambient Background: Interactive Orbs + Noise Texture -->
+  <div id="ambient-bg">
+    <div class="ambient-orb orb-primary" data-orb="primary"></div>
+    <div class="ambient-orb orb-secondary" data-orb="secondary"></div>
+  </div>
+  <div class="noise-overlay"></div>
+
+  <!-- ═══ LOGIN ════════════════════════════════════════════════════ -->
+  <div id="login-overlay">
+
+    <div class="login-box">
+      <div class="logo-icon">⚔️</div>
+      <h2>Guerreiros do Alto</h2>
+      <p>Digite seu usuário e senha para acessar</p>
+
+      <!-- STEP 1: Login -->
+      <div id="login-step-1">
+        <div class="form-group" style="text-align:left;margin-bottom:.75rem">
+          <label>Usuário</label>
+          <input type="text" id="login-usuario" placeholder="Seu usuário" />
+        </div>
+        <div class="form-group" style="text-align:left;margin-bottom:1rem">
+          <label>Senha</label>
+          <input type="password" id="login-senha" placeholder="Sua senha" />
+        </div>
+        <button id="login-btn" class="btn btn-primary" style="width:100%" onclick="doLogin()">Entrar</button>
+        <div id="login-msg" class="login-msg-box"></div>
+      </div>
+
+      <!-- STEP 2: Novo usuário -->
+      <div id="login-step-2" style="display:none;opacity:0;transform:translateY(20px)">
+        <p style="margin-bottom:1rem">Usuário não encontrado. Deseja criar um novo acesso?</p>
+        <div class="form-group" style="text-align:left;margin-bottom:.75rem">
+          <label>Qual seu papel?</label>
+          <select id="register-role">
+            <option value="desbravador">⚔️ Desbravador (vendas)</option>
+            <option value="conselheiro">🧭 Conselheiro (unidade)</option>
+          </select>
+        </div>
+        <button id="register-btn" class="btn btn-primary" style="width:100%" onclick="requestAccess()">Solicitar Acesso</button>
+        <button class="btn btn-ghost" style="width:100%;margin-top:.5rem" onclick="backToLogin()">← Voltar</button>
+        <div id="register-msg" class="login-msg-box" style="margin-top:.5rem"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ APP LAYOUT ════════════════════════════════════════════════════ -->
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-icon">⚔️</div>
+      <span>Guerreiros do Alto</span>
+    </div>
+    <div class="topbar-right">
+      <button class="export-btn" id="exportMenuBtn" onclick="toggleExportMenu()">
+        📤 Exportar
+        <div id="exportDropdown" class="export-dropdown">
+          <button onclick="exportJSON()">📄 JSON</button>
+          <button onclick="exportCSV()">📊 CSV</button>
+          <label style="display:block;margin-top:.25rem">
+            <input type="file" accept=".json" onchange="importJSON(event)" style="display:none" />
+            <span style="cursor:pointer;color:var(--text3);font-size:.82rem">📥 Importar</span>
+          </label>
+        </div>
+      </button>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+      <button class="user-info-btn" id="userInfoBtn" onclick="switchModule('privado')">
+        <span id="userDisplayName"></span>
+        <span id="userRoleBadge"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    <!-- Desktop Sidebar -->
+    <div class="sidebar sidebar-tabs">
+      <button class="mod-tab active" data-mod="clube" onclick="switchModule('clube')">
+        <span class="tab-icon">💰</span>
+        <span class="tab-label">Clube</span>
+      </button>
+      <button class="mod-tab" data-mod="doceria" onclick="switchModule('doceria')">
+        <span class="tab-icon">🧁</span>
+        <span class="tab-label">Doceria</span>
+      </button>
+      <button class="mod-tab" data-mod="vendas" onclick="switchModule('vendas')">
+        <span class="tab-icon">🏪</span>
+        <span class="tab-label">Vendas</span>
+      </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <!-- MÓDULO CLUBE -->
+      <div id="mod-clube" class="module active">
+        <div class="section-tabs">
+          <button class="section-tab active" onclick="showSecTab(this, 'clube-dash')">📊 Dashboard</button>
+          <button class="section-tab" onclick="showSecTab(this, 'clube-form')">💸 Lançar</button>
+          <button class="section-tab" onclick="showSecTab(this, 'clube-hist')">📂 Histórico</button>
+          <button class="section-tab" onclick="showSecTab(this, 'clube-metas')">🎯 Metas <span class="badge badge-pending" id="badge-metas" style="display:none">0</span></button>
+          <button class="section-tab" onclick="showSecTab(this, 'clube-unidades')">🏕️ Unidades</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="clube-dash" class="section-panel active">
+          <div id="clube-meta-hero"></div>
+          <div class="filter-bar">
+            <select id="clube-filter-month" onchange="renderClube()"></select>
+          </div>
+          <div class="metrics-grid" id="clube-metrics"></div>
+          <div class="card">
+            <div class="card-title"><span class="dot"></span>Receitas vs Despesas</div>
+            <div class="chart-container"><canvas id="clube-chart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div id="clube-form" class="section-panel">
+          <div class="card">
+            <div class="card-title">Nova Transação</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tipo</label>
+                <select id="clube-tipo">
+                  <option value="entrada">Entrada</option>
+                  <option value="saida">Saída</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="clube-valor" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="clube-data" />
+              </div>
+              <div class="form-group">
+                <label>Categoria</label>
+                <select id="clube-cat">
+                  <option value="dízimo">Dízimo</option>
+                  <option value="oferta">Oferta</option>
+                  <option value="evento">Evento</option>
+                  <option value="doação">Doação</option>
+                  <option value="saída">Saída</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column:1/-1">
+                <label>Descrição</label>
+                <input type="text" id="clube-desc" placeholder=" description" />
+              </div>
+              <div class="form-group" style="grid-column:1/-1">
+                <label>Vincular a</label>
+                <select id="clube-destino"></select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button id="btn-add-clube" class="btn btn-primary" onclick="handleClubeTransaction()">✚ Adicionar</button>
+              <button class="btn btn-secondary" onclick="imprimirExtrato()">🖨️ Imprimir</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Histórico -->
+        <div id="clube-hist" class="section-panel">
+          <div class="filter-bar">
+            <select id="clube-hist-month" onchange="renderClubeHist()"></select>
+            <select id="clube-hist-tipo" onchange="renderClubeHist()">
+              <option value="">Todos</option>
+              <option value="entrada">Entradas</option>
+              <option value="saida">Saídas</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Tipo</th><th>Categoria</th><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+              <tbody id="clube-hist-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Metas -->
+        <div id="clube-metas" class="section-panel">
+          <div class="card desb-card">
+            <div class="card-title">Nova Meta</div>
+            <div class="form-grid">
+              <div class="form-group" style="grid-column:1/-1">
+                <label>Descrição</label>
+                <input type="text" id="meta-desc" placeholder=" description" />
+              </div>
+              <div class="form-group">
+                <label>Valor Alvo (R$)</label>
+                <input type="number" id="meta-valor" step="0.01" min="0" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addMetaClube()">✚ Criar Meta</button>
+            </div>
+          </div>
+          <div id="metas-clube-list"></div>
+        </div>
+
+        <!-- Unidades -->
+        <div id="clube-unidades" class="section-panel">
+          <div class="card admin-only">
+            <div class="card-title">Nova Unidade</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="unidade-nome" placeholder="Nome da unidade" />
+              </div>
+              <div class="form-group">
+                <label>Conselheiro</label>
+                <input type="text" id="unidade-conselheiro" placeholder="Nome do conselheiro" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addUnidade()">✚ Criar Unidade</button>
+            </div>
+          </div>
+          <div class="unidade-grid" id="unidades-grid"></div>
+        </div>
+      </div>
+
+      <!-- MÓDULO DOCERIA -->
+      <div id="mod-doceria" class="module">
+        <div class="section-tabs">
+          <button class="section-tab active" onclick="showSecTab(this, 'doceria-pedidos')">📦 Pedidos</button>
+          <button class="section-tab" onclick="showSecTab(this, 'doceria-materias')">🧴 Matérias</button>
+          <button class="section-tab" onclick="showSecTab(this, 'doceria-gastos')">💸 Gastos</button>
+          <button class="section-tab" onclick="showSecTab(this, 'doceria-metas')">🎯 Metas <span class="badge badge-pending" id="badge-meta-doceria" style="display:none">0</span></button>
+        </div>
+
+        <!-- Pedidos -->
+        <div id="doceria-pedidos" class="section-panel active">
+          <div class="metrics-grid" id="doceria-metrics"></div>
+          <div class="card">
+            <div class="card-title">Novo Pedido</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Cliente</label>
+                <input type="text" id="doc-cliente" placeholder="Nome do cliente" />
+              </div>
+              <div class="form-group">
+                <label>Produto</label>
+                <input type="text" id="doc-produto" placeholder="Produto" />
+              </div>
+              <div class="form-group">
+                <label>Quantidade</label>
+                <input type="number" id="doc-qty" value="1" min="1" />
+              </div>
+              <div class="form-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="doc-valor" step="0.01" min="0" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addDocPedido()">✚ Adicionar</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Valor</th><th></th></tr></thead>
+              <tbody id="doceria-pedidos-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Matérias -->
+        <div id="doceria-materias" class="section-panel">
+          <div class="card">
+            <div class="card-title">Nova Matéria</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="mat-nome" placeholder="Nome da matéria" />
+              </div>
+              <div class="form-group">
+                <label>Quantidade</label>
+                <input type="number" id="mat-qty" step="0.01" min="0" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addMateria()">✚ Adicionar</button>
+            </div>
+          </div>
+          <div id="materias-list"></div>
+        </div>
+
+        <!-- Gastos -->
+        <div id="doceria-gastos" class="section-panel">
+          <div class="card">
+            <div class="card-title">Novo Gasto</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Descrição</label>
+                <input type="text" id="gasto-desc" placeholder=" description" />
+              </div>
+              <div class="form-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="gasto-valor" step="0.01" min="0" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addDocGasto()">✚ Adicionar</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+              <tbody id="doceria-gastos-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Metas -->
+        <div id="doceria-metas" class="section-panel">
+          <div class="card admin-only">
+            <div class="card-title">Nova Meta</div>
+            <div class="form-grid">
+              <div class="form-group" style="grid-column:1/-1">
+                <label>Descrição</label>
+                <input type="text" id="doc-meta-desc" placeholder=" description" />
+              </div>
+              <div class="form-group">
+                <label>Valor Alvo (R$)</label>
+                <input type="number" id="doc-meta-valor" step="0.01" min="0" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addMetaDoceria()">✚ Criar Meta</button>
+            </div>
+          </div>
+          <div id="metas-doceria-list"></div>
+        </div>
+      </div>
+
+      <!-- MÓDULO VENDAS -->
+      <div id="mod-vendas" class="module">
+        <div class="section-tabs">
+          <button class="section-tab active" onclick="showSecTab(this, 'vendas-dash')">📊 Dashboard</button>
+          <button class="section-tab" onclick="showSecTab(this, 'vendas-reg')">💸 Registrar Venda</button>
+          <button class="section-tab" onclick="showSecTab(this, 'vendas-hist')">📂 Histórico</button>
+          <button class="section-tab" onclick="showSecTab(this, 'vendas-prod')">📦 Produtos</button>
+          <button class="section-tab" onclick="showSecTab(this, 'vendas-meta')">🎯 Metas <span class="badge badge-pending" id="badge-meta-vendas" style="display:none">0</span></button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="vendas-dash" class="section-panel active">
+          <div class="metrics-grid" id="vendas-metrics"></div>
+          <div class="card">
+            <div class="card-title"><span class="dot"></span>Ranking dos Vendedores</div>
+            <div class="sellers-list" id="vendedores-ranking"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot"></span>Produtos Mais Vendidos</div>
+            <div class="chart-container"><canvas id="vendas-prod-chart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Registro -->
+        <div id="vendas-reg" class="section-panel">
+          <div class="card">
+            <div class="card-title">Nova Venda</div>
+            <div class="form-grid">
+              <div class="form-group" id="vnd-vendedor-group">
+                <label>Vendedor</label>
+                <select id="vnd-vendedor"></select>
+              </div>
+              <div class="form-group">
+                <label>Produto</label>
+                <select id="vnd-produto"></select>
+              </div>
+              <div class="form-group">
+                <label>Quantidade</label>
+                <input type="number" id="vnd-qty" value="1" min="1" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addVenda()">✚ Registrar Venda</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Histórico -->
+        <div id="vendas-hist" class="section-panel">
+          <div class="filter-bar">
+            <select id="vendas-filter-month" onchange="renderVendasHist()"></select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th>Qtd</th><th>Total</th></tr></thead>
+              <tbody id="vendas-hist-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Produtos -->
+        <div id="vendas-prod" class="section-panel">
+          <div class="card admin-only">
+            <div class="card-title">Novo Produto</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="prod-nome" placeholder="Nome do produto" />
+              </div>
+              <div class="form-group">
+                <label>Preço (R$)</label>
+                <input type="number" id="prod-preco" step="0.01" min="0" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addProduto()">✚ Adicionar</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nome</th><th>Preço</th><th>Vendas</th><th></th></tr></thead>
+              <tbody id="produtos-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Metas -->
+        <div id="vendas-meta" class="section-panel">
+          <div class="card admin-only">
+            <div class="card-title">Nova Meta</div>
+            <div class="form-grid">
+              <div class="form-group" style="grid-column:1/-1">
+                <label>Descrição</label>
+                <input type="text" id="venda-meta-desc" placeholder=" description" />
+              </div>
+              <div class="form-group">
+                <label>Valor Alvo (R$)</label>
+                <input type="number" id="venda-meta-valor" step="0.01" min="0" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addMetaVendas()">✚ Criar Meta</button>
+            </div>
+          </div>
+          <div id="metas-vendas-list"></div>
+        </div>
+      </div>
+
+      <!-- MÓDULO PRIVADO -->
+      <div id="mod-privado" class="module">
+        <div class="section-tabs">
+          <button class="section-tab active" onclick="showSecTab(this, 'privado-deb')">💳 Débitos</button>
+          <button class="section-tab" onclick="showSecTab(this, 'privado-usu')">👥 Usuários</button>
+        </div>
+
+        <!-- Débitos -->
+        <div id="privado-deb" class="section-panel active">
+          <div class="card">
+            <div class="card-title">Novo Débito</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Descrição</label>
+                <input type="text" id="privado-desc" placeholder=" description" />
+              </div>
+              <div class="form-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="privado-valor" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label>Vincular a</label>
+                <select id="privado-vinculo">
+                  <option value="">Nenhum</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addPrivado()">✚ Adicionar</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Status</th><th></th></tr></thead>
+              <tbody id="privado-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Usuários -->
+        <div id="privado-usu" class="section-panel">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Usuário</th><th>Nome</th><th>Role</th><th>Status</th><th></th></tr></thead>
+              <tbody id="usuarios-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Tabs -->
+    <div class="mobile-tabs">
+      <button class="mod-tab active" data-mod="clube" onclick="switchModule('clube')">
+        <span class="tab-icon">💰</span>
+        <span class="tab-label">Clube</span>
+      </button>
+      <button class="mod-tab" data-mod="doceria" onclick="switchModule('doceria')">
+        <span class="tab-icon">🧁</span>
+        <span class="tab-label">Doceria</span>
+      </button>
+      <button class="mod-tab" data-mod="vendas" onclick="switchModule('vendas')">
+        <span class="tab-icon">🏪</span>
+        <span class="tab-label">Vendas</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Modal -->
+  <div id="editModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal">
+      <div class="modal-title" id="editModalTitle">Editar</div>
+      <div id="editModalBody"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveEdit()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print Zone -->
+  <div id="print-zone"></div>
+
+</body>
+
+</html>
