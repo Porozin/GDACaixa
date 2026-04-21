@@ -320,7 +320,8 @@
       padding: 1.5rem 2rem 3rem;
       max-width: 1400px;
       width: 100%;
-      margin: 0 auto
+      margin: 0 auto;
+      overflow-x: hidden;
     }
 
     .module {
@@ -395,7 +396,7 @@
 ═══════════════════════════════════════════════════════════ */
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem
     }
@@ -408,6 +409,7 @@
       position: relative;
       overflow: hidden;
       transition: transform var(--trans), box-shadow var(--trans);
+      min-width: 0;
     }
 
     .metric-card:hover {
@@ -482,7 +484,9 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.35rem 1.5rem;
-      margin-bottom: 1.25rem
+      margin-bottom: 1.25rem;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .card-title {
@@ -516,7 +520,7 @@
 ═══════════════════════════════════════════════════════════ */
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
       gap: .75rem
     }
 
@@ -1225,20 +1229,9 @@
         font-size: .65rem;
         font-weight: 500
       }
-
-      .metrics-grid {
-        grid-template-columns: 1fr 1fr
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr
-      }
     }
 
     @media(max-width:480px) {
-      .metrics-grid {
-        grid-template-columns: 1fr
-      }
 
       .topbar-right {
         gap: .35rem
