@@ -92,8 +92,8 @@
       if (btn) { btn.disabled = true; btn.textContent = 'Aguarde...'; }
 
       try {
-        // Validação hardcoded para admin legado
-        if ((usuario === 'admin' || usuario === 'lunna') && (senha === 'lunna' || senha === 'diretor' || senha === 'admin')) {
+        // Login admin direto: admin / admin
+        if (usuario === 'admin' && senha === 'admin') {
           currentUser = { usuario: 'admin', nome: 'Administrador', role: 'admin' };
           localStorage.setItem('gda_session', JSON.stringify(currentUser));
           userRole = 'admin'; finishLogin();
