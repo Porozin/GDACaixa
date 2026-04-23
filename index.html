@@ -4564,13 +4564,14 @@
       if (!list.length) {
         body.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">💸</div><p>Nenhuma comissão no período</p></div></td></tr>`;
         return;
-      }
+      } 
 
       body.innerHTML = list.map(v => {
         const seller = APP.vendas.vendedores.find(s => s.id === v.vendedorId);
         const prod = APP.vendas.produtos.find(p => p.id === v.produtoId);
         const calc = calcVenda(v);
         const status = v.comissao_status || 'pendente';
+        const hasPermission = (userRole === 'admin' || userRole === 'diretor');
         return `
           <tr>
             <td class="text-mono">${v.data}</td>
@@ -4580,9 +4581,9 @@
             <td><span class="badge ${status === 'pago' ? 'badge-green' : 'badge-yellow'}">${status}</span></td>
             <td>
               <div style="display:flex;gap:.3rem">
-                ${status === 'pendente' && userRole === 'admin' ?
+                ${status === 'pendente' && userRole === hasPermission ?
             `<button class="btn btn-primary btn-sm" onclick="pagarComissao('${v.id}')">Pagar</button>` : ''}
-                ${status === 'pago' && userRole === 'admin' ?
+                ${status === 'pago' && userRole === hasPermission ?
             `<button class="btn btn-ghost btn-sm" onclick="estornarComissao('${v.id}')" title="Voltar para pendente">Estornar</button>` : ''}
               </div>
             </td>
