@@ -4572,31 +4572,25 @@
         const calc = calcVenda(v);
         const status = v.comissao_status || 'pendente';
         const hasPermission = (userRole === 'admin' || userRole === 'diretor');
-
-return `
-  <tr>
-    <td class="text-mono">${v.data}</td>
-    <td>${seller?.nome || '-'}</td>
-    <td style="font-size:.8rem">${prod?.nome || '-'}</td>
-    <td class="text-mono" style="color:#60a5fa">${fmt(calc.comissao)}</td>
-    <td>
-      <span class="badge ${status === 'pago' ? 'badge-green' : 'badge-yellow'}">
-        ${status}
-      </span>
-    </td>
-    <td>
-      <div style="display:flex;gap:.3rem">
-        ${status === 'pendente' && hasPermission
-          ? `<button class="btn btn-primary btn-sm" onclick='pagarComissao("${v.id}")'>Pagar</button>`
-          : ''}
-
-        ${status === 'pago' && hasPermission
-          ? `<button class="btn btn-ghost btn-sm" onclick='estornarComissao("${v.id}")' title="Voltar para pendente">Estornar</button>`
-          : ''}
-      </div>
-    </td>
-  </tr>
-`;
+        return `
+          <tr>
+            <td class="text-mono">${v.data}</td>
+            <td>${seller?.nome || '-'}</td>
+            <td style="font-size:.8rem">${prod?.nome || '-'}</td>
+            <td class="text-mono" style="color:#60a5fa">${fmt(calc.comissao)}</td>
+            <td><span class="badge ${status === 'pago' ? 'badge-green' : 'badge-yellow'}">${status}</span></td>
+            <td>
+              <div style="display:flex;gap:.3rem">
+                ${status === 'pendente' && hasPermission ?
+            `<button class="btn btn-primary btn-sm" onclick="pagarComissao('${v.id}')">Pagar</button>` : ''}
+                ${status === 'pago' && hasPermission ?
+            `<button class="btn btn-ghost btn-sm" onclick="estornarComissao('${v.id}')" title="Voltar para pendente">Estornar</button>` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
 
     function pagarComissao(id) {
       const v = APP.vendas.vendas.find(x => x.id === id);
